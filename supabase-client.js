@@ -23,7 +23,7 @@ async function loadFood() {
           ${item.energy ? `
             <div class="energy-badge">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M13 2 L4 14 H11 L10 22 L20 9 H13 L13 2Z" fill="#089236"/>
+                    <path d="M13 2 L4 14 H11 L10 22 L20 9 H13 L13 2Z" fill="#10dbd1"/>
                 </svg>
             </div>
           ` : ''}
@@ -33,7 +33,7 @@ async function loadFood() {
               <g transform="translate(32,32) rotate(-11)">
                 <circle cx="0" cy="0" r="27" fill="none" stroke="#8c1717" stroke-width="2.5" opacity="0.8" stroke-dasharray="152 16" stroke-dashoffset="11"/>
                 <text x="0" y="-10" text-anchor="middle" font-size="5.5" font-weight="700" letter-spacing="0.8" fill="#8c1717">PROTEIN</text>
-                <text x="0" y="6" text-anchor="middle" font-size="16" font-weight="900" fill="#8c1717">${item.protein}g</text>
+                <text x="0" y="6" text-anchor="middle" font-size="16" font-weight="900" fill="#470505">${item.protein}g</text>
                 <text x="0" y="15" text-anchor="middle" font-size="4.5" font-weight="700" letter-spacing="0.8" fill="#8c1717">PER 100G</text>
               </g>
             </svg>
@@ -75,8 +75,55 @@ async function loadFood() {
     const container = document.getElementById(item.categorie);
     if (!container) return;
     container.innerHTML += renderCard(item);
-  });
+});
 
+const tunaSound = new Audio("../tuna.mp3");
+
+document.addEventListener("click", function(e) {
+    const card = e.target.closest(".food-card");
+    if (!card) return;
+
+    const name = card.querySelector(".food-title h3")?.textContent.trim().toLowerCase();
+
+    if (name === "tuna") {
+        tunaSound.currentTime = 0;
+        tunaSound.play();
+        
+     
+    }
+});
+
+const melonSound = new Audio("../melon.mp3");
+
+document.addEventListener("click", function(e) {
+    const card = e.target.closest(".food-card");
+    if (!card) return;
+
+    const name = card.querySelector(".food-title h3")?.textContent.trim().toLowerCase();
+
+    if (name === "watermelon") {
+        melonSound.currentTime = 0;
+        melonSound.play();
+
+            const hello = document.createElement("div");
+    hello.className = "tuna-hello";
+    hello.textContent = "WELL WELL WELL";
+
+    card.style.position = "relative";
+    card.appendChild(hello);
+
+    setTimeout(() => {
+        hello.remove();
+    }, 3000);
+
+    }
+});
+
+
+
+
+
+  
 document.addEventListener('change', function(e) {
 
     if (!e.target.classList.contains('portion-select')) return;
@@ -160,7 +207,50 @@ document.addEventListener('click', function(e) {
     updateNutrition(card, 100);
 });
 
+const shortcutContainer =
+    document.getElementById('categoryShortcuts');
 
+const sections =
+    document.querySelectorAll('#ingredientsContainer .category');
+
+sections.forEach(section => {
+
+    const title =
+        section.querySelector('.category-header h2');
+
+    if (!title) return;
+
+    const categoryName =
+        title.textContent.trim();
+
+    // Only create a shortcut if this category
+    // actually exists in Supabase
+    const exists = data.some(item =>
+        item.categorie?.trim().toLowerCase() ===
+        categoryName.toLowerCase()
+    );
+
+    if (!exists) return;
+
+    const card =
+        document.createElement('button');
+
+    card.className = 'category-shortcut';
+    card.type = 'button';
+    card.textContent = categoryName;
+
+    // IMPORTANT:
+    // Scroll directly to THIS section.
+    // Does not use the database ID.
+    card.addEventListener('click', () => {
+        section.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    });
+
+    shortcutContainer.appendChild(card);
+});
 
 }
 

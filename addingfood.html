@@ -90,8 +90,8 @@
         <label for="categorie">Category</label>
         <select id="categorie">
             <option value="">Select a category</option>
-            <option value="White meat">White meat (chicken, turkey)</option>
-            <option value="Red meat">Red meat (beef, lamb)</option>
+            <option value="White meat">White meat</option>
+            <option value="Red meat">Red meat</option>
             <option value="Fish">Fish</option>
             <option value="Seafood">Seafood</option>
             <option value="Eggs">Eggs</option>
@@ -119,10 +119,10 @@
         <input type="number" id="kcal">
 
         <label for="protein">Protein (g)</label>
-        <input type="number" id="protein">
+        <input type="text" id="protein">
 
         <label for="fat">Fat (g)</label>
-        <input type="number" id="fat">
+        <input type="text" id="fat">
 
         <div class="checkbox-row">
             <input type="checkbox" id="bloat">
@@ -156,8 +156,8 @@
             name: document.getElementById("name").value,
             categorie: document.getElementById("categorie").value,
             kcal: Number(document.getElementById("kcal").value) || null,
-            protein: Number(document.getElementById("protein").value) || null,
-            fat: Number(document.getElementById("fat").value) || null,
+            protein: Number(document.getElementById("protein").value) ,
+            fat: Number(document.getElementById("fat").value) ,
             bloat: document.getElementById("bloat").checked,
             energy: document.getElementById("energy").checked,
             picture: document.getElementById("picture").value
