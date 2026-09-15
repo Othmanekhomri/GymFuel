@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GymFuel — Calorie Calculator</title>
+
+<style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #111;
+    color: #181818;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* =========================================================
+   FLOATING NAVBAR
+========================================================= */
+
+.navbar {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(1100px, calc(100% - 28px));
+    height: 68px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(14, 14, 18, 0.82);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 22px;
+    box-shadow: 0 18px 50px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08);
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: white;
+    font-size: 21px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    padding-left: 12px;
+}
+
+.logo-icon {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #ffffff, #bdbdbd);
+    color: #111;
+    font-size: 18px;
+    box-shadow: 0 4px 15px rgba(255,255,255,.15);
+    transform: rotate(-6deg);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.nav-links a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 14px;
+    color: #d8d8d8;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 700;
+    transition: .25s ease;
+}
+
+.nav-links a:hover {
+    color: white;
+    background: rgba(255,255,255,.09);
+    transform: translateY(-2px);
+}
+
+.nav-icon {
+    font-size: 16px;
+    transition: .3s ease;
+}
+
+.nav-links a:hover .nav-icon {
+    transform: scale(1.25) rotate(-8deg);
+}
+
+.menu-btn {
+    display: none;
+    width: 43px;
+    height: 43px;
+    border: none;
+    border-radius: 13px;
+    background: rgba(255,255,255,.08);
+    color: white;
+    font-size: 21px;
+    cursor: pointer;
+}
+
+/* =========================================================
+   SECTION (themed like the rest of the site)
+========================================================= */
+
+.section {
+    position: relative;
+    min-height: 100vh;
+    padding: 145px 25px 100px;
+    overflow: hidden;
+    isolation: isolate;
+    background: transparent;
+}
+
+.section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-image:
+        linear-gradient(135deg, var(--theme-color), rgba(0,0,0,.48)),
+        var(--section-image);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.section::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(0,0,0,.30), rgba(0,0,0,.48) 55%, rgba(0,0,0,.70));
+}
+
+#calculator {
+    --theme-color: rgba(120, 0, 200, .68);
+    --section-image: url("https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=2000&q=85");
+}
+
+/* =========================================================
+   SECTION HEADER
+========================================================= */
+
+.section-header {
+    max-width: 1000px;
+    margin: 0 auto 45px;
+    text-align: center;
+    color: white;
+}
+
+.section-label {
+    display: inline-block;
+    padding: 7px 13px;
+    margin-bottom: 15px;
+    border-radius: 30px;
+    background: rgba(255,255,255,.13);
+    border: 1px solid rgba(255,255,255,.18);
+    backdrop-filter: blur(10px);
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.section-header h1 {
+    font-size: clamp(42px, 7vw, 78px);
+    line-height: .95;
+    letter-spacing: -4px;
+    margin-bottom: 18px;
+    text-shadow: 0 8px 30px rgba(0,0,0,.35);
+}
+
+.section-header p {
+    max-width: 650px;
+    margin: auto;
+    color: rgba(255,255,255,.82);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   CALCULATOR CARD / FORM
+========================================================= */
+
+.calc-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    background: rgba(255,255,255,.97);
+    border: 1px solid rgba(255,255,255,.65);
+    border-radius: 28px;
+    padding: 40px;
+    box-shadow: 0 20px 55px rgba(0,0,0,.35);
+}
+
+.calc-wrap h2 {
+    font-size: 26px;
+    margin-bottom: 8px;
+    letter-spacing: -.7px;
+}
+
+.calc-wrap > p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* GENDER SELECT */
+
+.gender-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.gender-card {
+    position: relative;
+    cursor: pointer;
+    border-radius: 20px;
+    border: 2px solid #e4e4e4;
+    background: #f7f7f7;
+    padding: 18px;
+    text-align: center;
+    transition: .25s ease;
+}
+
+.gender-card:hover {
+    transform: translateY(-4px);
+    border-color: #b8b8b8;
+}
+
+.gender-card.selected {
+    border-color: #5714c4;
+    background: #fdf0f0;
+    box-shadow: 0 10px 25px rgba(140,23,23,.15);
+}
+
+.gender-card img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: block;
+    border: 3px solid #ddd;
+    background: #fff;
+}
+
+.gender-card.selected img {
+    border-color: #5714c4;
+}
+
+.gender-card h3 {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
+
+.gender-card input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* FORM GRID: 2 per row */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field label {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #555;
+}
+
+.field input {
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1.5px solid #e0e0e0;
+    background: #f7f7f7;
+    font-size: 15px;
+    font-weight: 700;
+    color: #181818;
+    transition: .2s ease;
+    outline: none;
+}
+
+.field input:focus {
+    border-color: #8c1717;
+    background: #fff;
+}
+
+/* GOAL ROW: 3 across, full width */
+
+.goal-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 10px 0 30px;
+}
+
+.goal-card {
+    position: relative;
+    cursor: pointer;
+    border-radius: 16px;
+    border: 2px solid #e4e4e4;
+    background: #f7f7f7;
+    padding: 18px 10px;
+    text-align: center;
+    transition: .25s ease;
+}
+
+.goal-card:hover {
+    transform: translateY(-3px);
+    border-color: #b8b8b8;
+}
+
+.goal-card.selected {
+    border-color: #5714c4;
+    background: #fdf0f0;
+    box-shadow: 0 10px 25px rgba(140,23,23,.15);
+}
+
+.goal-card span {
+    font-size: 22px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.goal-card h3 {
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.goal-card input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* CALCULATE BUTTON */
+
+.calc-btn {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 14px;
+    background: #181818;
+    color: white;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: .25s ease;
+}
+
+.calc-btn:hover {
+    background: #5714c4;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0,0,0,.25);
+}
+
+/* RESULT */
+
+.result-box {
+    margin-top: 28px;
+    padding: 28px;
+    border-radius: 18px;
+    background: #181818;
+    color: white;
+    text-align: center;
+    display: none;
+}
+
+.result-box.show {
+    display: block;
+}
+
+.result-box .result-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.55);
+    margin-bottom: 8px;
+}
+
+.result-box .result-number {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: -2px;
+}
+
+.result-box .result-unit {
+    font-size: 15px;
+    font-weight: 700;
+    color: rgba(255,255,255,.6);
+    margin-top: 4px;
+}
+
+.result-box .result-note {
+    margin-top: 14px;
+    font-size: 13px;
+    color: rgba(255,255,255,.55);
+    line-height: 1.5;
+}
+
+.error-msg {
+    display: none;
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: #fdf0f0;
+    color: #8c1717;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.error-msg.show {
+    display: block;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .navbar {
+        height: 62px;
+        border-radius: 19px;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .logo-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .menu-btn {
+        display: block;
+    }
+
+    .nav-links {
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        padding: 10px;
+        display: none;
+        flex-direction: column;
+        background: rgba(15,15,18,.94);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 18px;
+        box-shadow: 0 20px 40px rgba(0,0,0,.35);
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links a {
+        width: 100%;
+        padding: 13px 15px;
+    }
+
+    .section {
+        padding: 120px 16px 80px;
+    }
+
+    .section-header h1 {
+        letter-spacing: -2px;
+    }
+
+    .calc-wrap {
+        padding: 26px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .goal-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 450px) {
+
+    .navbar {
+        width: calc(100% - 18px);
+        top: 9px;
+    }
+
+    .logo {
+        padding-left: 5px;
+    }
+
+    .section-header h1 {
+        font-size: 44px;
+    }
+
+    .section-header p {
+        font-size: 14px;
+    }
+
+    .gender-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<nav class="navbar">
+
+    <a href="#top" class="logo">
+        <span class="logo-icon">⚡</span>
+        GymFuel
+    </a>
+
+    <div class="nav-links" id="navLinks">
+
+        <a href="menu/ingrediants.html">
+            🥗 Ingredients
+        </a>
+<a href="calculator.html" class="active">
+            <span class="nav-icon">🧮</span>
+            Calculator
+        </a>
+        <a href="main.html#superenergy">
+            <span class="nav-icon">⚡</span>
+            Energy
+        </a>
+
+        <a href="main.html#bulking">
+            <span class="nav-icon">💪</span>
+            Bulking
+        </a>
+
+        <a href="main.html#cutting">
+            <span class="nav-icon">🔥</span>
+            Cutting
+        </a>
+
+        <a href="main.html#snacks">
+            <span class="nav-icon">🍎</span>
+            Snacks
+        </a>
+
+        
+
+    </div>
+
+    <button class="menu-btn" id="menuBtn">☰</button>
+
+</nav>
+
+<div id="top"></div>
+
+<!-- =========================================================
+     CALCULATOR SECTION
+========================================================= -->
+
+<section class="section" id="calculator">
+
+    <div class="section-header">
+
+        <div class="section-label">
+            🧮 Calorie Mode
+        </div>
+
+        <h1>DAILY INTAKE</h1>
+
+        <p>
+            Fill in your details below and we'll work out roughly
+            how many calories your body needs each day, based on
+            whether you're looking to bulk, cut or maintain.
+        </p>
+
+    </div>
+
+    <div class="calc-wrap">
+
+        <h2>Tell us about yourself</h2>
+        <p>Pick your gender, enter your stats and choose your goal — then hit calculate.</p>
+
+        <form id="calcForm">
+
+            <!-- GENDER -->
+
+            <div class="gender-grid">
+
+                <label class="gender-card" id="maleCard">
+                    <input type="radio" name="gender" value="male">
+                    <img src="https://i.pinimg.com/736x/b3/08/d0/b308d0910b7246035b10f1dc94490fef.jpg" alt="Male icon">
+                    <h3>Man</h3>
+                </label>
+
+                <label class="gender-card" id="femaleCard">
+                    <input type="radio" name="gender" value="female">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJgWMbLJBFDWw8abn96pQJ7kwZAt3_7OoUqAyVBmAd5A&s=10" alt="Female icon">
+                    <h3>Woman</h3>
+                </label>
+
+            </div>
+
+            <!-- AGE / HEIGHT -->
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="age">Age (years)</label>
+                    <input type="number" id="age" placeholder="e.g. 24" min="10" max="100">
+                </div>
+
+                <div class="field">
+                    <label for="height">Height (cm)</label>
+                    <input type="number" id="height" placeholder="e.g. 178" min="100" max="250">
+                </div>
+
+            </div>
+
+            <!-- WEIGHT (single, full width) -->
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="weight">Weight (kg)</label>
+                    <input type="number" id="weight" placeholder="e.g. 75" min="30" max="300">
+                </div>
+
+                <div class="field">
+                    <label for="activity">Activity Level</label>
+                    <input list="activityOptions" id="activity" placeholder="e.g. Moderate">
+                    <datalist id="activityOptions">
+                        <option value="Sedentary">
+                        <option value="Light">
+                        <option value="Moderate">
+                        <option value="Active">
+                        <option value="Very Active">
+                    </datalist>
+                </div>
+
+            </div>
+
+            <!-- GOAL: bulk / cut / maintain, 3 in a row -->
+
+            <div class="goal-row">
+
+                
+
+                <label class="goal-card" id="cutCard">
+                    <input type="radio" name="goal" value="cut">
+                    <span>🔥</span>
+                    <h3>Cut</h3>
+                </label>
+
+                <label class="goal-card" id="maintainCard">
+                    <input type="radio" name="goal" value="maintain">
+                    <span>⚖️</span>
+                    <h3>Maintain</h3>
+                </label>
+
+                <label class="goal-card" id="bulkCard">
+                    <input type="radio" name="goal" value="bulk">
+                    <span>💪</span>
+                    <h3>Bulk</h3>
+                </label>
+
+            </div>
+
+            <button type="submit" class="calc-btn">Calculate</button>
+
+            <div class="error-msg" id="errorMsg">
+                Please fill in all fields and pick a gender and goal first.
+            </div>
+
+            <div class="result-box" id="resultBox">
+                <div class="result-label">Your Daily Target</div>
+                <div class="result-number" id="resultNumber">0</div>
+                <div class="result-unit">KCAL / DAY</div>
+                <div class="result-note" id="resultNote"></div>
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer style="padding:40px 20px; text-align:center; background:#090909; color:#777; font-size:13px;">
+    GymFuel — Fuel your goals.
+</footer>
+
+<script>
+
+/* MOBILE NAV TOGGLE */
+
+const menuBtn = document.getElementById("menuBtn");
+const navLinks = document.getElementById("navLinks");
+
+menuBtn.addEventListener("click", () => {
+    navLinks.classList.toggle("active");
+});
+
+/* SELECT CARDS (gender + goal) */
+
+function setupSelectableCards(cardIds, inputSelector) {
+    cardIds.forEach(id => {
+        const card = document.getElementById(id);
+        card.addEventListener("click", () => {
+            document.querySelectorAll(inputSelector).forEach(c => c.classList.remove("selected"));
+            card.classList.add("selected");
+        });
+    });
+}
+
+setupSelectableCards(["maleCard", "femaleCard"], ".gender-card");
+setupSelectableCards(["bulkCard", "cutCard", "maintainCard"], ".goal-card");
+
+/* ACTIVITY MULTIPLIERS */
+
+const activityMultipliers = {
+    "sedentary": 1.2,
+    "light": 1.375,
+    "moderate": 1.55,
+    "active": 1.725,
+    "very active": 1.9
+};
+
+/* FORM SUBMIT */
+
+const form = document.getElementById("calcForm");
+const errorMsg = document.getElementById("errorMsg");
+const resultBox = document.getElementById("resultBox");
+const resultNumber = document.getElementById("resultNumber");
+const resultNote = document.getElementById("resultNote");
+
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const genderInput = document.querySelector('input[name="gender"]:checked');
+    const goalInput = document.querySelector('input[name="goal"]:checked');
+
+    const age = parseFloat(document.getElementById("age").value);
+    const height = parseFloat(document.getElementById("height").value);
+    const weight = parseFloat(document.getElementById("weight").value);
+    const activityRaw = document.getElementById("activity").value.trim().toLowerCase();
+
+    const activityMultiplier = activityMultipliers[activityRaw] || 1.375;
+
+    if (!genderInput || !goalInput || !age || !height || !weight) {
+        errorMsg.classList.add("show");
+        resultBox.classList.remove("show");
+        return;
+    }
+
+    errorMsg.classList.remove("show");
+
+    const gender = genderInput.value;
+    const goal = goalInput.value;
+
+    /* Mifflin-St Jeor BMR */
+    let bmr;
+    if (gender === "male") {
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+    } else {
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+    }
+
+    let tdee = bmr * activityMultiplier;
+
+    let goalCalories = tdee;
+    let note = "";
+
+    if (goal === "bulk") {
+        goalCalories = tdee + 350;
+        note = "This includes a surplus of about +350 kcal to support steady muscle growth.";
+    } else if (goal === "cut") {
+        goalCalories = tdee - 400;
+        note = "This includes a deficit of about -400 kcal for a gradual, sustainable cut.";
+    } else {
+        note = "This is your maintenance level — enough to keep your weight steady.";
+    }
+
+    resultNumber.textContent = Math.round(goalCalories).toLocaleString();
+    resultNote.textContent = note;
+    resultBox.classList.add("show");
+
+    resultBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+});
+
+</script>
+
+</body>
+</html>
