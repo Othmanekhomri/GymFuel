@@ -77,7 +77,15 @@
 </head>
 
 <body>
+<div id="navbarPlaceholder"></div>
 
+<script>
+fetch('/navbar.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('navbarPlaceholder').innerHTML = html;
+  });
+</script>
 <div class="form-box">
 
     <h1>Add New Food</h1>

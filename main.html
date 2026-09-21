@@ -1,167 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>GymFuel</title>
-<link rel="stylesheet" href="stylemain.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymFuel</title>
+    <link rel="stylesheet" href="stylemain.css">
 </head>
-
 
 <body>
 
+<div id="navbarPlaceholder"></div>
 
-<!-- =========================================================
-     NAVBAR
-========================================================= -->
-
-<nav class="navbar">
-
-    <a href="#top" class="logo">
-        <span class="logo-icon">⚡</span>
-        GymFuel
-    </a>
-
-    <div class="nav-links" id="navLinks">
-
-            <a href="menu/ingrediants.html" class="active">
-                🥗 Ingredients
-            </a>
-            <a href="calculator.html">
-            <span class="nav-icon">🧮</span>
-            Calculator
-        </a>
-        <a href="#superenergy">
-            <span class="nav-icon">⚡</span>
-            Energy
-        </a>
-
-        <a href="#bulking">
-            <span class="nav-icon">💪</span>
-            Bulking
-        </a>
-
-        <a href="#cutting">
-            <span class="nav-icon">🔥</span>
-            Cutting
-        </a>
-
-        <a href="#snacks">
-            <span class="nav-icon">🍎</span>
-            Snacks
-        </a>
-
-        <a href="#learn-more">
-            <span class="nav-icon">✦</span>
-            Learn
-        </a>
-        
-    </div>
-
-    <button class="menu-btn" id="menuBtn">
-        ☰
-    </button>
-
-</nav>
-
+<script>
+fetch('/navbar.html')
+    .then(res => res.text())
+    .then(html => {
+        document.getElementById('navbarPlaceholder').innerHTML = html;
+    });
+</script>
 
 <div id="top"></div>
 
-<!-- =========================
-     INTRO / WELCOME SECTION
-========================= -->
+<!-- =========================================================
+     INTRO
+========================================================= -->
 
 <section class="intro-section" id="home">
-
     <div class="intro-content">
 
-        <div class="intro-badge">
-            ⚡ GYMFUEL
-        </div>
+        <div class="intro-kicker">GYMFUEL / DEMO</div>
 
-        <h1>
-            Hey bro, what's good?
-        </h1>
+        <h1>Eat with purpose.</h1>
 
         <p class="intro-main-text">
-            Welcome to my space.
+            A simple way to explore food for energy, growth and getting lean.
         </p>
 
         <p class="intro-description">
-            I'm not gonna waste your time.
-            Let's get straight into it.
+            GymFuel turns everyday meals and ingredients into clear,
+            practical nutrition choices. This is only the demo —
+            the full experience is still being built.
         </p>
+
+        <div class="quote-block">
+            <p>"The secret of getting ahead is getting started."</p>
+            <span>— Mark Twain</span>
+        </div>
 
         <div class="intro-divider"></div>
 
-        <h2>How does this work?</h2>
-
-        <p class="intro-description">
-            GymFuel is split into <strong>4 simple sections</strong>:
-        </p>
-
         <div class="intro-sections">
-
-            <div class="intro-card">
-                <span>⚡</span>
+            <a class="intro-card" href="#superenergy">
+                <span class="card-number">01</span>
                 <h3>Energy</h3>
-                <p>Fuel your workouts and stay energized.</p>
-            </div>
+                <p>Foods and meals built around fuel and performance.</p>
+            </a>
 
-            <div class="intro-card">
-                <span>💪</span>
+            <a class="intro-card" href="#bulking">
+                <span class="card-number">02</span>
                 <h3>Bulking</h3>
-                <p>More calories, more fuel, more growth.</p>
-            </div>
+                <p>Higher-calorie meals designed for bigger intake.</p>
+            </a>
 
-            <div class="intro-card">
-                <span>🔥</span>
+            <a class="intro-card" href="#cutting">
+                <span class="card-number">03</span>
                 <h3>Cutting</h3>
-                <p>Keep your nutrition simple while cutting.</p>
-            </div>
+                <p>Lean, filling meals with calories kept controlled.</p>
+            </a>
 
-            <div class="intro-card">
-                <span>🍎</span>
+            <a class="intro-card" href="#snacks">
+                <span class="card-number">04</span>
                 <h3>Snacks</h3>
-                <p>Quick and simple options between meals.</p>
-            </div>
-
+                <p>A dedicated snack system is coming in the full version.</p>
+            </a>
         </div>
 
-        <div class="intro-info">
-
-            <div class="info-item">
-                <strong>01</strong>
-                <span>Premade Menus</span>
-            </div>
-
-            <div class="info-item">
-                <strong>02</strong>
-                <span>Ingredients</span>
-            </div>
-
-        </div>
-
-        <p class="intro-description small">
-            Every section gives you both options.
-            You'll find some of the most famous and commonly used
-            foods and meals — nothing unnecessarily complicated.
-        </p>
-
-        <a href="#superenergy" class="intro-button">
-            LET'S GET INTO IT →
-        </a>
+        <a href="#superenergy" class="intro-button">EXPLORE THE DEMO</a>
 
     </div>
-
 </section>
 
 <!-- =========================================================
-     ENERGY
+     FLOATING SECTION NAV
 ========================================================= -->
-<!-- Floating Section Navigation -->
+
 <div class="floating-section-nav" id="floatingSectionNav">
     <a href="#" class="float-nav-btn" id="floatNavButton">
         <span id="floatNavArrow">↓</span>
@@ -169,640 +91,124 @@
     </a>
 </div>
 
+<!-- =========================================================
+     ENERGY
+========================================================= -->
+
 <section class="section" id="superenergy">
 
     <div class="section-header">
-
-        <div class="section-label">
-            ⚡ Energy Mode
-        </div>
-
+        <div class="section-label">01 / ENERGY</div>
         <h1>SUPER ENERGY</h1>
-
         <p>
-            Fuel your workouts, stay energized and give your body
-            the nutrients it needs to perform.
+            Food selected around usable fuel, carbohydrates and balanced
+            meals that fit an active day or workout.
         </p>
-
     </div>
-
-
-    <!-- CHOICES -->
 
     <div class="choice-grid">
-
-        <a href="#superenergy-menus" class="choice-card choice-menu">
-
-            <h2>Premade Menu</h2>
-
-            <p>
-                Ready-to-eat meals with everything calculated.
-            </p>
-
+        <a href="#superenergy-menus" class="choice-card">
+            <span class="choice-number">01</span>
+            <div>
+                <h2>Premade menus</h2>
+                <p>Three example meals with ingredients and nutrition.</p>
+            </div>
         </a>
 
-
-        <a href="#superenergy-ingredients"
-           class="choice-card choice-ingredients">
-
-            <h2>Ingredients</h2>
-
-            <p>
-                Pick your own foods and build your meal.
-            </p>
-
+        <a href="#superenergy-ingredients" class="choice-card">
+            <span class="choice-number">02</span>
+            <div>
+                <h2>Ingredients</h2>
+                <p>Five simple foods with nutrition per 100g.</p>
+            </div>
         </a>
-
     </div>
-
-
-    <!-- MEALS -->
 
     <div class="content-title" id="superenergy-menus">
-
-        <h2>⚡ Energy Menus</h2>
-
-        <p>
-            Three example meals for maximum daily energy.
-        </p>
-
+        <span>ENERGY / MENUS</span>
+        <h2>Meals made to fuel the day.</h2>
+        <p>Balanced examples with carbohydrates, protein and useful calories.</p>
     </div>
-
 
     <div class="meals-container">
 
-
-        <!-- MEAL 1 -->
-
         <article class="meal-card">
-
             <div class="meal-image energy-meal-1"></div>
-
             <div class="meal-content">
-
-                <div class="protein-stamp">
-
-                    <div class="stamp-label">
-                        PROTEIN
-                    </div>
-
-                    <div class="stamp-number">
-                        42
-                    </div>
-
-                    <div class="stamp-unit">
-                        GRAMS
-                    </div>
-
-                </div>
-
-
-                <h3>Chicken Power Bowl</h3>
-
-                <p class="meal-description">
-                    A balanced high-energy bowl with chicken,
-                    rice and fresh vegetables.
-                </p>
-
+                <div class="meal-topline"><span>ENERGY</span><strong>42g protein</strong></div>
+                <h3>Chicken Rice Power Bowl</h3>
+                <p class="meal-description">A straightforward combination of lean chicken, rice and vegetables for a solid high-energy meal.</p>
 
                 <div class="ingredients">
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Chicken breast
-                        </span>
-
-                        <span class="ingredient-info">
-                            180g
-                        </span>
-
-                        <span class="ingredient-info">
-                            297 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Rice
-                        </span>
-
-                        <span class="ingredient-info">
-                            200g
-                        </span>
-
-                        <span class="ingredient-info">
-                            260 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Broccoli
-                        </span>
-
-                        <span class="ingredient-info">
-                            100g
-                        </span>
-
-                        <span class="ingredient-info">
-                            35 kcal
-                        </span>
-                    </div>
-
+                    <div class="ingredient-row"><span class="ingredient-name">Chicken breast</span><span>180g</span><span>297 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Cooked rice</span><span>200g</span><span>260 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Broccoli</span><span>100g</span><span>35 kcal</span></div>
                 </div>
-
 
                 <div class="meal-total">
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Calories
-                        </span>
-
-                        <span class="total-value">
-                            592 kcal
-                        </span>
-                    </div>
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Protein
-                        </span>
-
-                        <span class="total-value">
-                            42g
-                        </span>
-                    </div>
-
+                    <div><span>Total</span><strong>592 kcal</strong></div>
+                    <div><span>Protein</span><strong>42g</strong></div>
                 </div>
-
             </div>
-
         </article>
 
-
-        <!-- MEAL 2 -->
-
         <article class="meal-card">
-
             <div class="meal-image energy-meal-2"></div>
-
             <div class="meal-content">
-
-                <div class="protein-stamp">
-
-                    <div class="stamp-label">
-                        PROTEIN
-                    </div>
-
-                    <div class="stamp-number">
-                        31
-                    </div>
-
-                    <div class="stamp-unit">
-                        GRAMS
-                    </div>
-
-                </div>
-
-
-                <h3>Green Power Plate</h3>
-
-                <p class="meal-description">
-                    Fresh vegetables, eggs and avocado for
-                    steady energy throughout the day.
-                </p>
-
+                <div class="meal-topline"><span>ENERGY</span><strong>18g protein</strong></div>
+                <h3>Banana Oat Bowl</h3>
+                <p class="meal-description">Oats, banana, yogurt and honey for a carbohydrate-focused meal that works well around training.</p>
 
                 <div class="ingredients">
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Eggs
-                        </span>
-
-                        <span class="ingredient-info">
-                            3 eggs
-                        </span>
-
-                        <span class="ingredient-info">
-                            216 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Avocado
-                        </span>
-
-                        <span class="ingredient-info">
-                            100g
-                        </span>
-
-                        <span class="ingredient-info">
-                            160 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Vegetables
-                        </span>
-
-                        <span class="ingredient-info">
-                            200g
-                        </span>
-
-                        <span class="ingredient-info">
-                            70 kcal
-                        </span>
-                    </div>
-
+                    <div class="ingredient-row"><span class="ingredient-name">Oats</span><span>80g</span><span>311 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Banana</span><span>120g</span><span>107 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Greek yogurt</span><span>150g</span><span>110 kcal</span></div>
                 </div>
-
 
                 <div class="meal-total">
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Calories
-                        </span>
-
-                        <span class="total-value">
-                            446 kcal
-                        </span>
-                    </div>
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Protein
-                        </span>
-
-                        <span class="total-value">
-                            31g
-                        </span>
-                    </div>
-
+                    <div><span>Total</span><strong>528 kcal</strong></div>
+                    <div><span>Protein</span><strong>18g</strong></div>
                 </div>
-
             </div>
-
         </article>
 
-
-        <!-- MEAL 3 -->
-
         <article class="meal-card">
-
             <div class="meal-image energy-meal-3"></div>
-
             <div class="meal-content">
-
-                <div class="protein-stamp">
-
-                    <div class="stamp-label">
-                        PROTEIN
-                    </div>
-
-                    <div class="stamp-number">
-                        36
-                    </div>
-
-                    <div class="stamp-unit">
-                        GRAMS
-                    </div>
-
-                </div>
-
-
+                <div class="meal-topline"><span>ENERGY</span><strong>36g protein</strong></div>
                 <h3>Turkey Pasta Fuel</h3>
-
-                <p class="meal-description">
-                    Pasta and lean turkey for a powerful
-                    pre-workout meal.
-                </p>
-
+                <p class="meal-description">Lean turkey with pasta and tomato sauce for a practical pre-workout or active-day meal.</p>
 
                 <div class="ingredients">
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Turkey
-                        </span>
-
-                        <span class="ingredient-info">
-                            160g
-                        </span>
-
-                        <span class="ingredient-info">
-                            250 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Pasta
-                        </span>
-
-                        <span class="ingredient-info">
-                            180g
-                        </span>
-
-                        <span class="ingredient-info">
-                            280 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Tomato sauce
-                        </span>
-
-                        <span class="ingredient-info">
-                            100g
-                        </span>
-
-                        <span class="ingredient-info">
-                            60 kcal
-                        </span>
-                    </div>
-
+                    <div class="ingredient-row"><span class="ingredient-name">Turkey breast</span><span>160g</span><span>216 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Cooked pasta</span><span>250g</span><span>390 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Tomato sauce</span><span>100g</span><span>60 kcal</span></div>
                 </div>
-
 
                 <div class="meal-total">
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Calories
-                        </span>
-
-                        <span class="total-value">
-                            590 kcal
-                        </span>
-                    </div>
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Protein
-                        </span>
-
-                        <span class="total-value">
-                            36g
-                        </span>
-                    </div>
-
+                    <div><span>Total</span><strong>666 kcal</strong></div>
+                    <div><span>Protein</span><strong>36g</strong></div>
                 </div>
-
             </div>
-
         </article>
 
     </div>
-
-
-    <!-- INGREDIENTS -->
 
     <div class="content-title" id="superenergy-ingredients">
-
-        <h2>🥑 Energy Ingredients</h2>
-
-        <p>
-            Basic ingredients and their nutrition per 100g.
-        </p>
-
+        <span>ENERGY / INGREDIENTS</span>
+        <h2>Five foods worth knowing.</h2>
+        <p>Simple nutrition references per 100g.</p>
     </div>
-
 
     <div class="ingredient-grid">
-
-        <div class="ingredient-card">
-
-            <div class="ingredient-card-image ingredient-1"
-               style="background-image: url('https://plus.unsplash.com/premium_photo-1668616816737-ac363cc4db2e?q=80&w=693&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
-            </div>
-
-            <div class="ingredient-card-content">
-
-                <h3>Chicken</h3>
-
-                <div class="nutrition">
-
-                    <div>
-                        <strong>165</strong>
-                        kcal
-                    </div>
-
-                    <div>
-                        <strong>31g</strong>
-                        protein
-                    </div>
-
-                    <div>
-                        <strong>3.6g</strong>
-                        fat
-                    </div>
-
-                    <div>
-                        <strong>0g</strong>
-                        sugar
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="ingredient-card">
-
-            <div class="ingredient-card-image ingredient-2"></div>
-
-            <div class="ingredient-card-content">
-
-                <h3>Rice</h3>
-
-                <div class="nutrition">
-
-                    <div>
-                        <strong>130</strong>
-                        kcal
-                    </div>
-
-                    <div>
-                        <strong>2.7g</strong>
-                        protein
-                    </div>
-
-                    <div>
-                        <strong>0.3g</strong>
-                        fat
-                    </div>
-
-                    <div>
-                        <strong>0.1g</strong>
-                        sugar
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="ingredient-card">
-
-            <div class="ingredient-card-image ingredient-3"></div>
-
-            <div class="ingredient-card-content">
-
-                <h3>Eggs</h3>
-
-                <div class="nutrition">
-
-                    <div>
-                        <strong>143</strong>
-                        kcal
-                    </div>
-
-                    <div>
-                        <strong>13g</strong>
-                        protein
-                    </div>
-
-                    <div>
-                        <strong>10g</strong>
-                        fat
-                    </div>
-
-                    <div>
-                        <strong>0.4g</strong>
-                        sugar
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="ingredient-card">
-
-            <div class="ingredient-card-image ingredient-4"></div>
-
-            <div class="ingredient-card-content">
-
-                <h3>Avocado</h3>
-
-                <div class="nutrition">
-
-                    <div>
-                        <strong>160</strong>
-                        kcal
-                    </div>
-
-                    <div>
-                        <strong>2g</strong>
-                        protein
-                    </div>
-
-                    <div>
-                        <strong>15g</strong>
-                        fat
-                    </div>
-
-                    <div>
-                        <strong>0.7g</strong>
-                        sugar
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="ingredient-card">
-
-            <div class="ingredient-card-image ingredient-5"></div>
-
-            <div class="ingredient-card-content">
-
-                <h3>Banana</h3>
-
-                <div class="nutrition">
-
-                    <div>
-                        <strong>89</strong>
-                        kcal
-                    </div>
-
-                    <div>
-                        <strong>1.1g</strong>
-                        protein
-                    </div>
-
-                    <div>
-                        <strong>0.3g</strong>
-                        fat
-                    </div>
-
-                    <div>
-                        <strong>12g</strong>
-                        sugar
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-  <div class="ingredient-card">
-
-            <div class="ingredient-card-image ingredient-5"></div>
-
-            <div class="ingredient-card-content">
-
-                <h3>Banana</h3>
-
-                <div class="nutrition">
-
-                    <div>
-                        <strong>89</strong>
-                        kcal
-                    </div>
-
-                    <div>
-                        <strong>1.1g</strong>
-                        protein
-                    </div>
-
-                    <div>
-                        <strong>0.3g</strong>
-                        fat
-                    </div>
-
-                    <div>
-                        <strong>12g</strong>
-                        sugar
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-energy-chicken"></div><div class="ingredient-card-content"><h3>Chicken</h3><div class="nutrition"><div><strong>165</strong>kcal</div><div><strong>31g</strong>protein</div><div><strong>3.6g</strong>fat</div><div><strong>0g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-rice"></div><div class="ingredient-card-content"><h3>Rice</h3><div class="nutrition"><div><strong>130</strong>kcal</div><div><strong>2.7g</strong>protein</div><div><strong>0.3g</strong>fat</div><div><strong>0.1g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-banana"></div><div class="ingredient-card-content"><h3>Banana</h3><div class="nutrition"><div><strong>89</strong>kcal</div><div><strong>1g</strong>protein</div><div><strong>0.3g</strong>fat</div><div><strong>12g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-oats"></div><div class="ingredient-card-content"><h3>Oats</h3><div class="nutrition"><div><strong>389</strong>kcal</div><div><strong>17g</strong>protein</div><div><strong>7g</strong>fat</div><div><strong>0.9g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-potato"></div><div class="ingredient-card-content"><h3>Potato</h3><div class="nutrition"><div><strong>87</strong>kcal</div><div><strong>2g</strong>protein</div><div><strong>0.1g</strong>fat</div><div><strong>0.8g</strong>sugar</div></div></div></div>
     </div>
 
 </section>
-
-
 
 <!-- =========================================================
      BULKING
@@ -811,473 +217,92 @@
 <section class="section" id="bulking">
 
     <div class="section-header">
-
-        <div class="section-label">
-            💪 Growth Mode
-        </div>
-
+        <div class="section-label">02 / BULKING</div>
         <h1>BULKING</h1>
-
-        <p>
-            Bigger meals, more calories and plenty of protein
-            to support muscle growth.
-        </p>
-
+        <p>Higher-calorie meals built from familiar foods, with enough protein to make the calories count.</p>
     </div>
-
 
     <div class="choice-grid">
-
-        <a href="#bulking-menus" class="choice-card choice-menu">
-
-            <h2>Premade Menu</h2>
-
-            <p>
-                High-calorie meals ready to go.
-            </p>
-
+        <a href="#bulking-menus" class="choice-card">
+            <span class="choice-number">01</span>
+            <div><h2>Premade menus</h2><p>Big meals with their ingredients and totals already laid out.</p></div>
         </a>
-
-
-        <a href="#bulking-ingredients"
-           class="choice-card choice-ingredients">
-
-            <h2>Ingredients</h2>
-
-            <p>
-                Build your own high-calorie meals.
-            </p>
-
+        <a href="#bulking-ingredients" class="choice-card">
+            <span class="choice-number">02</span>
+            <div><h2>Ingredients</h2><p>Five calorie-dense building blocks for bigger meals.</p></div>
         </a>
-
     </div>
-
 
     <div class="content-title" id="bulking-menus">
-
-        <h2>💪 Bulking Menus</h2>
-
-        <p>
-            Example meals designed around higher calories.
-        </p>
-
+        <span>BULKING / MENUS</span>
+        <h2>More food. More room to build.</h2>
+        <p>Example meals designed around higher calorie intake.</p>
     </div>
-
 
     <div class="meals-container">
 
-
         <article class="meal-card">
-
             <div class="meal-image bulk-meal-1"></div>
-
             <div class="meal-content">
-
-                <div class="protein-stamp">
-
-                    <div class="stamp-label">
-                        PROTEIN
-                    </div>
-
-                    <div class="stamp-number">
-                        55
-                    </div>
-
-                    <div class="stamp-unit">
-                        GRAMS
-                    </div>
-
-                </div>
-
-                <h3>Mass Chicken Bowl</h3>
-
-                <p class="meal-description">
-                    A big serving of chicken, rice and vegetables
-                    for serious calories.
-                </p>
-
+                <div class="meal-topline"><span>BULKING</span><strong>55g protein</strong></div>
+                <h3>Chicken Rice Mass Bowl</h3>
+                <p class="meal-description">Chicken, rice, avocado and olive oil make this an easy way to push calories without making the meal complicated.</p>
                 <div class="ingredients">
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Chicken
-                        </span>
-
-                        <span class="ingredient-info">
-                            220g
-                        </span>
-
-                        <span class="ingredient-info">
-                            363 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Rice
-                        </span>
-
-                        <span class="ingredient-info">
-                            300g
-                        </span>
-
-                        <span class="ingredient-info">
-                            390 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Olive oil
-                        </span>
-
-                        <span class="ingredient-info">
-                            15g
-                        </span>
-
-                        <span class="ingredient-info">
-                            135 kcal
-                        </span>
-                    </div>
-
+                    <div class="ingredient-row"><span class="ingredient-name">Chicken breast</span><span>220g</span><span>363 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Cooked rice</span><span>300g</span><span>390 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Olive oil</span><span>15g</span><span>135 kcal</span></div>
                 </div>
-
-                <div class="meal-total">
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Calories
-                        </span>
-
-                        <span class="total-value">
-                            888 kcal
-                        </span>
-                    </div>
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Protein
-                        </span>
-
-                        <span class="total-value">
-                            55g
-                        </span>
-                    </div>
-
-                </div>
-
+                <div class="meal-total"><div><span>Total</span><strong>888 kcal</strong></div><div><span>Protein</span><strong>55g</strong></div></div>
             </div>
-
         </article>
 
-
         <article class="meal-card">
-
             <div class="meal-image bulk-meal-2"></div>
-
             <div class="meal-content">
-
-                <div class="protein-stamp">
-
-                    <div class="stamp-label">
-                        PROTEIN
-                    </div>
-
-                    <div class="stamp-number">
-                        48
-                    </div>
-
-                    <div class="stamp-unit">
-                        GRAMS
-                    </div>
-
-                </div>
-
-                <h3>Beef Pasta Monster</h3>
-
-                <p class="meal-description">
-                    Beef and pasta combined into a dense
-                    muscle-building meal.
-                </p>
-
+                <div class="meal-topline"><span>BULKING</span><strong>48g protein</strong></div>
+                <h3>Beef Pasta Plate</h3>
+                <p class="meal-description">Lean beef, pasta and cheese make a dense meal that is easy to scale up with larger portions.</p>
                 <div class="ingredients">
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Lean beef
-                        </span>
-
-                        <span class="ingredient-info">
-                            200g
-                        </span>
-
-                        <span class="ingredient-info">
-                            400 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Pasta
-                        </span>
-
-                        <span class="ingredient-info">
-                            250g
-                        </span>
-
-                        <span class="ingredient-info">
-                            390 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Cheese
-                        </span>
-
-                        <span class="ingredient-info">
-                            30g
-                        </span>
-
-                        <span class="ingredient-info">
-                            120 kcal
-                        </span>
-                    </div>
-
+                    <div class="ingredient-row"><span class="ingredient-name">Lean beef</span><span>200g</span><span>400 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Cooked pasta</span><span>250g</span><span>390 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Cheese</span><span>30g</span><span>120 kcal</span></div>
                 </div>
-
-                <div class="meal-total">
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Calories
-                        </span>
-
-                        <span class="total-value">
-                            910 kcal
-                        </span>
-                    </div>
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Protein
-                        </span>
-
-                        <span class="total-value">
-                            48g
-                        </span>
-                    </div>
-
-                </div>
-
+                <div class="meal-total"><div><span>Total</span><strong>910 kcal</strong></div><div><span>Protein</span><strong>48g</strong></div></div>
             </div>
-
         </article>
 
-
         <article class="meal-card">
-
             <div class="meal-image bulk-meal-3"></div>
-
             <div class="meal-content">
-
-                <div class="protein-stamp">
-
-                    <div class="stamp-label">
-                        PROTEIN
-                    </div>
-
-                    <div class="stamp-number">
-                        44
-                    </div>
-
-                    <div class="stamp-unit">
-                        GRAMS
-                    </div>
-
-                </div>
-
-                <h3>Big Breakfast</h3>
-
-                <p class="meal-description">
-                    Eggs, oats, banana and peanut butter
-                    for a huge morning meal.
-                </p>
-
+                <div class="meal-topline"><span>BULKING</span><strong>35g protein</strong></div>
+                <h3>Loaded Breakfast</h3>
+                <p class="meal-description">Eggs, oats, banana and peanut butter give a familiar breakfast a serious calorie upgrade.</p>
                 <div class="ingredients">
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Eggs
-                        </span>
-
-                        <span class="ingredient-info">
-                            4 eggs
-                        </span>
-
-                        <span class="ingredient-info">
-                            288 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Oats
-                        </span>
-
-                        <span class="ingredient-info">
-                            100g
-                        </span>
-
-                        <span class="ingredient-info">
-                            389 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Peanut butter
-                        </span>
-
-                        <span class="ingredient-info">
-                            40g
-                        </span>
-
-                        <span class="ingredient-info">
-                            235 kcal
-                        </span>
-                    </div>
-
+                    <div class="ingredient-row"><span class="ingredient-name">Eggs</span><span>4 eggs</span><span>288 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Oats</span><span>100g</span><span>389 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Peanut butter</span><span>40g</span><span>235 kcal</span></div>
                 </div>
-
-                <div class="meal-total">
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Calories
-                        </span>
-
-                        <span class="total-value">
-                            912 kcal
-                        </span>
-                    </div>
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Protein
-                        </span>
-
-                        <span class="total-value">
-                            44g
-                        </span>
-                    </div>
-
-                </div>
-
+                <div class="meal-total"><div><span>Total</span><strong>912 kcal</strong></div><div><span>Protein</span><strong>35g</strong></div></div>
             </div>
-
         </article>
 
     </div>
-
 
     <div class="content-title" id="bulking-ingredients">
-
-        <h2>🥜 Bulking Ingredients</h2>
-
-        <p>
-            Calorie-dense ingredients to help build bigger meals.
-        </p>
-
+        <span>BULKING / INGREDIENTS</span>
+        <h2>Five easy calorie builders.</h2>
+        <p>Foods that can make a meal substantially more energy-dense.</p>
     </div>
 
-
     <div class="ingredient-grid">
-
-        <div class="ingredient-card">
-            <div class="ingredient-card-image ingredient-1"></div>
-
-            <div class="ingredient-card-content">
-                <h3>Chicken</h3>
-
-                <div class="nutrition">
-                    <div><strong>165</strong>kcal</div>
-                    <div><strong>31g</strong>protein</div>
-                    <div><strong>3.6g</strong>fat</div>
-                    <div><strong>0g</strong>sugar</div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="ingredient-card">
-            <div class="ingredient-card-image ingredient-2"></div>
-
-            <div class="ingredient-card-content">
-                <h3>Rice</h3>
-
-                <div class="nutrition">
-                    <div><strong>130</strong>kcal</div>
-                    <div><strong>2.7g</strong>protein</div>
-                    <div><strong>.3g</strong>fat</div>
-                    <div><strong>.1g</strong>sugar</div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="ingredient-card">
-            <div class="ingredient-card-image ingredient-3"></div>
-
-            <div class="ingredient-card-content">
-                <h3>Eggs</h3>
-
-                <div class="nutrition">
-                    <div><strong>143</strong>kcal</div>
-                    <div><strong>13g</strong>protein</div>
-                    <div><strong>10g</strong>fat</div>
-                    <div><strong>.4g</strong>sugar</div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="ingredient-card">
-            <div class="ingredient-card-image ingredient-4"></div>
-
-            <div class="ingredient-card-content">
-                <h3>Avocado</h3>
-
-                <div class="nutrition">
-                    <div><strong>160</strong>kcal</div>
-                    <div><strong>2g</strong>protein</div>
-                    <div><strong>15g</strong>fat</div>
-                    <div><strong>.7g</strong>sugar</div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="ingredient-card">
-            <div class="ingredient-card-image ingredient-5"></div>
-
-            <div class="ingredient-card-content">
-                <h3>Banana</h3>
-
-                <div class="nutrition">
-                    <div><strong>89</strong>kcal</div>
-                    <div><strong>1.1g</strong>protein</div>
-                    <div><strong>.3g</strong>fat</div>
-                    <div><strong>12g</strong>sugar</div>
-                </div>
-            </div>
-        </div>
-
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-beef"></div><div class="ingredient-card-content"><h3>Beef</h3><div class="nutrition"><div><strong>250</strong>kcal</div><div><strong>26g</strong>protein</div><div><strong>17g</strong>fat</div><div><strong>0g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-pasta"></div><div class="ingredient-card-content"><h3>Pasta</h3><div class="nutrition"><div><strong>371</strong>kcal</div><div><strong>13g</strong>protein</div><div><strong>1.5g</strong>fat</div><div><strong>2.7g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-peanut"></div><div class="ingredient-card-content"><h3>Peanut butter</h3><div class="nutrition"><div><strong>588</strong>kcal</div><div><strong>25g</strong>protein</div><div><strong>50g</strong>fat</div><div><strong>9g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-avocado"></div><div class="ingredient-card-content"><h3>Avocado</h3><div class="nutrition"><div><strong>160</strong>kcal</div><div><strong>2g</strong>protein</div><div><strong>15g</strong>fat</div><div><strong>0.7g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-olive"></div><div class="ingredient-card-content"><h3>Olive oil</h3><div class="nutrition"><div><strong>884</strong>kcal</div><div><strong>0g</strong>protein</div><div><strong>100g</strong>fat</div><div><strong>0g</strong>sugar</div></div></div></div>
     </div>
 
 </section>
-
-
 
 <!-- =========================================================
      CUTTING
@@ -1286,550 +311,143 @@
 <section class="section" id="cutting">
 
     <div class="section-header">
-
-        <div class="section-label">
-            🔥 Lean Mode
-        </div>
-
+        <div class="section-label">03 / CUTTING</div>
         <h1>CUTTING</h1>
-
-        <p>
-            Keep protein high, calories controlled and meals
-            satisfying while getting leaner.
-        </p>
-
+        <p>Lean meals built around protein, vegetables and controlled portions without making food feel boring.</p>
     </div>
-
 
     <div class="choice-grid">
-
-        <a href="#cutting-menus" class="choice-card choice-menu">
-
-            <h2>Premade Menu</h2>
-
-            <p>
-                Simple lower-calorie meals already planned.
-            </p>
-
+        <a href="#cutting-menus" class="choice-card">
+            <span class="choice-number">01</span>
+            <div><h2>Premade menus</h2><p>Simple lower-calorie examples with the numbers already shown.</p></div>
         </a>
-
-
-        <a href="#cutting-ingredients"
-           class="choice-card choice-ingredients">
-
-            <h2>Ingredients</h2>
-
-            <p>
-                Choose lean ingredients and build your own meal.
-            </p>
-
+        <a href="#cutting-ingredients" class="choice-card">
+            <span class="choice-number">02</span>
+            <div><h2>Ingredients</h2><p>Five lean staples for building lighter meals.</p></div>
         </a>
-
     </div>
-
 
     <div class="content-title" id="cutting-menus">
-
-        <h2>🔥 Cutting Menus</h2>
-
-        <p>
-            High-protein meals with controlled calories.
-        </p>
-
+        <span>CUTTING / MENUS</span>
+        <h2>Keep it lean. Keep it satisfying.</h2>
+        <p>High-protein examples with controlled calories.</p>
     </div>
-
 
     <div class="meals-container">
 
-
         <article class="meal-card">
-
             <div class="meal-image cut-meal-1"></div>
-
             <div class="meal-content">
-
-                <div class="protein-stamp">
-
-                    <div class="stamp-label">
-                        PROTEIN
-                    </div>
-
-                    <div class="stamp-number">
-                        45
-                    </div>
-
-                    <div class="stamp-unit">
-                        GRAMS
-                    </div>
-
-                </div>
-
+                <div class="meal-topline"><span>CUTTING</span><strong>45g protein</strong></div>
                 <h3>Lean Chicken Salad</h3>
-
-                <p class="meal-description">
-                    A large fresh salad packed with lean protein.
-                </p>
-
+                <p class="meal-description">A large fresh salad centered on lean chicken, vegetables and a light yogurt dressing.</p>
                 <div class="ingredients">
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Chicken
-                        </span>
-
-                        <span class="ingredient-info">
-                            200g
-                        </span>
-
-                        <span class="ingredient-info">
-                            330 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Lettuce
-                        </span>
-
-                        <span class="ingredient-info">
-                            150g
-                        </span>
-
-                        <span class="ingredient-info">
-                            23 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Tomato
-                        </span>
-
-                        <span class="ingredient-info">
-                            100g
-                        </span>
-
-                        <span class="ingredient-info">
-                            18 kcal
-                        </span>
-                    </div>
-
+                    <div class="ingredient-row"><span class="ingredient-name">Chicken breast</span><span>180g</span><span>297 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Mixed vegetables</span><span>200g</span><span>70 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Tomato</span><span>100g</span><span>18 kcal</span></div>
                 </div>
-
-                <div class="meal-total">
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Calories
-                        </span>
-
-                        <span class="total-value">
-                            371 kcal
-                        </span>
-                    </div>
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Protein
-                        </span>
-
-                        <span class="total-value">
-                            45g
-                        </span>
-                    </div>
-
-                </div>
-
+                <div class="meal-total"><div><span>Total</span><strong>385 kcal</strong></div><div><span>Protein</span><strong>45g</strong></div></div>
             </div>
-
         </article>
 
-
         <article class="meal-card">
-
             <div class="meal-image cut-meal-2"></div>
-
             <div class="meal-content">
-
-                <div class="protein-stamp">
-
-                    <div class="stamp-label">
-                        PROTEIN
-                    </div>
-
-                    <div class="stamp-number">
-                        38
-                    </div>
-
-                    <div class="stamp-unit">
-                        GRAMS
-                    </div>
-
-                </div>
-
-                <h3>Turkey & Veggie Plate</h3>
-
-                <p class="meal-description">
-                    Lean turkey with a mountain of vegetables.
-                </p>
-
+                <div class="meal-topline"><span>CUTTING</span><strong>38g protein</strong></div>
+                <h3>Turkey Veggie Plate</h3>
+                <p class="meal-description">Lean turkey with a generous serving of vegetables and a light yogurt-based sauce.</p>
                 <div class="ingredients">
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Turkey
-                        </span>
-
-                        <span class="ingredient-info">
-                            180g
-                        </span>
-
-                        <span class="ingredient-info">
-                            250 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Mixed vegetables
-                        </span>
-
-                        <span class="ingredient-info">
-                            250g
-                        </span>
-
-                        <span class="ingredient-info">
-                            90 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Yogurt sauce
-                        </span>
-
-                        <span class="ingredient-info">
-                            50g
-                        </span>
-
-                        <span class="ingredient-info">
-                            35 kcal
-                        </span>
-                    </div>
-
+                    <div class="ingredient-row"><span class="ingredient-name">Turkey breast</span><span>180g</span><span>243 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Mixed vegetables</span><span>250g</span><span>90 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Greek yogurt</span><span>50g</span><span>37 kcal</span></div>
                 </div>
-
-                <div class="meal-total">
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Calories
-                        </span>
-
-                        <span class="total-value">
-                            375 kcal
-                        </span>
-                    </div>
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Protein
-                        </span>
-
-                        <span class="total-value">
-                            38g
-                        </span>
-                    </div>
-
-                </div>
-
+                <div class="meal-total"><div><span>Total</span><strong>370 kcal</strong></div><div><span>Protein</span><strong>38g</strong></div></div>
             </div>
-
         </article>
 
-
         <article class="meal-card">
-
             <div class="meal-image cut-meal-3"></div>
-
             <div class="meal-content">
-
-                <div class="protein-stamp">
-
-                    <div class="stamp-label">
-                        PROTEIN
-                    </div>
-
-                    <div class="stamp-number">
-                        40
-                    </div>
-
-                    <div class="stamp-unit">
-                        GRAMS
-                    </div>
-
-                </div>
-
+                <div class="meal-topline"><span>CUTTING</span><strong>40g protein</strong></div>
                 <h3>Protein Omelette</h3>
-
-                <p class="meal-description">
-                    Eggs and vegetables for a filling,
-                    protein-heavy meal.
-                </p>
-
+                <p class="meal-description">Whole eggs, egg whites and vegetables for a filling protein-heavy meal.</p>
                 <div class="ingredients">
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Eggs
-                        </span>
-
-                        <span class="ingredient-info">
-                            3 eggs
-                        </span>
-
-                        <span class="ingredient-info">
-                            216 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Egg whites
-                        </span>
-
-                        <span class="ingredient-info">
-                            150g
-                        </span>
-
-                        <span class="ingredient-info">
-                            78 kcal
-                        </span>
-                    </div>
-
-                    <div class="ingredient-row">
-                        <span class="ingredient-name">
-                            Vegetables
-                        </span>
-
-                        <span class="ingredient-info">
-                            150g
-                        </span>
-
-                        <span class="ingredient-info">
-                            50 kcal
-                        </span>
-                    </div>
-
+                    <div class="ingredient-row"><span class="ingredient-name">Eggs</span><span>3 eggs</span><span>216 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Egg whites</span><span>150g</span><span>78 kcal</span></div>
+                    <div class="ingredient-row"><span class="ingredient-name">Vegetables</span><span>150g</span><span>50 kcal</span></div>
                 </div>
-
-                <div class="meal-total">
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Calories
-                        </span>
-
-                        <span class="total-value">
-                            344 kcal
-                        </span>
-                    </div>
-
-                    <div class="total-item">
-                        <span class="total-label">
-                            Total Protein
-                        </span>
-
-                        <span class="total-value">
-                            40g
-                        </span>
-                    </div>
-
-                </div>
-
+                <div class="meal-total"><div><span>Total</span><strong>344 kcal</strong></div><div><span>Protein</span><strong>40g</strong></div></div>
             </div>
-
         </article>
 
     </div>
-
 
     <div class="content-title" id="cutting-ingredients">
-
-        <h2>🥦 Cutting Ingredients</h2>
-
-        <p>
-            Simple ingredients for lighter meals.
-        </p>
-
+        <span>CUTTING / INGREDIENTS</span>
+        <h2>Five lean staples.</h2>
+        <p>Simple foods that work well in lighter meals.</p>
     </div>
-
 
     <div class="ingredient-grid">
-
-        <div class="ingredient-card">
-            <div class="ingredient-card-image ingredient-1"></div>
-
-            <div class="ingredient-card-content">
-                <h3>Chicken</h3>
-
-                <div class="nutrition">
-                    <div><strong>165</strong>kcal</div>
-                    <div><strong>31g</strong>protein</div>
-                    <div><strong>3.6g</strong>fat</div>
-                    <div><strong>0g</strong>sugar</div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="ingredient-card">
-            <div class="ingredient-card-image ingredient-2"></div>
-
-            <div class="ingredient-card-content">
-                <h3>Rice</h3>
-
-                <div class="nutrition">
-                    <div><strong>130</strong>kcal</div>
-                    <div><strong>2.7g</strong>protein</div>
-                    <div><strong>.3g</strong>fat</div>
-                    <div><strong>.1g</strong>sugar</div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="ingredient-card">
-            <div class="ingredient-card-image ingredient-3"></div>
-
-            <div class="ingredient-card-content">
-                <h3>Eggs</h3>
-
-                <div class="nutrition">
-                    <div><strong>143</strong>kcal</div>
-                    <div><strong>13g</strong>protein</div>
-                    <div><strong>10g</strong>fat</div>
-                    <div><strong>.4g</strong>sugar</div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="ingredient-card">
-            <div class="ingredient-card-image ingredient-4"></div>
-
-            <div class="ingredient-card-content">
-                <h3>Avocado</h3>
-
-                <div class="nutrition">
-                    <div><strong>160</strong>kcal</div>
-                    <div><strong>2g</strong>protein</div>
-                    <div><strong>15g</strong>fat</div>
-                    <div><strong>.7g</strong>sugar</div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="ingredient-card">
-            <div class="ingredient-card-image ingredient-5"></div>
-
-            <div class="ingredient-card-content">
-                <h3>Banana</h3>
-
-                <div class="nutrition">
-                    <div><strong>89</strong>kcal</div>
-                    <div><strong>1.1g</strong>protein</div>
-                    <div><strong>.3g</strong>fat</div>
-                    <div><strong>12g</strong>sugar</div>
-                </div>
-            </div>
-        </div>
-
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-turkey"></div><div class="ingredient-card-content"><h3>Turkey breast</h3><div class="nutrition"><div><strong>135</strong>kcal</div><div><strong>30g</strong>protein</div><div><strong>1.8g</strong>fat</div><div><strong>0g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-tuna"></div><div class="ingredient-card-content"><h3>Tuna</h3><div class="nutrition"><div><strong>132</strong>kcal</div><div><strong>29g</strong>protein</div><div><strong>1g</strong>fat</div><div><strong>0g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-broccoli"></div><div class="ingredient-card-content"><h3>Broccoli</h3><div class="nutrition"><div><strong>35</strong>kcal</div><div><strong>2.4g</strong>protein</div><div><strong>0.4g</strong>fat</div><div><strong>1.4g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-tomato"></div><div class="ingredient-card-content"><h3>Tomato</h3><div class="nutrition"><div><strong>18</strong>kcal</div><div><strong>1g</strong>protein</div><div><strong>0.2g</strong>fat</div><div><strong>2.6g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card"><div class="ingredient-card-image ingredient-eggwhite"></div><div class="ingredient-card-content"><h3>Egg whites</h3><div class="nutrition"><div><strong>52</strong>kcal</div><div><strong>10.9g</strong>protein</div><div><strong>0.2g</strong>fat</div><div><strong>0.7g</strong>sugar</div></div></div></div>
     </div>
 
 </section>
 
-
-
 <!-- =========================================================
-     SNACKS
-========================================================= -->
+     SNACKS / LEARN — DELIBERATELY EMPTY FOR THE DEMO
+========================================================= --> 
 
 <section class="simple-section" id="snacks">
-
     <div>
-
-        <h2>🍎 Snacks</h2>
-
-        <p>
-            Snack section coming next.
-        </p>
-
+        <span class="coming-kicker">04 / COMING SOON</span>
+        <h2>Snacks</h2>
+        <p>Snack tools, quick options and more are coming in the full version.</p>
+        <span class="coming-tag">COMING IN THE FULL VERSION</span>
     </div>
-
 </section>
-
-
-
-<!-- =========================================================
-     LEARN MORE
-========================================================= -->
 
 <section class="simple-section" id="learn-more">
-
     <div>
-
-        <h2>✦ Learn More</h2>
-
-        <p>
-            Nutrition guides and fitness information coming next.
-        </p>
-
+        <span class="coming-kicker">05 / COMING SOON</span>
+        <h2>Learn More</h2>
+        <p>Nutrition guides, useful explanations and fitness information are coming next.</p>
+        <span class="coming-tag">COMING IN THE FULL VERSION</span>
     </div>
-
 </section>
 
-
-
-<!-- =========================================================
-     FOOTER
-========================================================= -->
-
 <footer>
-
-    GymFuel — Fuel your goals.
-
+    <span>GYMFUEL</span>
+    <p>Fuel your goals.</p>
 </footer>
 
-
-
-<!-- REAL LIQUID GLASS 
-<script src="https://raw.githubusercontent.com/deepika-builds/liquid-glass/main/liquid-glass.js"></script>
-
-<script>
-    const navbarGlass = liquidGlass(
-        document.querySelector(".navbar"),
-        {
-            scale: -150,
-            chroma: 4,
-            border: 0.08,
-            mapBlur: 10,
-
-            /* NO BLUR */
-            blur: 0,
-
-            saturate: 1.25
-        }
-    );
-</script>
--->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-client.js"></script> 
+<script src="supabase-client.js"></script>
 <script src="jsmain.js"></script>
 
+<script>
+fetch('/navbar.html')
+    .then(res => res.text())
+    .then(html => {
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
 
+        const scripts = temp.querySelectorAll('script');
+        scripts.forEach(s => s.remove());
+
+        document.getElementById('navbarPlaceholder').replaceWith(...temp.childNodes);
+
+        scripts.forEach(oldScript => {
+            const newScript = document.createElement('script');
+            newScript.textContent = oldScript.textContent;
+            document.body.appendChild(newScript);
+        });
+    });
+</script>
 
 </body>
 </html>

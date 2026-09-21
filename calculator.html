@@ -560,6 +560,27 @@ a {
     }
 }
 
+.login-btn {
+    padding: 10px 20px;
+    margin-left: 8px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow:
+        0 4px 15px rgba(0,0,0,.15),
+        inset 0 1px 0 rgba(255,255,255,.25);
+    transition: .25s ease;
+}
+
+.login-btn:hover {
+    background: rgba(255, 255, 255, 0.28);
+    transform: translateY(-2px);
+}
 </style>
 </head>
 
@@ -569,49 +590,7 @@ a {
      NAVBAR
 ========================================================= -->
 
-<nav class="navbar">
-
-    <a href="#top" class="logo">
-        <span class="logo-icon">⚡</span>
-        GymFuel
-    </a>
-
-    <div class="nav-links" id="navLinks">
-
-        <a href="menu/ingrediants.html">
-            🥗 Ingredients
-        </a>
-<a href="calculator.html" class="active">
-            <span class="nav-icon">🧮</span>
-            Calculator
-        </a>
-        <a href="main.html#superenergy">
-            <span class="nav-icon">⚡</span>
-            Energy
-        </a>
-
-        <a href="main.html#bulking">
-            <span class="nav-icon">💪</span>
-            Bulking
-        </a>
-
-        <a href="main.html#cutting">
-            <span class="nav-icon">🔥</span>
-            Cutting
-        </a>
-
-        <a href="main.html#snacks">
-            <span class="nav-icon">🍎</span>
-            Snacks
-        </a>
-
-        
-
-    </div>
-
-    <button class="menu-btn" id="menuBtn">☰</button>
-
-</nav>
+<div id="navbarPlaceholder"></div>
 
 <div id="top"></div>
 
@@ -705,8 +684,6 @@ a {
 
             <div class="goal-row">
 
-                
-
                 <label class="goal-card" id="cutCard">
                     <input type="radio" name="goal" value="cut">
                     <span>🔥</span>
@@ -738,6 +715,9 @@ a {
                 <div class="result-number" id="resultNumber">0</div>
                 <div class="result-unit">KCAL / DAY</div>
                 <div class="result-note" id="resultNote"></div>
+                <button type="button" class="calc-btn" id="saveCalBtn" style="background-color: #5714c4;  margin-top:16px; display:none;">
+                    Save
+                </button>
             </div>
 
         </form>
@@ -754,16 +734,29 @@ a {
     GymFuel — Fuel your goals.
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/supabase-client.js"></script>
+
 <script>
 
-/* MOBILE NAV TOGGLE */
+fetch('/navbar.html')
+  .then(res => res.text())
+  .then(html => {
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
 
-const menuBtn = document.getElementById("menuBtn");
-const navLinks = document.getElementById("navLinks");
+    // Move everything except <script> tags into the page
+    const scripts = temp.querySelectorAll('script');
+    scripts.forEach(s => s.remove());
+    document.getElementById('navbarPlaceholder').replaceWith(...temp.childNodes);
 
-menuBtn.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
-});
+    // Now re-add each script so it actually executes
+    scripts.forEach(oldScript => {
+      const newScript = document.createElement('script');
+      newScript.textContent = oldScript.textContent;
+      document.body.appendChild(newScript);
+    });
+  });
 
 /* SELECT CARDS (gender + goal) */
 
@@ -797,6 +790,10 @@ const errorMsg = document.getElementById("errorMsg");
 const resultBox = document.getElementById("resultBox");
 const resultNumber = document.getElementById("resultNumber");
 const resultNote = document.getElementById("resultNote");
+const saveCalBtn = document.getElementById("saveCalBtn");
+const loggedInUser = localStorage.getItem("username");
+
+let goalCalories = 0;
 
 form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -832,7 +829,6 @@ form.addEventListener("submit", (e) => {
 
     let tdee = bmr * activityMultiplier;
 
-    let goalCalories = tdee;
     let note = "";
 
     if (goal === "bulk") {
@@ -842,6 +838,7 @@ form.addEventListener("submit", (e) => {
         goalCalories = tdee - 400;
         note = "This includes a deficit of about -400 kcal for a gradual, sustainable cut.";
     } else {
+        goalCalories = tdee;
         note = "This is your maintenance level — enough to keep your weight steady.";
     }
 
@@ -849,7 +846,31 @@ form.addEventListener("submit", (e) => {
     resultNote.textContent = note;
     resultBox.classList.add("show");
 
+    if (loggedInUser) {
+        saveCalBtn.style.display = "block";
+        saveCalBtn.textContent = "Save";
+    }
+
     resultBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+});
+
+/* SAVE TO DB */
+
+saveCalBtn.addEventListener("click", async function() {
+
+    const value = Math.round(goalCalories);
+
+    const { error } = await supabaseClient
+        .from('bruh')
+        .update({ call: value })
+        .eq('name', loggedInUser);
+
+    if (error) {
+        console.error('Could not save:', error.message);
+        return;
+    }
+
+    saveCalBtn.textContent = "Saved ✓";
 });
 
 </script>

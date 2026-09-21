@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymFuel - My Plates</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+            color: white;
+            background: #0a0a0a;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        .page {
+            min-height: 100vh;
+            padding: 120px 20px 70px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .page-title h1 {
+            font-size: clamp(30px, 5vw, 44px);
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: rgba(255,255,255,.4);
+            font-size: 13px;
+        }
+
+        .empty-text {
+            text-align: center;
+            color: rgba(255,255,255,.4);
+            font-size: 14px;
+            margin-top: 60px;
+        }
+
+        /* =========================
+           GRID OF PLATES
+        ========================= */
+
+        .plates-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 18px;
+            align-items: start;
+        }
+
+        /* =========================
+           PLATE CARD
+        ========================= */
+
+        .plate-card {
+            position: relative;
+            padding: 26px;
+            background: #131316;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 20px;
+            transition: border-color .25s ease, transform .25s ease;
+        }
+
+        .plate-card:hover {
+            border-color: rgba(255,255,255,.18);
+            transform: translateY(-3px);
+        }
+
+        .plate-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 18px;
+        }
+
+        .plate-card-header h2 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: rgba(255,255,255,.9);
+        }
+
+        .plate-card-header span {
+            display: block;
+            margin-top: 3px;
+            font-size: 10.5px;
+            color: rgba(255,255,255,.35);
+            font-weight: 500;
+        }
+
+        .delete-plate-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,.05);
+            color: rgba(255,255,255,.5);
+            font-size: 13px;
+            cursor: pointer;
+            transition: .2s ease;
+            flex-shrink: 0;
+        }
+
+        .delete-plate-btn:hover {
+            background: rgba(255,70,70,.18);
+            color: #ff6b6b;
+        }
+
+        .ingredient-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 9px 0;
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+
+        .ingredient-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .ingredient-name {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: rgba(255,255,255,.85);
+        }
+
+        .ingredient-macros {
+            display: flex;
+            gap: 9px;
+            font-size: 10px;
+            color: rgba(255,255,255,.4);
+        }
+
+        .ingredient-macros strong {
+            color: rgba(255,255,255,.65);
+            font-weight: 700;
+        }
+
+        .plate-totals {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,.1);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .total-box {
+            text-align: center;
+            flex: 1;
+        }
+
+        .total-box strong {
+            display: block;
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .total-box span {
+            font-size: 9px;
+            color: rgba(255,255,255,.35);
+            font-weight: 700;
+            letter-spacing: .8px;
+        }
+
+        @media (max-width: 600px) {
+            .plates-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div id="navbarPlaceholder"></div>
+
+    <main class="page">
+
+        <div class="page-title">
+            <h1>My Plates</h1>
+            <p>Every plate you've saved, with the full breakdown.</p>
+        </div>
+
+        <div class="plates-grid" id="platesContainer"></div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/supabase-client.js"></script>
+
+    <script>
+        async function loadPlates() {
+
+            const username = localStorage.getItem('username');
+            const container = document.getElementById('platesContainer');
+
+            if (!username) {
+                container.innerHTML = '<div class="empty-text">Log in to see your saved plates.</div>';
+                return;
+            }
+
+            const { data: plates, error: platesError } = await supabaseClient
+                .from('plates')
+                .select('id')
+                .eq('user_name', username)
+                .order('id', { ascending: true });
+
+            if (platesError) {
+                console.error('Could not load plates:', platesError.message);
+                container.innerHTML = '<div class="empty-text">Something went wrong loading your plates.</div>';
+                return;
+            }
+
+            if (plates.length === 0) {
+                container.innerHTML = '<div class="empty-text">No plates saved yet — go build one on the Ingredients page.</div>';
+                return;
+            }
+
+            let plateNumber = 1;
+
+            for (const plate of plates) {
+
+                const { data: items, error: itemsError } = await supabaseClient
+                    .from('plate_items')
+                    .select('name, kcal, protein, fat')
+                    .eq('plate_id', plate.id);
+
+                if (itemsError) {
+                    console.error('Could not load items for plate', plate.id, itemsError.message);
+                    continue;
+                }
+
+                container.appendChild(renderPlateCard(plate.id, plateNumber, items));
+                plateNumber++;
+            }
+        }
+
+        function renderPlateCard(plateId, plateNumber, items) {
+
+            const card = document.createElement('section');
+            card.className = 'plate-card';
+
+            let totalKcal = 0;
+            let totalProtein = 0;
+            let totalFat = 0;
+
+            const rows = items.map(item => {
+                totalKcal += Number(item.kcal) || 0;
+                totalProtein += Number(item.protein) || 0;
+                totalFat += Number(item.fat) || 0;
+
+                return `
+                    <div class="ingredient-row">
+                        <div class="ingredient-name">${item.name}</div>
+                        <div class="ingredient-macros">
+                            <span><strong>${item.kcal}</strong> kcal</span>
+                            <span><strong>${item.protein}g</strong> pro</span>
+                            <span><strong>${item.fat ?? 0}g</strong> fat</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            card.innerHTML = `
+                <div class="plate-card-header">
+                    <div>
+                        <h2>Plate ${plateNumber}</h2>
+                        <span>${items.length} ingredient${items.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    <button class="delete-plate-btn" data-plate-id="${plateId}">✕</button>
+                </div>
+                ${rows}
+                <div class="plate-totals">
+                    <div class="total-box">
+                        <strong>${Math.round(totalKcal)}</strong>
+                        <span>KCAL</span>
+                    </div>
+                    <div class="total-box">
+                        <strong>${totalProtein.toFixed(1)}g</strong>
+                        <span>PROTEIN</span>
+                    </div>
+                    <div class="total-box">
+                        <strong>${totalFat.toFixed(1)}g</strong>
+                        <span>FAT</span>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        document.getElementById('platesContainer').addEventListener('click', async function(e) {
+
+            const btn = e.target.closest('.delete-plate-btn');
+            if (!btn) return;
+
+            const plateId = btn.dataset.plateId;
+
+            const { error } = await supabaseClient
+                .from('plates')
+                .delete()
+                .eq('id', plateId);
+
+            if (error) {
+                console.error('Could not delete plate:', error.message);
+                return;
+            }
+
+            btn.closest('.plate-card').remove();
+        });
+
+        loadPlates();
+    </script>
+
+    <script>
+        fetch('/navbar.html')
+          .then(res => res.text())
+          .then(html => {
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+
+            const scripts = temp.querySelectorAll('script');
+            scripts.forEach(s => s.remove());
+            document.getElementById('navbarPlaceholder').replaceWith(...temp.childNodes);
+
+            scripts.forEach(oldScript => {
+              const newScript = document.createElement('script');
+              newScript.textContent = oldScript.textContent;
+              document.body.appendChild(newScript);
+            });
+          });
+    </script>
+
+</body>
+</html>

@@ -658,8 +658,8 @@
 
 
 <body>
-<div id="navbarPlaceholder"></div>
 
+<div id="navbarPlaceholder"></div>
 
     <!-- =========================
          REGISTER PAGE
@@ -679,12 +679,11 @@
                 </span>
 
                 <h1>
-                    Create Account
+                    login
                 </h1>
 
                 <p>
                     Your fitness journey starts here.
-                    Create your GymFuel account and keep everything in one place.
                 </p>
 
             </div>
@@ -706,14 +705,13 @@
                             ✓
                         </span>
 
-                        Keep your information private
+                       
 
                     </div>
 
                     <p>
-                        You don't need to use your real name or a password
-                        you use anywhere else. We recommend using a nickname
-                        and a unique password for GymFuel.
+                       Emails are like toothbrushes,don't share'em!<br>
+                       GymFuel will never ask for your email
                     </p>
 
                 </div>
@@ -738,7 +736,7 @@
                             type="text"
                             id="name"
                             name="name"
-                            placeholder="Choose a name"
+                            placeholder="username "
                             autocomplete="username"
                             required
                         >
@@ -760,44 +758,18 @@
                             type="password"
                             id="password"
                             name="password"
-                            placeholder="Create a password"
+                            placeholder="password"
                             autocomplete="new-password"
                             required
                         >
 
                     </div>
-
-
-
-                    <!-- CONFIRM PASSWORD -->
-
-                    <div class="field">
-
-                        <label for="confirmPassword">
-                            Confirm Password
-                        </label>
-
-                        <input
-                            class="input"
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            placeholder="Enter it again"
-                            autocomplete="new-password"
-                            required
-                        >
-
-                    </div>
-
 
 
                     <!-- BUTTON -->
 
-                    <button
-                        class="create-btn"
-                        type="submit"
-                    >
-                        CREATE ACCOUNT
+                    <button class="create-btn"type="submit">
+                        log in
                     </button>
 
 
@@ -809,10 +781,10 @@
 
                 <div class="login">
 
-                    Already have an account?
+                    dot have a account
 
-                    <a href="login.html">
-                        Log in
+                    <a href="createacc.html">
+                        sign in 
                     </a>
 
                 </div>
@@ -840,58 +812,28 @@ const form = document.getElementById("registerForm");
 
 form.addEventListener("submit", async function (e) {
 
-    e.preventDefault();
+  e.preventDefault();
 
     const name = document.getElementById("name").value.trim();
     const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
 
-    if (password !== confirmPassword) {
-        alert("Passwords do not match.");
-        return;
-    }
-
-    if (password.length < 6) {
-        alert("Password must be at least 6 characters.");
-        return;
-    }
-
-    // Check if name already exists
-    const { data: existingUser, error: checkError } = await supabaseClient
-        .from("bruh")
-        .select("id")
-        .eq("name", name)
-        .maybeSingle();
-
-    if (checkError) {
-        console.error(checkError);
-        alert("Error checking account: " + checkError.message);
-        return;
-    }
-
-    if (existingUser) {
-        alert("That name is already taken.");
-        return;
-    }
-
-    // Create account
     const { data, error } = await supabaseClient
-        .from("bruh")
-        .insert({
-            name: name,
-            password: password
-        })
-        .select()
-        .single();
+  .from('bruh')
+  .select('*')
+  .eq('name', name)
+  .eq('password', password);
 
-    if (error) {
-        console.error(error);
-        alert("Error creating account: " + error.message);
-        return;
-    }
+if (error) {
+  console.error('Something went wrong:', error.message);
+  return;
+}
 
-    window.location.href = "login.html";
-
+if (data.length === 0) {
+  console.log('Wrong email or password');
+} else {
+  localStorage.setItem('username', name);
+  window.location.href = "../main.html";
+}
 
 });
 

@@ -88,8 +88,6 @@ document.addEventListener("click", function(e) {
     if (name === "tuna") {
         tunaSound.currentTime = 0;
         tunaSound.play();
-        
-     
     }
 });
 
@@ -105,25 +103,19 @@ document.addEventListener("click", function(e) {
         melonSound.currentTime = 0;
         melonSound.play();
 
-            const hello = document.createElement("div");
-    hello.className = "tuna-hello";
-    hello.textContent = "WELL WELL WELL";
+        const hello = document.createElement("div");
+        hello.className = "tuna-hello";
+        hello.textContent = "WELL WELL WELL";
 
-    card.style.position = "relative";
-    card.appendChild(hello);
+        card.style.position = "relative";
+        card.appendChild(hello);
 
-    setTimeout(() => {
-        hello.remove();
-    }, 3000);
-
+        setTimeout(() => {
+            hello.remove();
+        }, 3000);
     }
 });
 
-
-
-
-
-  
 document.addEventListener('change', function(e) {
 
     if (!e.target.classList.contains('portion-select')) return;
@@ -132,11 +124,8 @@ document.addEventListener('change', function(e) {
     const card = select.closest('.food-card');
 
     if (select.value === 'custom') {
-
-        // Hide dropdown
         select.style.display = 'none';
 
-        // Show custom input
         const customBox = card.querySelector('.custom-portion-box');
         customBox.classList.add('active');
 
@@ -184,7 +173,6 @@ function updateNutrition(card, amount) {
 }
 
 
-// Red X
 document.addEventListener('click', function(e) {
 
     if (!e.target.classList.contains('custom-portion-delete')) return;
@@ -195,15 +183,12 @@ document.addEventListener('click', function(e) {
     const select = card.querySelector('.portion-select');
     const input = card.querySelector('.custom-portion-input');
 
-    // Remove custom mode
     customBox.classList.remove('active');
     input.value = '';
 
-    // Bring dropdown back
     select.style.display = '';
     select.value = '100';
 
-    // Reset to 100g
     updateNutrition(card, 100);
 });
 
@@ -223,8 +208,6 @@ sections.forEach(section => {
     const categoryName =
         title.textContent.trim();
 
-    // Only create a shortcut if this category
-    // actually exists in Supabase
     const exists = data.some(item =>
         item.categorie?.trim().toLowerCase() ===
         categoryName.toLowerCase()
@@ -239,9 +222,6 @@ sections.forEach(section => {
     card.type = 'button';
     card.textContent = categoryName;
 
-    // IMPORTANT:
-    // Scroll directly to THIS section.
-    // Does not use the database ID.
     card.addEventListener('click', () => {
         section.scrollIntoView({
             behavior: 'smooth',
@@ -252,6 +232,162 @@ sections.forEach(section => {
     shortcutContainer.appendChild(card);
 });
 
+initPlateSystem();
+
 }
 
 loadFood();
+
+
+/* =========================
+   PLATE SYSTEM
+========================= */
+
+function initPlateSystem() {
+
+    const STORAGE_KEY = 'plateSelection';
+    const EXPIRY_MS = 10 * 60 * 1000;
+
+    let selectedItems = [];
+
+    const plateList = document.getElementById('plateList');
+const plateTotals = document.getElementById('plateTotals');
+const saveBtn = document.getElementById('savePlateBtn');
+const username = localStorage.getItem('username');
+
+if (!username) {
+    saveBtn.textContent = 'Log in to save your plate';
+    saveBtn.disabled = true;
+    saveBtn.classList.remove('active');
+}
+    function loadSaved() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+
+        const saved = JSON.parse(raw);
+        const elapsed = Date.now() - saved.timestamp;
+
+        if (elapsed < EXPIRY_MS) {
+            selectedItems = saved.items;
+        } else {
+            localStorage.removeItem(STORAGE_KEY);
+        }
+    }
+
+    function persist() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            items: selectedItems,
+            timestamp: Date.now()
+        }));
+    }
+
+    function highlightSavedCards() {
+        selectedItems.forEach(item => {
+            document.querySelectorAll('.food-card').forEach(card => {
+                const name = card.querySelector('.food-title h3')?.textContent.trim();
+                if (name === item.name) card.classList.add('selected');
+            });
+        });
+        renderPanel();
+    }
+
+    function renderPanel() {
+        plateList.innerHTML = '';
+
+        let totalKcal = 0;
+        let totalProtein = 0;
+
+        selectedItems.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${item.name}</span><span>${item.kcal} kcal</span>`;
+            plateList.appendChild(li);
+
+            totalKcal += item.kcal;
+            totalProtein += item.protein;
+        });
+
+        plateTotals.textContent = `${Math.round(totalKcal)} kcal · ${totalProtein.toFixed(1)}g protein`;
+
+        if (!username) {
+    saveBtn.disabled = true;
+    saveBtn.classList.remove('active');
+    return;
+}
+
+if (selectedItems.length >= 3) {
+    saveBtn.disabled = false;
+    saveBtn.classList.add('active');
+} else {
+    saveBtn.disabled = true;
+    saveBtn.classList.remove('active');
+}
+    }
+
+    document.addEventListener('click', function(e) {
+
+        if (e.target.closest('.portion-wrapper')) return;
+
+        const card = e.target.closest('.food-card');
+        if (!card) return;
+
+        const name = card.querySelector('.food-title h3')?.textContent.trim();
+const kcal = Number(card.dataset.kcal);
+const protein = Number(card.dataset.protein);
+const fat = Number(card.dataset.fat);
+
+const existingIndex = selectedItems.findIndex(i => i.name === name);
+
+if (existingIndex > -1) {
+    selectedItems.splice(existingIndex, 1);
+    card.classList.remove('selected');
+} else {
+    selectedItems.push({ name, kcal, protein, fat });
+    card.classList.add('selected');
+}
+
+        persist();
+        renderPanel();
+    });
+
+    saveBtn.addEventListener('click', async function() {
+        if (selectedItems.length < 3) return;
+
+        const username = localStorage.getItem('username') || 'guest';
+
+        const { data: plate, error: plateError } = await supabaseClient
+            .from('plates')
+            .insert({ user_name: username })
+            .select()
+            .single();
+
+        if (plateError) {
+            console.error('Could not create plate:', plateError.message);
+            return;
+        }
+
+        const itemsToInsert = selectedItems.map(item => ({
+    plate_id: plate.id,
+    name: item.name,
+    kcal: item.kcal,
+    protein: item.protein,
+    fat: item.fat
+}));
+
+        const { error: itemsError } = await supabaseClient
+            .from('plate_items')
+            .insert(itemsToInsert);
+
+        if (itemsError) {
+            console.error('Could not save plate items:', itemsError.message);
+            return;
+        }
+
+        selectedItems = [];
+        localStorage.removeItem(STORAGE_KEY);
+        document.querySelectorAll('.food-card.selected').forEach(c => c.classList.remove('selected'));
+        renderPanel();
+    });
+
+    loadSaved();
+    highlightSavedCards();
+}
