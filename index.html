@@ -303,7 +303,7 @@ footer {
 <div id="navbarPlaceholder"></div>
 
 <script>
-fetch('/navbar.html')
+fetch('navbar.html')
   .then(res => res.text())
   .then(html => {
     document.getElementById('navbarPlaceholder').innerHTML = html;
