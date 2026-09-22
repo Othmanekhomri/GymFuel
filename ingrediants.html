@@ -367,12 +367,12 @@ fetch('navbar.html')
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../supabase-client.js"></script> 
-<script src="ingrediants.js"></script>
+<script src="./supabase-client.js"></script> 
+<script src="./ingrediants.js"></script>
 
 
 <script>
-fetch('/navbar.html')
+fetch('navbar.html')
   .then(res => res.text())
   .then(html => {
     const temp = document.createElement('div');
