@@ -307,6 +307,11 @@ fetch('navbar.html')
   .then(res => res.text())
   .then(html => {
     document.getElementById('navbarPlaceholder').innerHTML = html;
+    document.querySelectorAll('#navbarPlaceholder script').forEach(oldScript => {
+      const newScript = document.createElement('script');
+      newScript.textContent = oldScript.textContent;
+      oldScript.replaceWith(newScript);
+    });
   });
 </script>
 <div class="progress-bar" id="progressBar"></div>
@@ -405,6 +410,9 @@ fetch('navbar.html')
 
 <footer>GYMFUEL — DISCIPLINE OVER MOTIVATION</footer>
 
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-client.js"></script> 
 <script>
 
 /* ===========================
