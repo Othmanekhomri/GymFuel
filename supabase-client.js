@@ -382,6 +382,10 @@ if (existingIndex > -1) {
             return;
         }
 
+        //the cooking sound genshin impact ref
+
+        new Audio('cooking.mp3').play().catch(() => {});
+
         selectedItems = [];
         localStorage.removeItem(STORAGE_KEY);
         document.querySelectorAll('.food-card.selected').forEach(c => c.classList.remove('selected'));
