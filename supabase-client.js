@@ -384,7 +384,9 @@ if (existingIndex > -1) {
 
         //the cooking sound genshin impact ref
 
-        new Audio('cooking.mp3').play().catch(() => {});
+       new Audio('cooking.mp3').play().catch((error) => {
+    console.error("Cooking sound failed:", error);
+});
 
         selectedItems = [];
         localStorage.removeItem(STORAGE_KEY);
