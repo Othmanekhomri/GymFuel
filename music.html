@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GymFuel — Playlist</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #000;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+}
+
+.page-wrap {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 140px 20px 80px;
+    text-align: center;
+}
+
+.tag {
+    display: inline-block;
+    padding: 7px 16px;
+    margin-bottom: 22px;
+    border-radius: 30px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.18);
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,.75);
+}
+
+h1 {
+    font-size: clamp(32px, 6vw, 54px);
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 14px;
+}
+
+.glow-word {
+    background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #7f00ff, #ff00ff, #ff0000);
+    background-size: 400% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: discoText 4s linear infinite;
+}
+
+@keyframes discoText {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 400% 50%; }
+}
+
+p.sub {
+    color: rgba(255,255,255,.6);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto 40px;
+}
+
+.playlist-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+}
+
+.playlist-frame {
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 18px 50px rgba(0,0,0,.5);
+    height: 450px;
+}
+
+.playlist-frame iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+@media (max-width: 900px) {
+    .playlist-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================
+   IDOL CARDS
+========================= */
+.cards-section {
+    width: 100%;
+    max-width: 1800px;
+    margin: 0 auto 80px;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    width: 100%;
+    text-align: left;
+}
+
+.card {
+    position: relative;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 18px;
+    overflow: hidden;
+    background: #111;
+    color: #fff;
+}
+
+
+.card-title {
+    padding: 18px 22px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    color: #ffffff;
+}
+.card-body {
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    min-height: 160px;
+}
+
+.card-img {
+    width: 30%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 0;
+    background: #222;
+    display: block;
+    margin: 0;
+}
+
+.song-box {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px 24px 40px 0;
+}
+
+.song-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.play-btn {
+    width: 26px;
+    height: 26px;
+    border: none;
+    background: none;
+    color: #f3af67d6;
+    font-size: 20px;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.song-name {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.time {
+    font-size: 11px;
+    color: rgba(255,255,255,.5);
+    letter-spacing: .5px;
+}
+
+/* =========================
+   SLIDER (all cards, circle thumb)
+========================= */
+
+.seek {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 3px;
+    background: rgba(255,255,255,.15);
+    border-radius: 4px;
+    outline: none;
+}
+
+.seek::-webkit-slider-runnable-track {
+    height: 3px;
+    border-radius: 4px;
+    background: rgba(255,255,255,.15);
+}
+
+.seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #f3af67d6;
+    cursor: pointer;
+    margin-top: -4.5px;
+    box-shadow: 0 0 6px rgba(243, 175, 103, 0.5);
+    border: none;
+}
+
+.seek::-moz-range-track {
+    height: 3px;
+    border-radius: 4px;
+    background: rgba(255,255,255,.15);
+}
+
+.seek::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #f3af67d6;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 6px rgba(243, 175, 103, 0.5);
+}
+
+/* =========================
+   VINYL (top right of every card)
+========================= */
+
+.vinyl {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background-color: #000;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,.5);
+    z-index: 2;
+    transform-origin: center;
+}
+
+.vinyl::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+    height: 30%;
+    border-radius: 50%;
+    background: #0d0d0d;
+    border: 1px solid rgba(255,255,255,.25);
+}
+
+.vinyl.spinning {
+    animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* =========================
+   PLATFORM LINKS (bottom right of song box)
+========================= */
+
+.platform-links {
+    position: absolute;
+    bottom: 14px;
+    right: 20px;
+    display: flex;
+    gap: 12px;
+}
+
+.platform-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+}
+
+.platform-links svg {
+    width: 100%;
+    height: 100%;
+    fill: #ffd782;
+}
+
+/* =========================
+   ZYZZ MEMORIAL CARD
+
+#zyzz {
+    border: 1px solid rgba(255, 215, 130, 0.4);
+    background: linear-gradient(160deg, #0a1a2b 0%, #123049 40%, #1c4a63 70%, #2c6e7f 100%);
+    box-shadow: 
+        0 0 25px rgba(255, 215, 130, 0.35),
+        0 0 60px rgba(255, 200, 100, 0.2),
+        0 0 100px rgba(255, 180, 80, 0.1),
+        inset 0 0 60px rgba(135, 206, 250, 0.08);
+    animation: zyzzGlow 4s ease-in-out infinite;
+}
+
+@keyframes zyzzGlow {
+    0%, 100% {
+        box-shadow: 
+            0 0 25px rgba(255, 215, 130, 0.35),
+            0 0 60px rgba(255, 200, 100, 0.2),
+            0 0 100px rgba(255, 180, 80, 0.1),
+            inset 0 0 60px rgba(135, 206, 250, 0.08);
+    }
+    50% {
+        box-shadow: 
+            0 0 35px rgba(255, 215, 130, 0.5),
+            0 0 80px rgba(255, 200, 100, 0.3),
+            0 0 130px rgba(255, 180, 80, 0.15),
+            inset 0 0 60px rgba(135, 206, 250, 0.08);
+    }
+}
+    ========================= */
+#zyzz {
+    border: 1px solid rgba(255, 215, 130, 0.4);
+    background: linear-gradient(160deg, #0a1a2b 0%, #123049 40%, #1c4a63 70%, #2c6e7f 100%);
+    box-shadow: 0 0 35px rgba(255, 200, 100, 0.15), inset 0 0 60px rgba(135, 206, 250, 0.08);
+}
+
+#zyzz .card-title {
+    background: linear-gradient(90deg, rgba(255,215,130,.12), transparent);
+    color: #ffd782;
+    font-size: 11px;
+    text-shadow: 0 0 12px rgba(255, 215, 130, 0.5);
+    border-bottom: 1px solid rgba(255, 215, 130, 0.25);
+}
+
+#zyzz .card-img {
+    filter: saturate(1.1) contrast(1.05);
+    box-shadow: inset -8px 0 20px rgba(0,0,0,.4);
+}
+
+#zyzz .song-box {
+    background: radial-gradient(circle at top right, rgba(255, 215, 130, 0.08), transparent 60%);
+}
+
+#zyzz .trident {
+    display: none; /* replaced by the slider icon now */
+}
+
+#zyzz .dates {
+    position: absolute;
+    top: 14px;
+    right: 20px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: rgba(255, 215, 130, 0.85);
+    font-weight: 700;
+    text-align: right;
+    line-height: 1.4;
+    z-index: 3;
+}
+
+#zyzz .song-name {
+    color: #ffe9bd;
+    text-shadow: 0 0 10px rgba(255, 215, 130, 0.35);
+}
+
+#zyzz .play-btn {
+    color: #ffd782;
+}
+#zyzz .seek {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 3px;
+    background: rgba(255, 215, 130, 0.2);
+    border-radius: 4px;
+    outline: none;
+}
+
+#zyzz .seek::-webkit-slider-runnable-track {
+    height: 3px;
+    border-radius: 4px;
+    background: rgba(255, 215, 130, 0.2);
+}
+
+#zyzz .seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' font-size='16'><text x='0' y='16'>🔱</text></svg>") center / contain no-repeat;
+    background-color: transparent;
+    cursor: pointer;
+    margin-top: -8px;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+#zyzz .seek::-moz-range-track {
+    height: 3px;
+    border-radius: 4px;
+    background: rgba(255, 215, 130, 0.2);
+}
+#zyzz .seek::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' font-size='16'><text x='0' y='16'>🔱</text></svg>") center / contain no-repeat;
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+/* =========================
+   FEMALE CARDS — PINK & GOLD
+========================= */
+
+.card.female {
+    border: 1px solid rgba(255, 182, 213, 0.4);
+    background: linear-gradient(160deg, #2b0a1e 0%, #4a1230 40%, #6e2c4a 70%, #a8447a 100%);
+    box-shadow: 0 0 35px rgba(255, 105, 180, 0.15), inset 0 0 60px rgba(255, 215, 130, 0.08);
+}
+
+.card.female .card-title {
+    background: linear-gradient(90deg, rgba(255, 182, 213, .12), transparent);
+    color: #f8f8f6;
+    text-shadow: 0 0 12px rgba(255, 105, 180, 0.5);
+    border-bottom: 1px solid rgba(255, 182, 213, 0.25);
+}
+
+.card.female .card-img {
+    filter: saturate(1.1) contrast(1.05);
+    box-shadow: inset -8px 0 20px rgba(0,0,0,.4);
+}
+
+.card.female .song-box {
+    background: radial-gradient(circle at top right, rgba(255, 182, 213, 0.08), transparent 60%);
+}
+
+.card.female .song-name {
+    color: #ffe0ef;
+    text-shadow: 0 0 10px rgba(255, 105, 180, 0.35);
+}
+
+.card.female .play-btn {
+    color: #ffd782;
+}
+.card.female .seek::-webkit-slider-thumb {
+    background: #ffb6d5;
+    box-shadow: 0 0 6px rgba(255, 182, 213, 0.6);
+}
+
+.card.female .seek::-moz-range-thumb {
+    background: #ffb6d5;
+    box-shadow: 0 0 6px rgba(255, 182, 213, 0.6);
+}
+
+.card.female .seek::-webkit-slider-runnable-track,
+.card.female .seek::-moz-range-track {
+    background: rgba(255, 182, 213, 0.2);
+}
+@media (max-width: 900px) {
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+    .cards-section {
+        padding: 0 20px;
+    }
+}
+#aura {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.85;
+}
+</style>
+</head>
+
+<body>
+<canvas id="aura"></canvas>
+<div id="navbarPlaceholder"></div>
+
+
+<div class="page-wrap">
+    
+    <div class="tag">Idol Mode</div>
+    <h1>Unleash the <span class="glow-word">power.</span></h1>
+    <p class="sub">Feel like your idol.</p>
+</div>
+
+<!-- ============ IDOL CARDS (full width) ============ -->
+
+<div class="cards-section">
+    <div class="cards-grid">
+
+        <div class="card">
+            <div class="vinyl" style="background-image: url('https://i1.sndcdn.com/artworks-000114940242-tlwy9i-t1080x1080.jpg')"></div>
+            <div class="card-title">DAVID LAID</div>
+            <div class="card-body">
+                <img class="card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAhppfoNT0SaazBfcfqS6SsOefObLN_ElFI4GL9Fuz_4eM5Npa_eEoZjiV&s=10" alt="">
+                <div class="song-box">
+                    <div class="song-top">
+                        <button class="play-btn" data-audio="./songs/outside.mp3">▶</button>
+                        <span class="song-name">Outside by (Calvin Harris)</span>
+                    </div>
+                    <input type="range" class="seek" min="0" max="100" value="0">
+                    <span class="time">0:00 / 0:00</span>
+                    <div class="platform-links">
+                        <a href="https://youtu.be/J9NQFACZYEU?si=CJWXz5ZKt7JRfPn2" target="_blank" title="YouTube">
+                            <svg viewBox="0 0 24 24"><path d="M23.5 6.2s-.23-1.64-.94-2.36c-.9-.95-1.9-.95-2.36-1.01C16.89 2.5 12 2.5 12 2.5h-.01s-4.89 0-8.2.33c-.46.06-1.46.06-2.36 1.01C.72 4.56.5 6.2.5 6.2S.26 8.12.26 10.05v1.9c0 1.93.24 3.85.24 3.85s.23 1.64.94 2.36c.9.95 2.07.92 2.6 1.02 1.88.18 8 .24 8 .24s4.89-.01 8.2-.34c.46-.06 1.46-.06 2.36-1.01.71-.72.94-2.36.94-2.36s.24-1.93.24-3.85v-1.9c0-1.93-.24-3.85-.24-3.85zM9.75 14.85V7.65l6.5 3.6-6.5 3.6z"/></svg>
+                        </a>
+                        <a href="https://open.spotify.com/intl-fr/track/7MmG8p0F9N3C4AXdK6o6Eb?si=03d957253d5b4c75" target="_blank" title="Spotify">
+                            <svg viewBox="0 0 24 24"><path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm5.5 17.3a.75.75 0 0 1-1.03.26c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.58-1.04 8.5-.6 11.65 1.32.36.22.47.7.26 1.04zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.99-8.15-2.56-11.97-1.4a.94.94 0 1 1-.55-1.8c4.36-1.32 9.78-.68 13.49 1.6.44.27.58.85.32 1.29zm.13-3.4C15.9 8.5 8.98 8.27 5.5 9.34a1.13 1.13 0 1 1-.66-2.16c4-1.22 11.6-.96 16.19 1.78.55.33.73 1.04.4 1.58a1.13 1.13 0 0 1-1.53.4z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="zyzz">
+            <div class="vinyl" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/5/58/Edward_maya_stereo_love_cover.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original')"></div>
+            <div class="card-title">ZYZZ [Aziz Sergeyevich Shavershian]</div>
+            <div class="card-body">
+                <img class="card-img" src="https://m.gettywallpapers.com/wp-content/uploads/2023/10/Zyzz-pfp.jpg" alt="">
+                <div class="song-box">
+                    <span class="trident">🔱</span>
+                    <span class="dates">1989 — 2011</span>
+                    <div class="song-top">
+                        <button class="play-btn" data-audio="./songs/zyyz.mp3">▶</button>
+                        <span class="song-name">Stereo Love</span>
+                    </div>
+                    <input type="range" class="seek" min="0" max="100" value="0">
+                    <span class="time">0:00 / 0:00</span>
+                    <div class="platform-links">
+                        <a href="https://youtu.be/p-Z3YrHJ1sU?si=daGz9x5b2WPRP4p7" target="_blank" title="YouTube">
+                            <svg viewBox="0 0 24 24"><path d="M23.5 6.2s-.23-1.64-.94-2.36c-.9-.95-1.9-.95-2.36-1.01C16.89 2.5 12 2.5 12 2.5h-.01s-4.89 0-8.2.33c-.46.06-1.46.06-2.36 1.01C.72 4.56.5 6.2.5 6.2S.26 8.12.26 10.05v1.9c0 1.93.24 3.85.24 3.85s.23 1.64.94 2.36c.9.95 2.07.92 2.6 1.02 1.88.18 8 .24 8 .24s4.89-.01 8.2-.34c.46-.06 1.46-.06 2.36-1.01.71-.72.94-2.36.94-2.36s.24-1.93.24-3.85v-1.9c0-1.93-.24-3.85-.24-3.85zM9.75 14.85V7.65l6.5 3.6-6.5 3.6z"/></svg>
+                        </a>
+                        <a href="https://open.spotify.com/intl-fr/track/2cfhVIFFpGxYYS1maDaga9?si=577a92c31b7b4222" target="_blank" title="Spotify">
+                            <svg viewBox="0 0 24 24"><path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm5.5 17.3a.75.75 0 0 1-1.03.26c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.58-1.04 8.5-.6 11.65 1.32.36.22.47.7.26 1.04zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.99-8.15-2.56-11.97-1.4a.94.94 0 1 1-.55-1.8c4.36-1.32 9.78-.68 13.49 1.6.44.27.58.85.32 1.29zm.13-3.4C15.9 8.5 8.98 8.27 5.5 9.34a1.13 1.13 0 1 1-.66-2.16c4-1.22 11.6-.96 16.19 1.78.55.33.73 1.04.4 1.58a1.13 1.13 0 0 1-1.53.4z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="vinyl" style="background-image: url('https://cdn-images.dzcdn.net/images/cover/2bda9b70f023c72f8afa9e3e673abeb4/1900x1900-000000-80-0-0.jpg')"></div>
+            <div class="card-title">tren twins</div>
+            <div class="card-body">
+                <img class="card-img" src="https://i.scdn.co/image/ab67616d00001e02003bf5d93347feec3d957bb1" alt="">
+                <div class="song-box">
+                    <div class="song-top">
+                        <button class="play-btn" data-audio="./songs/twins.mp3">▶</button>
+                        <span class="song-name">Animal I Have Become </span>
+                    </div>
+                    <input type="range" class="seek" min="0" max="100" value="0">
+                    <span class="time">0:00 / 0:00</span>
+                    <div class="platform-links">
+                        <a href="https://youtu.be/xqds0B_meys?si=r8l3lovnj2DtinD0" target="_blank" title="YouTube">
+                            <svg viewBox="0 0 24 24"><path d="M23.5 6.2s-.23-1.64-.94-2.36c-.9-.95-1.9-.95-2.36-1.01C16.89 2.5 12 2.5 12 2.5h-.01s-4.89 0-8.2.33c-.46.06-1.46.06-2.36 1.01C.72 4.56.5 6.2.5 6.2S.26 8.12.26 10.05v1.9c0 1.93.24 3.85.24 3.85s.23 1.64.94 2.36c.9.95 2.07.92 2.6 1.02 1.88.18 8 .24 8 .24s4.89-.01 8.2-.34c.46-.06 1.46-.06 2.36-1.01.71-.72.94-2.36.94-2.36s.24-1.93.24-3.85v-1.9c0-1.93-.24-3.85-.24-3.85zM9.75 14.85V7.65l6.5 3.6-6.5 3.6z"/></svg>
+                        </a>
+                        <a href="https://open.spotify.com/intl-fr/track/5eFxwmqKrHpSQDOEIFYlgY?si=7312a6f98f894e75" target="_blank" title="Spotify">
+                            <svg viewBox="0 0 24 24"><path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm5.5 17.3a.75.75 0 0 1-1.03.26c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.58-1.04 8.5-.6 11.65 1.32.36.22.47.7.26 1.04zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.99-8.15-2.56-11.97-1.4a.94.94 0 1 1-.55-1.8c4.36-1.32 9.78-.68 13.49 1.6.44.27.58.85.32 1.29zm.13-3.4C15.9 8.5 8.98 8.27 5.5 9.34a1.13 1.13 0 1 1-.66-2.16c4-1.22 11.6-.96 16.19 1.78.55.33.73 1.04.4 1.58a1.13 1.13 0 0 1-1.53.4z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="vinyl" style="background-image: url('https://cdn-images.dzcdn.net/images/cover/7c8838dd62b86847775d58caf26756eb/500x500.jpg')"></div>
+            <div class="card-title">sam sulek</div>
+            <div class="card-body">
+                <img class="card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFAnaSLraF9Z_8RZoKcV0pyaUMLTofICQT_oAU3dHhzDdu1jVCpEO2Qdco&s=10" alt="">
+                <div class="song-box">
+                    <div class="song-top">
+                        <button class="play-btn" data-audio="./songs/sam.mp3">▶</button>
+                        <span class="song-name">saturn lullaby</span>
+                    </div>
+                    <input type="range" class="seek" min="0" max="100" value="0">
+                    <span class="time">0:00 / 0:00</span>
+                    <div class="platform-links">
+                        <a href="https://youtu.be/jvKR48xjh-4?si=aGyuns6VhFVPH8yL" target="_blank" title="YouTube">
+                            <svg viewBox="0 0 24 24"><path d="M23.5 6.2s-.23-1.64-.94-2.36c-.9-.95-1.9-.95-2.36-1.01C16.89 2.5 12 2.5 12 2.5h-.01s-4.89 0-8.2.33c-.46.06-1.46.06-2.36 1.01C.72 4.56.5 6.2.5 6.2S.26 8.12.26 10.05v1.9c0 1.93.24 3.85.24 3.85s.23 1.64.94 2.36c.9.95 2.07.92 2.6 1.02 1.88.18 8 .24 8 .24s4.89-.01 8.2-.34c.46-.06 1.46-.06 2.36-1.01.71-.72.94-2.36.94-2.36s.24-1.93.24-3.85v-1.9c0-1.93-.24-3.85-.24-3.85zM9.75 14.85V7.65l6.5 3.6-6.5 3.6z"/></svg>
+                        </a>
+                        <a href="https://open.spotify.com/intl-fr/album/5XCuM0ODfBgxZJmXiq5P42?si=aaa89fc3727e4019" target="_blank" title="Spotify">
+                            <svg viewBox="0 0 24 24"><path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm5.5 17.3a.75.75 0 0 1-1.03.26c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.58-1.04 8.5-.6 11.65 1.32.36.22.47.7.26 1.04zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.99-8.15-2.56-11.97-1.4a.94.94 0 1 1-.55-1.8c4.36-1.32 9.78-.68 13.49 1.6.44.27.58.85.32 1.29zm.13-3.4C15.9 8.5 8.98 8.27 5.5 9.34a1.13 1.13 0 1 1-.66-2.16c4-1.22 11.6-.96 16.19 1.78.55.33.73 1.04.4 1.58a1.13 1.13 0 0 1-1.53.4z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="vinyl" style="background-image: url('https://cdn-images.dzcdn.net/images/cover/91276466fbc876d96be9e6926060af60/1900x1900-000000-80-0-0.jpg')"></div>
+            <div class="card-title">kevin levrone</div>
+            <div class="card-body">
+                <img class="card-img" src="https://media.tenor.com/0M8j6Ati_KsAAAAM/kevin-levroni-bodybuilder.gif" alt="">
+                <div class="song-box">
+                    <div class="song-top">
+                        <button class="play-btn" data-audio="./songs/kevin.mp3">▶</button>
+                        <span class="song-name">Please don't Stop the Music</span>
+                    </div>
+                    <input type="range" class="seek" min="0" max="100" value="0">
+                    <span class="time">0:00 / 0:00</span>
+                    <div class="platform-links">
+                        <a href="https://youtu.be/iDmq00o-yko?si=u1u8YhIHhKANI9uH" target="_blank" title="YouTube">
+                            <svg viewBox="0 0 24 24"><path d="M23.5 6.2s-.23-1.64-.94-2.36c-.9-.95-1.9-.95-2.36-1.01C16.89 2.5 12 2.5 12 2.5h-.01s-4.89 0-8.2.33c-.46.06-1.46.06-2.36 1.01C.72 4.56.5 6.2.5 6.2S.26 8.12.26 10.05v1.9c0 1.93.24 3.85.24 3.85s.23 1.64.94 2.36c.9.95 2.07.92 2.6 1.02 1.88.18 8 .24 8 .24s4.89-.01 8.2-.34c.46-.06 1.46-.06 2.36-1.01.71-.72.94-2.36.94-2.36s.24-1.93.24-3.85v-1.9c0-1.93-.24-3.85-.24-3.85zM9.75 14.85V7.65l6.5 3.6-6.5 3.6z"/></svg>
+                        </a>
+                        <a href="https://open.spotify.com/intl-fr/track/1plPOVFbPFuSZrUqLb9M7X?si=98b4c6bf871144f1" target="_blank" title="Spotify">
+                            <svg viewBox="0 0 24 24"><path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm5.5 17.3a.75.75 0 0 1-1.03.26c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.58-1.04 8.5-.6 11.65 1.32.36.22.47.7.26 1.04zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.99-8.15-2.56-11.97-1.4a.94.94 0 1 1-.55-1.8c4.36-1.32 9.78-.68 13.49 1.6.44.27.58.85.32 1.29zm.13-3.4C15.9 8.5 8.98 8.27 5.5 9.34a1.13 1.13 0 1 1-.66-2.16c4-1.22 11.6-.96 16.19 1.78.55.33.73 1.04.4 1.58a1.13 1.13 0 0 1-1.53.4z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="vinyl" style="background-image: url('https://i.scdn.co/image/ab67616d0000b273b03ff8c30497b9d6fff5e324')"></div>
+            <div class="card-title">tom platz</div>
+            <div class="card-body">
+                <img class="card-img" src="https://wallpapercave.com/wp/wp7996739.jpg" alt="">
+                <div class="song-box">
+                    <div class="song-top">
+                        <button class="play-btn" data-audio="./songs/sonne.mp3">▶</button>
+                        <span class="song-name">Sonne</span>
+                    </div>
+                    <input type="range" class="seek" min="0" max="100" value="0">
+                    <span class="time">0:00 / 0:00</span>
+                    <div class="platform-links">
+                        <a href="https://youtu.be/v7GMG1aLyPw?si=O7yxxPOd0AQXR4Yy" target="_blank" title="YouTube">
+                            <svg viewBox="0 0 24 24"><path d="M23.5 6.2s-.23-1.64-.94-2.36c-.9-.95-1.9-.95-2.36-1.01C16.89 2.5 12 2.5 12 2.5h-.01s-4.89 0-8.2.33c-.46.06-1.46.06-2.36 1.01C.72 4.56.5 6.2.5 6.2S.26 8.12.26 10.05v1.9c0 1.93.24 3.85.24 3.85s.23 1.64.94 2.36c.9.95 2.07.92 2.6 1.02 1.88.18 8 .24 8 .24s4.89-.01 8.2-.34c.46-.06 1.46-.06 2.36-1.01.71-.72.94-2.36.94-2.36s.24-1.93.24-3.85v-1.9c0-1.93-.24-3.85-.24-3.85zM9.75 14.85V7.65l6.5 3.6-6.5 3.6z"/></svg>
+                        </a>
+                        <a href="https://open.spotify.com/intl-fr/track/6VS4C2HnOQPivcjcAAlUMj?si=01208bf5196f4ff7" target="_blank" title="Spotify">
+                            <svg viewBox="0 0 24 24"><path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm5.5 17.3a.75.75 0 0 1-1.03.26c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.58-1.04 8.5-.6 11.65 1.32.36.22.47.7.26 1.04zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.99-8.15-2.56-11.97-1.4a.94.94 0 1 1-.55-1.8c4.36-1.32 9.78-.68 13.49 1.6.44.27.58.85.32 1.29zm.13-3.4C15.9 8.5 8.98 8.27 5.5 9.34a1.13 1.13 0 1 1-.66-2.16c4-1.22 11.6-.96 16.19 1.78.55.33.73 1.04.4 1.58a1.13 1.13 0 0 1-1.53.4z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card female">
+            <div class="vinyl" style="background-image: url('https://i.ytimg.com/vi/cLupeDNMauk/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDaBSRmIq6eLI6JSIBukUh69sREBQ')"></div>
+            <div class="card-title">keiani mabe</div>
+            <div class="card-body">
+                <img class="card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8F5N_fiRhHtB9Y3jKlhwxo4jJyi20kOPduPxtiFTPkH_zkfjiIDPCcRk&s=10" alt="">
+                <div class="song-box">
+                    <div class="song-top">
+                        <button class="play-btn" data-audio="./songs/samefemale.mp3">▶</button>
+                        <span class="song-name">Sleepwalker</span>
+                    </div>
+                    <input type="range" class="seek" min="0" max="100" value="0">
+                    <span class="time">0:00 / 0:00</span>
+                    <div class="platform-links">
+                        <a href="https://youtu.be/a_Rw9D7d4pI?si=WNq0DisLaVsUV0Dc" target="_blank" title="YouTube">
+                            <svg viewBox="0 0 24 24"><path d="M23.5 6.2s-.23-1.64-.94-2.36c-.9-.95-1.9-.95-2.36-1.01C16.89 2.5 12 2.5 12 2.5h-.01s-4.89 0-8.2.33c-.46.06-1.46.06-2.36 1.01C.72 4.56.5 6.2.5 6.2S.26 8.12.26 10.05v1.9c0 1.93.24 3.85.24 3.85s.23 1.64.94 2.36c.9.95 2.07.92 2.6 1.02 1.88.18 8 .24 8 .24s4.89-.01 8.2-.34c.46-.06 1.46-.06 2.36-1.01.71-.72.94-2.36.94-2.36s.24-1.93.24-3.85v-1.9c0-1.93-.24-3.85-.24-3.85zM9.75 14.85V7.65l6.5 3.6-6.5 3.6z"/></svg>
+                        </a>
+                        <a href="https://open.spotify.com/intl-fr/album/74fiQju6Hajz6CMfCv7Z8i?si=d8e087767d8d4693" target="_blank" title="Spotify">
+                            <svg viewBox="0 0 24 24"><path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm5.5 17.3a.75.75 0 0 1-1.03.26c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.58-1.04 8.5-.6 11.65 1.32.36.22.47.7.26 1.04zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.99-8.15-2.56-11.97-1.4a.94.94 0 1 1-.55-1.8c4.36-1.32 9.78-.68 13.49 1.6.44.27.58.85.32 1.29zm.13-3.4C15.9 8.5 8.98 8.27 5.5 9.34a1.13 1.13 0 1 1-.66-2.16c4-1.22 11.6-.96 16.19 1.78.55.33.73 1.04.4 1.58a1.13 1.13 0 0 1-1.53.4z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card female">
+            <div class="vinyl" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/5/51/Ari_Abdul_-_Babydoll.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original')"></div>
+            <div class="card-title">lean beef patty</div>
+            <div class="card-body">
+                <img class="card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu2G0A1zT5-oQxQI2ig0mDhqvM8_SN1bf7Qs6IqKxAkhoeYzKNmm-xT-o&s=10" alt="">
+                <div class="song-box">
+                    <div class="song-top">
+                        <button class="play-btn" data-audio="./songs/beef.mp3">▶</button>
+                        <span class="song-name">babydoll</span>
+                    </div>
+                    <input type="range" class="seek" min="0" max="100" value="0">
+                    <span class="time">0:00 / 0:00</span>
+                    <div class="platform-links">
+                        <a href="https://youtu.be/evny_w98PjI?si=BbZeMw6GzS2b6VUV" target="_blank" title="YouTube">
+                            <svg viewBox="0 0 24 24"><path d="M23.5 6.2s-.23-1.64-.94-2.36c-.9-.95-1.9-.95-2.36-1.01C16.89 2.5 12 2.5 12 2.5h-.01s-4.89 0-8.2.33c-.46.06-1.46.06-2.36 1.01C.72 4.56.5 6.2.5 6.2S.26 8.12.26 10.05v1.9c0 1.93.24 3.85.24 3.85s.23 1.64.94 2.36c.9.95 2.07.92 2.6 1.02 1.88.18 8 .24 8 .24s4.89-.01 8.2-.34c.46-.06 1.46-.06 2.36-1.01.71-.72.94-2.36.94-2.36s.24-1.93.24-3.85v-1.9c0-1.93-.24-3.85-.24-3.85zM9.75 14.85V7.65l6.5 3.6-6.5 3.6z"/></svg>
+                        </a>
+                        <a href="https://open.spotify.com/intl-fr/track/5rPNVwYjVEgkq6YNPki4Zc?si=f5d64a5843e84f76" target="_blank" title="Spotify">
+                            <svg viewBox="0 0 24 24"><path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm5.5 17.3a.75.75 0 0 1-1.03.26c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.58-1.04 8.5-.6 11.65 1.32.36.22.47.7.26 1.04zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.99-8.15-2.56-11.97-1.4a.94.94 0 1 1-.55-1.8c4.36-1.32 9.78-.68 13.49 1.6.44.27.58.85.32 1.29zm.13-3.4C15.9 8.5 8.98 8.27 5.5 9.34a1.13 1.13 0 1 1-.66-2.16c4-1.22 11.6-.96 16.19 1.78.55.33.73 1.04.4 1.58a1.13 1.13 0 0 1-1.53.4z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card female">
+            <div class="vinyl" style="background-image: url('https://i.scdn.co/image/ab67616d0000b273bf551eac553ae502d0db425f')"></div>
+            <div class="card-title">sara saffari</div>
+            <div class="card-body">
+                <img class="card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRLb_-Dj3vwmqvUZCFGDufwpcIlxAyS8iy3YQc6Iof58hr4EyRjuU2kw&s=10" alt="">
+                <div class="song-box">
+                    <div class="song-top">
+                        <button class="play-btn" data-audio="./songs/sara.mp3">▶</button>
+                        <span class="song-name">Shine</span>
+                    </div>
+                    <input type="range" class="seek" min="0" max="100" value="0">
+                    <span class="time">0:00 / 0:00</span>
+                    <div class="platform-links">
+                        <a href="https://youtu.be/n4tK7LYFxI0?si=YwN4v3sn63ZWG8_e" target="_blank" title="YouTube">
+                            <svg viewBox="0 0 24 24"><path d="M23.5 6.2s-.23-1.64-.94-2.36c-.9-.95-1.9-.95-2.36-1.01C16.89 2.5 12 2.5 12 2.5h-.01s-4.89 0-8.2.33c-.46.06-1.46.06-2.36 1.01C.72 4.56.5 6.2.5 6.2S.26 8.12.26 10.05v1.9c0 1.93.24 3.85.24 3.85s.23 1.64.94 2.36c.9.95 2.07.92 2.6 1.02 1.88.18 8 .24 8 .24s4.89-.01 8.2-.34c.46-.06 1.46-.06 2.36-1.01.71-.72.94-2.36.94-2.36s.24-1.93.24-3.85v-1.9c0-1.93-.24-3.85-.24-3.85zM9.75 14.85V7.65l6.5 3.6-6.5 3.6z"/></svg>
+                        </a>
+                        <a href="https://open.spotify.com/intl-fr/track/28nJtITSktvCECziG14oRr?si=ec4d9938942f44ba" target="_blank" title="Spotify">
+                            <svg viewBox="0 0 24 24"><path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm5.5 17.3a.75.75 0 0 1-1.03.26c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.58-1.04 8.5-.6 11.65 1.32.36.22.47.7.26 1.04zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.99-8.15-2.56-11.97-1.4a.94.94 0 1 1-.55-1.8c4.36-1.32 9.78-.68 13.49 1.6.44.27.58.85.32 1.29zm.13-3.4C15.9 8.5 8.98 8.27 5.5 9.34a1.13 1.13 0 1 1-.66-2.16c4-1.22 11.6-.96 16.19 1.78.55.33.73 1.04.4 1.58a1.13 1.13 0 0 1-1.53.4z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============ SPOTIFY PLAYER ============ -->
+<div class="page-wrap" style="padding-top:0; padding-bottom:0;">
+    <div class="tag">Fuel The Grind</div>
+    <h1>The <span class="glow-word">Playlist</span></h1>
+    <p class="sub">Turn up. Show up. No skipping.</p>
+</div>
+<div style="padding: 0 50px;">
+    <div class="playlist-grid">
+        <div class="playlist-frame">
+            <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/2pxsbGL4geFg3q193W7k2T?utm_source=generator&si=4778f81e7d6b439b" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+        <div class="playlist-frame">
+            <iframe src="https://open.spotify.com/embed/playlist/5FYnQeun36XgXxrSfLY7kM?utm_source=generator&si=2d26e39419474f03" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+        <div class="playlist-frame">
+            <iframe src="https://open.spotify.com/embed/playlist/0Hhd9gzpb2bO8L2XlQPkYP?utm_source=generator&si=b8d8013edc3d4dac" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+        <div class="playlist-frame">
+            <iframe src="https://open.spotify.com/embed/playlist/733GLlUllevuIA5NDPUu79?utm_source=generator&si=695de30b87e44672" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+    </div>
+</div>
+<footer>
+    <span>GYMFUEL</span>
+    <p>Fuel your goals.</p>
+</footer>
+<script>
+  const canvas = document.getElementById("aura");
+const ctx = canvas.getContext("2d");
+
+let w, h;
+
+function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = document.documentElement.scrollHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+const PARTICLE_COUNT = 160;
+const particles = [];
+
+const colors = [
+    "255,0,0",     // red
+    "255,127,0",   // orange
+    "255,255,0",   // yellow
+    "0,255,0",     // green
+    "0,255,255",   // cyan
+    "0,0,255",     // blue
+    "127,0,255",   // purple
+    "255,0,255"    // magenta
+];
+
+for (let i = 0; i < PARTICLE_COUNT; i++) {
+    particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 2 + 0.6,
+        speed: Math.random() * 0.5 + 0.05,
+        drift: (Math.random() - 0.5) * 0.3,
+        colorIndex: Math.floor(Math.random() * colors.length),
+        colorTimer: Math.random() * 100,
+        alpha: Math.random() * 0.5 + 0.15
+    });
+}
+
+function animate() {
+    ctx.clearRect(0, 0, w, h);
+
+    particles.forEach(p => {
+    p.colorTimer++;
+    if (p.colorTimer > 30) {
+        p.colorTimer = 0;
+        p.colorIndex = (p.colorIndex + 1) % colors.length;
+    }
+
+    const color = colors[p.colorIndex];
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${color}, ${p.alpha})`;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = `rgba(${color}, ${p.alpha})`;
+    ctx.fill();
+
+    p.y -= p.speed;
+    p.x += p.drift;
+
+    if (p.y < -10) {
+        p.y = h + 10;
+        p.x = Math.random() * w;
+    }
+});
+
+    requestAnimationFrame(animate);
+}
+animate();  
+
+    
+function formatTime(sec) {
+    if (!isFinite(sec)) return "0:00";
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+}
+
+let currentAudio = null;
+
+document.querySelectorAll(".card").forEach(card => {
+    const btn = card.querySelector(".play-btn");
+    const seek = card.querySelector(".seek");
+    const vinyl = card.querySelector(".vinyl");
+    const timeLabel = card.querySelector(".time");
+    const audio = new Audio(btn.dataset.audio);
+
+    btn.addEventListener("click", () => {
+        if (currentAudio && currentAudio !== audio) {
+            currentAudio.pause();
+        }
+
+        if (audio.paused) {
+            audio.play().catch(err => console.log("Playback failed:", err));
+        } else {
+            audio.pause();
+        }
+
+        currentAudio = audio;
+    });
+
+    audio.addEventListener("play", () => {
+        btn.textContent = "❚❚";
+        vinyl.classList.add("spinning");
+    });
+    audio.addEventListener("pause", () => {
+        btn.textContent = "▶";
+        vinyl.classList.remove("spinning");
+    });
+    audio.addEventListener("ended", () => {
+        btn.textContent = "▶";
+        vinyl.classList.remove("spinning");
+    });
+
+    audio.addEventListener("loadedmetadata", () => {
+        timeLabel.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+    });
+
+    audio.addEventListener("timeupdate", () => {
+        if (audio.duration) {
+            seek.value = (audio.currentTime / audio.duration) * 100;
+        }
+        timeLabel.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+    });
+
+    seek.addEventListener("input", () => {
+        if (audio.duration) {
+            audio.currentTime = (seek.value / 100) * audio.duration;
+        }
+    });
+});
+</script>
+<script>
+fetch('navbar.html')
+  .then(res => res.text())
+  .then(html => {
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+
+    const scripts = temp.querySelectorAll('script');
+    scripts.forEach(s => s.remove());
+    document.getElementById('navbarPlaceholder').replaceWith(...temp.childNodes);
+
+    scripts.forEach(oldScript => {
+      const newScript = document.createElement('script');
+      newScript.textContent = oldScript.textContent;
+      document.body.appendChild(newScript);
+    });
+  });
+</script>
+</body>
+</html>

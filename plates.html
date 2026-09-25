@@ -26,7 +26,10 @@
             overflow-x: hidden;
         }
 
-        a { text-decoration: none; color: inherit; }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
         .page {
             min-height: 100vh;
@@ -75,16 +78,23 @@
         ========================= */
 
         .plate-card {
+            --plate-bg: #252a30;
+            --plate-border: #343b43;
+
             position: relative;
             padding: 26px;
-            background: #131316;
-            border: 1px solid rgba(255,255,255,.08);
+            background: var(--plate-bg);
+            border: 1px solid var(--plate-border);
             border-radius: 20px;
-            transition: border-color .25s ease, transform .25s ease;
+            transition:
+                border-color .25s ease,
+                transform .25s ease,
+                box-shadow .25s ease;
         }
 
         .plate-card:hover {
-            border-color: rgba(255,255,255,.18);
+            border-color: rgba(255,255,255,.22);
+            box-shadow: 0 12px 35px rgba(0,0,0,.25);
             transform: translateY(-3px);
         }
 
@@ -106,7 +116,7 @@
             display: block;
             margin-top: 3px;
             font-size: 10.5px;
-            color: rgba(255,255,255,.35);
+            color: rgba(255,255,255,.4);
             font-weight: 500;
         }
 
@@ -115,8 +125,8 @@
             height: 28px;
             border: none;
             border-radius: 8px;
-            background: rgba(255,255,255,.05);
-            color: rgba(255,255,255,.5);
+            background: rgba(0,0,0,.18);
+            color: rgba(255,255,255,.55);
             font-size: 13px;
             cursor: pointer;
             transition: .2s ease;
@@ -133,7 +143,7 @@
             justify-content: space-between;
             align-items: baseline;
             padding: 9px 0;
-            border-bottom: 1px solid rgba(255,255,255,.06);
+            border-bottom: 1px solid rgba(255,255,255,.09);
         }
 
         .ingredient-row:last-of-type {
@@ -143,25 +153,25 @@
         .ingredient-name {
             font-size: 12.5px;
             font-weight: 600;
-            color: rgba(255,255,255,.85);
+            color: rgba(255,255,255,.88);
         }
 
         .ingredient-macros {
             display: flex;
             gap: 9px;
             font-size: 10px;
-            color: rgba(255,255,255,.4);
+            color: rgba(255,255,255,.5);
         }
 
         .ingredient-macros strong {
-            color: rgba(255,255,255,.65);
+            color: rgba(255,255,255,.75);
             font-weight: 700;
         }
 
         .plate-totals {
             margin-top: 18px;
             padding-top: 16px;
-            border-top: 1px solid rgba(255,255,255,.1);
+            border-top: 1px solid rgba(255,255,255,.12);
             display: flex;
             justify-content: space-between;
         }
@@ -180,7 +190,7 @@
 
         .total-box span {
             font-size: 9px;
-            color: rgba(255,255,255,.35);
+            color: rgba(255,255,255,.4);
             font-weight: 700;
             letter-spacing: .8px;
         }
@@ -213,30 +223,41 @@
     <script src="./supabase-client.js"></script>
 
     <script>
+
         async function loadPlates() {
 
             const username = localStorage.getItem('username');
             const container = document.getElementById('platesContainer');
 
             if (!username) {
-                container.innerHTML = '<div class="empty-text">Log in to see your saved plates.</div>';
+                container.innerHTML =
+                    '<div class="empty-text">Log in to see your saved plates.</div>';
                 return;
             }
 
-            const { data: plates, error: platesError } = await supabaseClient
-                .from('plates')
-                .select('id')
-                .eq('user_name', username)
-                .order('id', { ascending: true });
+            const { data: plates, error: platesError } =
+                await supabaseClient
+                    .from('plates')
+                    .select('id')
+                    .eq('user_name', username)
+                    .order('id', { ascending: true });
 
             if (platesError) {
-                console.error('Could not load plates:', platesError.message);
-                container.innerHTML = '<div class="empty-text">Something went wrong loading your plates.</div>';
+                console.error(
+                    'Could not load plates:',
+                    platesError.message
+                );
+
+                container.innerHTML =
+                    '<div class="empty-text">Something went wrong loading your plates.</div>';
+
                 return;
             }
 
             if (plates.length === 0) {
-                container.innerHTML = '<div class="empty-text">No plates saved yet — go build one on the Ingredients page.</div>';
+                container.innerHTML =
+                    '<div class="empty-text">No plates saved yet — go build one on the Ingredients page.</div>';
+
                 return;
             }
 
@@ -244,116 +265,311 @@
 
             for (const plate of plates) {
 
-                const { data: items, error: itemsError } = await supabaseClient
-                    .from('plate_items')
-                    .select('name, kcal, protein, fat')
-                    .eq('plate_id', plate.id);
+                const { data: items, error: itemsError } =
+                    await supabaseClient
+                        .from('plate_items')
+                        .select('name, kcal, protein, fat')
+                        .eq('plate_id', plate.id);
 
                 if (itemsError) {
-                    console.error('Could not load items for plate', plate.id, itemsError.message);
+                    console.error(
+                        'Could not load items for plate',
+                        plate.id,
+                        itemsError.message
+                    );
+
                     continue;
                 }
 
-                container.appendChild(renderPlateCard(plate.id, plateNumber, items));
+                container.appendChild(
+                    renderPlateCard(
+                        plate.id,
+                        plateNumber,
+                        items
+                    )
+                );
+
                 plateNumber++;
             }
         }
+
 
         function renderPlateCard(plateId, plateNumber, items) {
 
             const card = document.createElement('section');
             card.className = 'plate-card';
 
+
+            /* =========================
+               PLATE COLORS
+               ========================= */
+
+            const softColors = [
+                { bg: "#29343d", border: "#3b4852" },
+                { bg: "#342f3a", border: "#483f50" },
+                { bg: "#39312b", border: "#4d4238" },
+                { bg: "#2d3932", border: "#3d4b42" },
+                { bg: "#3d3928", border: "#524c35" }, // soft yellow
+                { bg: "#293b45", border: "#3b5360" }, // soft sky blue
+                { bg: "#3d2d36", border: "#513d49" },
+                { bg: "#38332d", border: "#4b443b" },
+                { bg: "#2d303c", border: "#3e4251" },
+                { bg: "#34382d", border: "#464b3d" }
+            ];
+
+
+            /*
+                Pick colors in order instead of randomly.
+
+                Plate 1 → color 1
+                Plate 2 → color 2
+                Plate 3 → color 3
+                ...
+                Plate 10 → color 10
+                Plate 11 → color 1 again
+            */
+
+            const colorIndex =
+                (plateNumber - 1) % softColors.length;
+
+            const selectedColor =
+                softColors[colorIndex];
+
+
+            card.style.setProperty(
+                "--plate-bg",
+                selectedColor.bg
+            );
+
+            card.style.setProperty(
+                "--plate-border",
+                selectedColor.border
+            );
+
+
+            /* =========================
+               CALCULATE TOTALS
+               ========================= */
+
             let totalKcal = 0;
             let totalProtein = 0;
             let totalFat = 0;
 
+
             const rows = items.map(item => {
+
                 totalKcal += Number(item.kcal) || 0;
                 totalProtein += Number(item.protein) || 0;
                 totalFat += Number(item.fat) || 0;
 
+
                 return `
                     <div class="ingredient-row">
-                        <div class="ingredient-name">${item.name}</div>
-                        <div class="ingredient-macros">
-                            <span><strong>${item.kcal}</strong> kcal</span>
-                            <span><strong>${item.protein}g</strong> pro</span>
-                            <span><strong>${item.fat ?? 0}g</strong> fat</span>
+
+                        <div class="ingredient-name">
+                            ${item.name}
                         </div>
+
+                        <div class="ingredient-macros">
+
+                            <span>
+                                <strong>${item.kcal}</strong> kcal
+                            </span>
+
+                            <span>
+                                <strong>${item.protein}g</strong> pro
+                            </span>
+
+                            <span>
+                                <strong>${item.fat ?? 0}g</strong> fat
+                            </span>
+
+                        </div>
+
                     </div>
                 `;
+
             }).join('');
 
+
+            /* =========================
+               CARD HTML
+               ========================= */
+
             card.innerHTML = `
+
                 <div class="plate-card-header">
+
                     <div>
-                        <h2>Plate ${plateNumber}</h2>
-                        <span>${items.length} ingredient${items.length !== 1 ? 's' : ''}</span>
+
+                        <h2>
+                            Plate ${plateNumber}
+                        </h2>
+
+                        <span>
+                            ${items.length}
+                            ingredient${items.length !== 1 ? 's' : ''}
+                        </span>
+
                     </div>
-                    <button class="delete-plate-btn" data-plate-id="${plateId}">✕</button>
+
+
+                    <button
+                        class="delete-plate-btn"
+                        data-plate-id="${plateId}"
+                    >
+                        ✕
+                    </button>
+
                 </div>
+
+
                 ${rows}
+
+
                 <div class="plate-totals">
+
                     <div class="total-box">
-                        <strong>${Math.round(totalKcal)}</strong>
-                        <span>KCAL</span>
+
+                        <strong>
+                            ${Math.round(totalKcal)}
+                        </strong>
+
+                        <span>
+                            KCAL
+                        </span>
+
                     </div>
+
+
                     <div class="total-box">
-                        <strong>${totalProtein.toFixed(1)}g</strong>
-                        <span>PROTEIN</span>
+
+                        <strong>
+                            ${totalProtein.toFixed(1)}g
+                        </strong>
+
+                        <span>
+                            PROTEIN
+                        </span>
+
                     </div>
+
+
                     <div class="total-box">
-                        <strong>${totalFat.toFixed(1)}g</strong>
-                        <span>FAT</span>
+
+                        <strong>
+                            ${totalFat.toFixed(1)}g
+                        </strong>
+
+                        <span>
+                            FAT
+                        </span>
+
                     </div>
+
                 </div>
             `;
+
 
             return card;
         }
 
-        document.getElementById('platesContainer').addEventListener('click', async function(e) {
 
-            const btn = e.target.closest('.delete-plate-btn');
-            if (!btn) return;
+        /* =========================
+           DELETE PLATE
+        ========================= */
 
-            const plateId = btn.dataset.plateId;
+        document
+            .getElementById('platesContainer')
+            .addEventListener('click', async function(e) {
 
-            const { error } = await supabaseClient
-                .from('plates')
-                .delete()
-                .eq('id', plateId);
+                const btn =
+                    e.target.closest('.delete-plate-btn');
 
-            if (error) {
-                console.error('Could not delete plate:', error.message);
-                return;
-            }
+                if (!btn) return;
 
-            btn.closest('.plate-card').remove();
-        });
+
+                const plateId =
+                    btn.dataset.plateId;
+
+
+                const { error } =
+                    await supabaseClient
+                        .from('plates')
+                        .delete()
+                        .eq('id', plateId);
+
+
+                if (error) {
+
+                    console.error(
+                        'Could not delete plate:',
+                        error.message
+                    );
+
+                    return;
+                }
+
+
+                btn
+                    .closest('.plate-card')
+                    .remove();
+
+            });
+
 
         loadPlates();
+
     </script>
 
+
+    <!-- =========================
+         NAVBAR
+    ========================= -->
+
     <script>
+
         fetch('navbar.html')
-          .then(res => res.text())
-          .then(html => {
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
 
-            const scripts = temp.querySelectorAll('script');
-            scripts.forEach(s => s.remove());
-            document.getElementById('navbarPlaceholder').replaceWith(...temp.childNodes);
+            .then(res => res.text())
 
-            scripts.forEach(oldScript => {
-              const newScript = document.createElement('script');
-              newScript.textContent = oldScript.textContent;
-              document.body.appendChild(newScript);
+            .then(html => {
+
+                const temp =
+                    document.createElement('div');
+
+                temp.innerHTML = html;
+
+
+                const scripts =
+                    temp.querySelectorAll('script');
+
+                scripts.forEach(s => s.remove());
+
+
+                document
+                    .getElementById('navbarPlaceholder')
+                    .replaceWith(...temp.childNodes);
+
+
+                scripts.forEach(oldScript => {
+
+                    const newScript =
+                        document.createElement('script');
+
+                    newScript.textContent =
+                        oldScript.textContent;
+
+                    document.body.appendChild(
+                        newScript
+                    );
+
+                });
+
             });
-          });
+
     </script>
 
 </body>
+
 </html>
