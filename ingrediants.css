@@ -172,6 +172,17 @@ a {
     font-weight: 600;
     text-shadow: 0 2px 8px rgba(0,0,0,.45);
 }
+
+.redmeat-note {
+    margin-top: 10px;
+}
+
+.redmeat-note a {
+    color: #ff5964;
+    font-weight: 800;
+    text-decoration: underline;
+}
+
 .coming-soon-text {
     grid-column: 1 / -1;
     text-align: center;
@@ -773,11 +784,11 @@ footer {
 @media (max-width: 430px) {
 
     .food-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .food-image {
-        height: 190px;
+        height: 130px;
     }
 
 }
@@ -1058,4 +1069,306 @@ footer {
     .guide-item {
         padding: 12px 14px;
     }
+}
+
+/* =========================
+   SEARCH BAR (BRUTALIST)
+========================= */
+
+.brutalist-container {
+    position: relative;
+    width: 60%;
+    max-width: 900px;
+    min-width: 280px;
+    margin: 55px auto 0;
+    font-family: monospace;
+}
+
+.brutalist-input {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    background-color: #fff;
+    border: 4px solid #000;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 5px 5px 0 #000, 10px 10px 0 #8c4bff;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+.brutalist-input:focus {
+    animation: focus-pulse 4s cubic-bezier(0.25, 0.8, 0.25, 1) infinite,
+        glitch 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+}
+
+.brutalist-input:focus::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: white;
+    z-index: -1;
+}
+
+.brutalist-input:focus::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: -2;
+    clip-path: inset(0 100% 0 0);
+    animation: glitch-slice 4s steps(2, end) infinite;
+}
+
+@keyframes glitch-slice {
+    0% { clip-path: inset(0 100% 0 0); }
+    10% { clip-path: inset(0 5% 0 0); }
+    20% { clip-path: inset(0 80% 0 0); }
+    30% { clip-path: inset(0 10% 0 0); }
+    40% { clip-path: inset(0 50% 0 0); }
+    50% { clip-path: inset(0 30% 0 0); }
+    60% { clip-path: inset(0 70% 0 0); }
+    70% { clip-path: inset(0 15% 0 0); }
+    80% { clip-path: inset(0 90% 0 0); }
+    90% { clip-path: inset(0 5% 0 0); }
+    100% { clip-path: inset(0 100% 0 0); }
+}
+
+.brutalist-label {
+    position: absolute;
+    left: -3px;
+    top: -35px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #000;
+    padding: 5px 10px;
+    transform: rotate(-1deg);
+    z-index: 1;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.brutalist-input:focus + .brutalist-label {
+    transform: rotate(0deg) scale(1.05);
+    background-color: #8c4bff;
+}
+
+.smooth-type {
+    position: relative;
+    overflow: hidden;
+}
+
+.smooth-type::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(90deg, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.smooth-type:focus::before {
+    opacity: 1;
+    animation: type-gradient 2s linear infinite;
+}
+
+@keyframes type-gradient {
+    0% { background-position: 300px 0; }
+    100% { background-position: 0 0; }
+}
+
+.brutalist-input::placeholder {
+    color: #888;
+    transition: color 0.3s ease;
+}
+
+.brutalist-input:focus::placeholder {
+    color: transparent;
+}
+
+@keyframes focus-pulse {
+    0%, 100% { border-color: #000; }
+    50% { border-color: #8c4bff; }
+}
+
+@media (max-width: 600px) {
+    .brutalist-container {
+        width: 85%;
+    }
+}
+
+/* =========================
+   SEARCH RESULTS SECTION
+========================= */
+
+.search-results-section {
+    display: none;
+    padding: 40px 25px 10px;
+    background: rgba(140, 75, 255, .16);
+    backdrop-filter: blur(10px);
+}
+
+.search-results-section.active {
+    display: block;
+}
+
+.search-results-section .category-header h2 {
+    font-size: 26px;
+}
+
+.search-results-section .food-grid {
+    margin-top: 10px;
+}
+
+/* =========================
+   PLATE ITEM REMOVE (X)
+========================= */
+
+.plate-list li {
+    align-items: center;
+}
+
+.plate-item-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.plate-item-remove {
+    width: 18px;
+    height: 18px;
+    line-height: 16px;
+    text-align: center;
+    border: none;
+    border-radius: 50%;
+    background: #d62828;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.plate-item-remove:hover {
+    background: #ff3b3b;
+}
+
+/* =========================
+   SAVE TOAST
+========================= */
+
+.save-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translate(-50%, 30px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 22px;
+    background: rgba(15,15,20,.9);
+    border: 1px solid rgba(140,75,255,.6);
+    border-radius: 16px;
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.5),
+        0 0 0 4px rgba(140,75,255,.15);
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3000;
+    transition: opacity .35s ease, transform .35s ease;
+}
+
+.save-toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.save-toast-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #8c4bff;
+    font-size: 13px;
+    font-weight: 900;
+    flex-shrink: 0;
+}
+
+/* =========================
+   RED MEAT EASTER EGG MODAL
+========================= */
+
+.video-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.75);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.video-modal.active {
+    display: flex;
+}
+
+.video-modal-content {
+    position: relative;
+    width: min(90%, 500px);
+    background: #000;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0,0,0,.6);
+}
+
+.video-modal-content video {
+    width: 100%;
+    display: block;
+}
+
+.video-modal-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255,255,255,.2);
+    color: #fff;
+    font-size: 18px;
+    line-height: 32px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.video-modal-close:hover {
+    background: rgba(255,255,255,.35);
 }

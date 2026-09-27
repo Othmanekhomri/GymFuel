@@ -8,6 +8,7 @@
     <title>GymFuel - Full Ingredients</title>
 
     <link rel="stylesheet" href="ingrediants.css">
+    
 </head>
 
 <body>
@@ -68,7 +69,21 @@ fetch('navbar.html')
         </div>
 <!-- CATEGORY SHORTCUTS -->
     <div class="category-shortcuts" id="categoryShortcuts"></div>
+
+    <!-- SEARCH BAR -->
+    <div class="brutalist-container">
+        <input type="text" id="liveSearch" class="brutalist-input smooth-type" placeholder="Search ingredients..." autocomplete="off">
+        <label class="brutalist-label" for="liveSearch">SEARCH</label>
+    </div>
     </header>
+
+    <!-- SEARCH RESULTS (only visible while a valid search is active) -->
+    <section class="search-results-section" id="searchResultsSection">
+        <div class="category-header">
+            <h2>Search Results</h2>
+        </div>
+        <div class="food-grid" id="searchResultsGrid"></div>
+    </section>
 
     <!-- =========================
          INGREDIENTS
@@ -135,6 +150,7 @@ fetch('navbar.html')
             <div class="category-header">
                 <h2>Red Meat</h2>
                 <p>High-protein beef and other red meats.</p>
+                <p class="redmeat-note">Red meat is expensive in this economy — if you can't afford it, <a href="#" id="redMeatEasterEgg">here's a solution</a>.</p>
             </div>
 
             <div class="food-grid" id="Red meat">
@@ -159,129 +175,33 @@ fetch('navbar.html')
                 
             </div>
         </section>
-<!-- 
 
-       
 
         <section class="category">
 
             <div class="category-header">
-                <h2>Snacks</h2>
-                <p>Quick foods for between meals.</p>
+                <h2>Carbohydrates</h2>
+                <p>Lean poultry and other lighter protein sources.</p>
             </div>
 
-            <div class="food-grid">
-
-               <div class="coming-soon-text">
-                   MORE COMING IN THE FINAL VERSION
-                </div>
-
-            </div>
-        </section>
-
-
-       
-
-        <section class="category">
-
-            <div class="category-header">
-                <h2>Drinks</h2>
-                <p>Drinks ranging from hydration to high-protein options.</p>
-            </div>
-
-            <div class="food-grid">
-
-                <div class="coming-soon-text">
-                   MORE COMING IN THE FINAL VERSION
-                </div>
-
-            </div>
-        </section>
-
-
-       
-
-        <section class="category">
-
-            <div class="category-header">
-                <h2>Spices</h2>
-                <p>Flavourful spices for your meals.</p>
-            </div>
-
-            <div class="food-grid">
-
-                
-
-            </div>
-        </section>
-
-
-       
-
-        <section class="category">
-
-            <div class="category-header">
-                <h2>Grains</h2>
-                <p>Carbohydrate-rich grains for fuel and energy.</p>
-            </div>
-
-            <div class="food-grid">
+            <div class="food-grid" id="Carbohydrates">
 
                 
             </div>
         </section>
 
-
-       
-
         <section class="category">
 
             <div class="category-header">
-                <h2>Dairy</h2>
-                <p>Dairy foods rich in protein and calcium.</p>
+                <h2>Eggs</h2>
+                <p>Lean poultry and other lighter protein sources.</p>
             </div>
 
-            <div class="food-grid">
+            <div class="food-grid" id="eggs">
 
-               
-            </div>
-        </section>
-
-
-       
-
-        <section class="category">
-
-            <div class="category-header">
-                <h2>Nuts & Seeds</h2>
-                <p>Healthy fats, protein and minerals.</p>
-            </div>
-
-            <div class="food-grid">
-
-               
+                
             </div>
         </section>
-
-
-      
-
-        <section class="category">
-
-            <div class="category-header">
-                <h2>Legumes</h2>
-                <p>Plant-based foods packed with protein and fibre.</p>
-            </div>
-
-            <div class="food-grid">
-
-              
-            </div>
-        </section>
-
-    </main>
--->
-
  <!-- =========================
          demo
     ========================== -->
@@ -345,6 +265,22 @@ fetch('navbar.html')
     <button class="save-plate-btn" id="savePlateBtn" disabled>Save Plate</button>
   </div>
 
+  <!-- SAVE PLATE TOAST -->
+  <div class="save-toast" id="saveToast">
+      <span class="save-toast-icon">✓</span>
+      <span class="save-toast-text">Saved! Check My Plates</span>
+  </div>
+
+    <!-- RED MEAT EASTER EGG VIDEO MODAL -->
+    <div class="video-modal" id="videoModal">
+        <div class="video-modal-content">
+            <button class="video-modal-close" id="videoModalClose">×</button>
+            <video id="redMeatVideo" controls>
+                <source src="meatvideo.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
 
 
 
@@ -392,6 +328,27 @@ fetch('navbar.html')
   });
 
 
+</script>
+
+<!-- RED MEAT EASTER EGG -->
+<script>
+document.getElementById('redMeatEasterEgg').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.getElementById('videoModal').classList.add('active');
+    document.getElementById('redMeatVideo').play();
+});
+
+document.getElementById('videoModalClose').addEventListener('click', function () {
+    document.getElementById('videoModal').classList.remove('active');
+    document.getElementById('redMeatVideo').pause();
+});
+
+document.getElementById('videoModal').addEventListener('click', function (e) {
+    if (e.target === this) {
+        this.classList.remove('active');
+        document.getElementById('redMeatVideo').pause();
+    }
+});
 </script>
 </body>
 

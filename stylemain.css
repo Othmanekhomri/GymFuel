@@ -48,51 +48,7 @@ a {
     box-shadow: 0 16px 50px rgba(0,0,0,.25);
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    color: #fff;
-    font-size: 17px;
-    font-weight: 750;
-    letter-spacing: -.5px;
-    padding-left: 10px;
-}
 
-.logo-icon {
-    width: 31px;
-    height: 31px;
-    display: grid;
-    place-items: center;
-    border-radius: 9px;
-    background: #fff;
-    color: #111;
-    font-size: 15px;
-}
-
-.nav-links {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-}
-
-.nav-links a {
-    padding: 9px 12px;
-    color: rgba(255,255,255,.58);
-    border-radius: 9px;
-    font-size: 12px;
-    font-weight: 650;
-    transition: .2s ease;
-}
-
-.nav-links a:hover {
-    color: #fff;
-    background: rgba(255,255,255,.07);
-}
-
-.nav-icon {
-    font-size: 0;
-}
 
 .menu-btn {
     display: none;

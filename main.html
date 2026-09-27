@@ -5,6 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GymFuel</title>
     <link rel="stylesheet" href="stylemain.css">
+
+    <style>
+    /* =========================================================
+       ELECTRIC BORDER — ported from the React canvas component
+       (same noise-displaced canvas stroke + glow layers), vanilla JS
+    ========================================================= */
+    .electric-border {
+        position: relative;
+        isolation: isolate;
+    }
+
+    .eb-canvas-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    .eb-canvas { display: block; }
+
+    .eb-layers {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .eb-glow-1,
+    .eb-glow-2,
+    .eb-background-glow {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        box-sizing: border-box;
+    }
+
+    .eb-glow-1 {
+        border: 2px solid rgba(125, 249, 255, .6);
+        filter: blur(1px);
+    }
+
+    .eb-glow-2 {
+        border: 2px solid var(--electric-light-color, #7df9ff);
+        filter: blur(4px);
+    }
+
+    .eb-background-glow {
+        z-index: -1;
+        transform: scale(1.08);
+        filter: blur(28px);
+        opacity: .3;
+        background: linear-gradient(-30deg, var(--electric-light-color, #7df9ff), transparent, #7df9ff);
+    }
+
+    .electric-border {
+    position: relative;
+    isolation: isolate;
+    overflow: visible !important;
+}
+    </style>
 </head>
 
 <body>
@@ -132,7 +196,7 @@ fetch('/navbar.html')
 
     <div class="meals-container">
 
-        <article class="meal-card">
+        <article class="meal-card electric-border">
             <div class="meal-image energy-meal-1"></div>
             <div class="meal-content">
                 <div class="meal-topline"><span>ENERGY</span><strong>42g protein</strong></div>
@@ -152,7 +216,7 @@ fetch('/navbar.html')
             </div>
         </article>
 
-        <article class="meal-card">
+        <article class="meal-card electric-border">
             <div class="meal-image energy-meal-2"></div>
             <div class="meal-content">
                 <div class="meal-topline"><span>ENERGY</span><strong>18g protein</strong></div>
@@ -172,7 +236,7 @@ fetch('/navbar.html')
             </div>
         </article>
 
-        <article class="meal-card">
+        <article class="meal-card electric-border">
             <div class="meal-image energy-meal-3"></div>
             <div class="meal-content">
                 <div class="meal-topline"><span>ENERGY</span><strong>36g protein</strong></div>
@@ -201,11 +265,11 @@ fetch('/navbar.html')
     </div>
 
     <div class="ingredient-grid">
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-energy-chicken"></div><div class="ingredient-card-content"><h3>Chicken</h3><div class="nutrition"><div><strong>165</strong>kcal</div><div><strong>31g</strong>protein</div><div><strong>3.6g</strong>fat</div><div><strong>0g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-rice"></div><div class="ingredient-card-content"><h3>Rice</h3><div class="nutrition"><div><strong>130</strong>kcal</div><div><strong>2.7g</strong>protein</div><div><strong>0.3g</strong>fat</div><div><strong>0.1g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-banana"></div><div class="ingredient-card-content"><h3>Banana</h3><div class="nutrition"><div><strong>89</strong>kcal</div><div><strong>1g</strong>protein</div><div><strong>0.3g</strong>fat</div><div><strong>12g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-oats"></div><div class="ingredient-card-content"><h3>Oats</h3><div class="nutrition"><div><strong>389</strong>kcal</div><div><strong>17g</strong>protein</div><div><strong>7g</strong>fat</div><div><strong>0.9g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-potato"></div><div class="ingredient-card-content"><h3>Potato</h3><div class="nutrition"><div><strong>87</strong>kcal</div><div><strong>2g</strong>protein</div><div><strong>0.1g</strong>fat</div><div><strong>0.8g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card electric-border"><div class="ingredient-card-image ingredient-energy-chicken"></div><div class="ingredient-card-content"><h3>Chicken</h3><div class="nutrition"><div><strong>165</strong>kcal</div><div><strong>31g</strong>protein</div><div><strong>3.6g</strong>fat</div><div><strong>0g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card electric-border"><div class="ingredient-card-image ingredient-rice"></div><div class="ingredient-card-content"><h3>Rice</h3><div class="nutrition"><div><strong>130</strong>kcal</div><div><strong>2.7g</strong>protein</div><div><strong>0.3g</strong>fat</div><div><strong>0.1g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card electric-border"><div class="ingredient-card-image ingredient-banana"></div><div class="ingredient-card-content"><h3>Banana</h3><div class="nutrition"><div><strong>89</strong>kcal</div><div><strong>1g</strong>protein</div><div><strong>0.3g</strong>fat</div><div><strong>12g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card electric-border"><div class="ingredient-card-image ingredient-oats"></div><div class="ingredient-card-content"><h3>Oats</h3><div class="nutrition"><div><strong>389</strong>kcal</div><div><strong>17g</strong>protein</div><div><strong>7g</strong>fat</div><div><strong>0.9g</strong>sugar</div></div></div></div>
+        <div class="ingredient-card electric-border"><div class="ingredient-card-image ingredient-potato"></div><div class="ingredient-card-content"><h3>Potato</h3><div class="nutrition"><div><strong>87</strong>kcal</div><div><strong>2g</strong>protein</div><div><strong>0.1g</strong>fat</div><div><strong>0.8g</strong>sugar</div></div></div></div>
     </div>
 
 </section>
@@ -447,6 +511,195 @@ fetch('navbar.html')
             document.body.appendChild(newScript);
         });
     });
+</script>
+
+<!-- =========================================================
+     ELECTRIC BORDER — vanilla JS canvas port of the React component
+========================================================= -->
+<script>
+(function () {
+    function random(x) { return (Math.sin(x * 12.9898) * 43758.5453) % 1; }
+
+    function noise2D(x, y) {
+        const i = Math.floor(x), j = Math.floor(y);
+        const fx = x - i, fy = y - j;
+        const a = random(i + j * 57), b = random(i + 1 + j * 57);
+        const c = random(i + (j + 1) * 57), d = random(i + 1 + (j + 1) * 57);
+        const ux = fx * fx * (3 - 2 * fx), uy = fy * fy * (3 - 2 * fy);
+        return a * (1 - ux) * (1 - uy) + b * ux * (1 - uy) + c * (1 - ux) * uy + d * ux * uy;
+    }
+
+    function octavedNoise(x, octaves, lacunarity, gain, baseAmplitude, baseFrequency, time, seed, baseFlatness) {
+        let y = 0, amplitude = baseAmplitude, frequency = baseFrequency;
+        for (let i = 0; i < octaves; i++) {
+            let oa = amplitude;
+            if (i === 0) oa *= baseFlatness;
+            y += oa * noise2D(frequency * x + seed * 100, time * frequency * 0.3);
+            frequency *= lacunarity;
+            amplitude *= gain;
+        }
+        return y;
+    }
+
+    function getCornerPoint(cx, cy, radius, startAngle, arcLength, progress) {
+        const angle = startAngle + progress * arcLength;
+        return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+    }
+
+    function getRoundedRectPoint(t, left, top, width, height, radius) {
+        const straightWidth = width - 2 * radius;
+        const straightHeight = height - 2 * radius;
+        const cornerArc = (Math.PI * radius) / 2;
+        const totalPerimeter = 2 * straightWidth + 2 * straightHeight + 4 * cornerArc;
+        const distance = t * totalPerimeter;
+        let accumulated = 0;
+
+        if (distance <= accumulated + straightWidth) {
+            const p = (distance - accumulated) / straightWidth;
+            return { x: left + radius + p * straightWidth, y: top };
+        }
+        accumulated += straightWidth;
+
+        if (distance <= accumulated + cornerArc) {
+            const p = (distance - accumulated) / cornerArc;
+            return getCornerPoint(left + width - radius, top + radius, radius, -Math.PI / 2, Math.PI / 2, p);
+        }
+        accumulated += cornerArc;
+
+        if (distance <= accumulated + straightHeight) {
+            const p = (distance - accumulated) / straightHeight;
+            return { x: left + width, y: top + radius + p * straightHeight };
+        }
+        accumulated += straightHeight;
+
+        if (distance <= accumulated + cornerArc) {
+            const p = (distance - accumulated) / cornerArc;
+            return getCornerPoint(left + width - radius, top + height - radius, radius, 0, Math.PI / 2, p);
+        }
+        accumulated += cornerArc;
+
+        if (distance <= accumulated + straightWidth) {
+            const p = (distance - accumulated) / straightWidth;
+            return { x: left + width - radius - p * straightWidth, y: top + height };
+        }
+        accumulated += straightWidth;
+
+        if (distance <= accumulated + cornerArc) {
+            const p = (distance - accumulated) / cornerArc;
+            return getCornerPoint(left + radius, top + height - radius, radius, Math.PI / 2, Math.PI / 2, p);
+        }
+        accumulated += cornerArc;
+
+        if (distance <= accumulated + straightHeight) {
+            const p = (distance - accumulated) / straightHeight;
+            return { x: left, y: top + height - radius - p * straightHeight };
+        }
+        accumulated += straightHeight;
+
+        const p = (distance - accumulated) / cornerArc;
+        return getCornerPoint(left + radius, top + radius, radius, Math.PI, Math.PI / 2, p);
+    }
+
+    function initElectricBorder(el, opts) {
+        opts = opts || {};
+        const color = opts.color || '#7df9ff';
+        const speed = opts.speed || 1;
+        const chaos = opts.chaos !== undefined ? opts.chaos : 0.12;
+        const borderRadius = opts.borderRadius !== undefined ? opts.borderRadius : 16;
+
+        el.style.setProperty('--electric-light-color', color);
+
+        const layers = document.createElement('div');
+        layers.className = 'eb-layers';
+        layers.innerHTML = '<div class="eb-glow-1"></div><div class="eb-glow-2"></div><div class="eb-background-glow"></div>';
+
+        const canvasContainer = document.createElement('div');
+        canvasContainer.className = 'eb-canvas-container';
+        const canvas = document.createElement('canvas');
+        canvas.className = 'eb-canvas';
+        canvasContainer.appendChild(canvas);
+
+        el.appendChild(layers);
+        el.appendChild(canvasContainer);
+
+        const ctx = canvas.getContext('2d');
+
+        const octaves = 8, lacunarity = 1.6, gain = 0.7;
+        const amplitude = chaos, frequency = 10, baseFlatness = 0;
+        const displacement = 22, borderOffset = 24;
+
+        let width, height, lastDpr = 1;
+        let timeRef = 0, lastFrameTime = 0, raf;
+
+        function updateSize() {
+            const rect = el.getBoundingClientRect();
+            width = rect.width + borderOffset * 2;
+            height = rect.height + borderOffset * 2;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            lastDpr = dpr;
+        }
+
+        updateSize();
+
+        function draw(currentTime) {
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            if (dpr !== lastDpr) updateSize();
+
+            const deltaTime = (currentTime - lastFrameTime) / 1000;
+            timeRef += deltaTime * speed;
+            lastFrameTime = currentTime;
+
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.scale(lastDpr, lastDpr);
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            const scale = displacement;
+            const left = borderOffset, top = borderOffset;
+            const borderWidth = width - 2 * borderOffset;
+            const borderHeight = height - 2 * borderOffset;
+            const maxRadius = Math.min(borderWidth, borderHeight) / 2;
+            const radius = Math.min(borderRadius, maxRadius);
+
+            const approximatePerimeter = 2 * (borderWidth + borderHeight) + 2 * Math.PI * radius;
+            const sampleCount = Math.max(24, Math.floor(approximatePerimeter / 4));
+
+            ctx.beginPath();
+            for (let i = 0; i <= sampleCount; i++) {
+                const progress = i / sampleCount;
+                const point = getRoundedRectPoint(progress, left, top, borderWidth, borderHeight, radius);
+                const xNoise = octavedNoise(progress * 8, octaves, lacunarity, gain, amplitude, frequency, timeRef, 0, baseFlatness);
+                const yNoise = octavedNoise(progress * 8, octaves, lacunarity, gain, amplitude, frequency, timeRef, 1, baseFlatness);
+                const dx = point.x + xNoise * scale;
+                const dy = point.y + yNoise * scale;
+                if (i === 0) ctx.moveTo(dx, dy); else ctx.lineTo(dx, dy);
+            }
+            ctx.closePath();
+            ctx.stroke();
+
+            raf = requestAnimationFrame(draw);
+        }
+
+        raf = requestAnimationFrame(draw);
+
+        const ro = new ResizeObserver(updateSize);
+        ro.observe(el);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.electric-border').forEach(function (el) {
+            initElectricBorder(el, { color: '#7df9ff', speed: 1, chaos: 0.12, borderRadius: 16 });
+        });
+    });
+})();
 </script>
 
 </body>

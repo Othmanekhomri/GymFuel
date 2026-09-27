@@ -2,22 +2,16 @@ const SUPABASE_URL = 'https://ibrafxtbvizizgjyhxzy.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_2oPkaHic8ml4vbBKVXl23Q_gKoP1u6h';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+let foodData = [];
 
+/* =========================
+   CARD TEMPLATE
+========================= */
 
-async function loadFood() {
-  const { data, error } = await supabaseClient
-    .from('food')
-    .select('name, kcal, protein, fat, bloat, picture, energy, categorie');
-
-  if (error) {
-    console.error('Error:', error.message);
-    return;
-  }
-
- function renderCard(item) {
+function renderCard(item) {
     return `
       <article class="food-card" data-kcal="${item.kcal}" data-protein="${item.protein}" data-fat="${item.fat}" data-bloat="${item.bloat}">
-          
+
           <div class="food-image" style="background-image:url('${item.picture}')"></div>
 
           ${item.energy ? `
@@ -71,88 +65,158 @@ async function loadFood() {
     `;
 }
 
-  data.forEach(item => {
-    const container = document.getElementById(item.categorie);
-    if (!container) return;
-    container.innerHTML += renderCard(item);
-});
+/* =========================
+   LOAD FOOD
+========================= */
 
-const tunaSound = new Audio("../tuna.mp3");
+async function loadFood() {
+    const { data, error } = await supabaseClient
+        .from('food')
+        .select('name, kcal, protein, fat, bloat, picture, energy, categorie');
 
-document.addEventListener("click", function(e) {
-    const card = e.target.closest(".food-card");
-    if (!card) return;
-
-    const name = card.querySelector(".food-title h3")?.textContent.trim().toLowerCase();
-
-    if (name === "tuna") {
-        tunaSound.currentTime = 0;
-        tunaSound.play();
-    }
-});
-
-const melonSound = new Audio("../melon.mp3");
-
-document.addEventListener("click", function(e) {
-    const card = e.target.closest(".food-card");
-    if (!card) return;
-
-    const name = card.querySelector(".food-title h3")?.textContent.trim().toLowerCase();
-
-    if (name === "watermelon") {
-        melonSound.currentTime = 0;
-        melonSound.play();
-
-        const hello = document.createElement("div");
-        hello.className = "tuna-hello";
-        hello.textContent = "WELL WELL WELL";
-
-        card.style.position = "relative";
-        card.appendChild(hello);
-
-        setTimeout(() => {
-            hello.remove();
-        }, 3000);
-    }
-});
-
-document.addEventListener('change', function(e) {
-
-    if (!e.target.classList.contains('portion-select')) return;
-
-    const select = e.target;
-    const card = select.closest('.food-card');
-
-    if (select.value === 'custom') {
-        select.style.display = 'none';
-
-        const customBox = card.querySelector('.custom-portion-box');
-        customBox.classList.add('active');
-
-        const input = customBox.querySelector('.custom-portion-input');
-        input.focus();
-
+    if (error) {
+        console.error('Error:', error.message);
         return;
     }
 
-    updateNutrition(card, Number(select.value));
-});
+    foodData = data;
+
+    data.forEach(item => {
+        const container = document.getElementById(item.categorie);
+        if (!container) return;
+        container.innerHTML += renderCard(item);
+    });
+
+    const tunaSound = new Audio("../tuna.mp3");
+
+    document.addEventListener("click", function (e) {
+        const card = e.target.closest(".food-card");
+        if (!card) return;
+
+        const name = card.querySelector(".food-title h3")?.textContent.trim().toLowerCase();
+
+        if (name === "tuna") {
+            tunaSound.currentTime = 0;
+            tunaSound.play();
+        }
+    });
+
+    const melonSound = new Audio("../melon.mp3");
+
+    document.addEventListener("click", function (e) {
+        const card = e.target.closest(".food-card");
+        if (!card) return;
+
+        const name = card.querySelector(".food-title h3")?.textContent.trim().toLowerCase();
+
+        if (name === "watermelon") {
+            melonSound.currentTime = 0;
+            melonSound.play();
+
+            const hello = document.createElement("div");
+            hello.className = "tuna-hello";
+            hello.textContent = "WELL WELL WELL";
+
+            card.style.position = "relative";
+            card.appendChild(hello);
+
+            setTimeout(() => {
+                hello.remove();
+            }, 3000);
+        }
+    });
+
+    document.addEventListener('change', function (e) {
+
+        if (!e.target.classList.contains('portion-select')) return;
+
+        const select = e.target;
+        const card = select.closest('.food-card');
+
+        if (select.value === 'custom') {
+            select.style.display = 'none';
+
+            const customBox = card.querySelector('.custom-portion-box');
+            customBox.classList.add('active');
+
+            const input = customBox.querySelector('.custom-portion-input');
+            input.focus();
+
+            return;
+        }
+
+        updateNutrition(card, Number(select.value));
+    });
 
 
-document.addEventListener('input', function(e) {
+    document.addEventListener('input', function (e) {
 
-    if (!e.target.classList.contains('custom-portion-input')) return;
+        if (!e.target.classList.contains('custom-portion-input')) return;
 
-    const input = e.target;
-    const card = input.closest('.food-card');
+        const input = e.target;
+        const card = input.closest('.food-card');
 
-    const amount = Number(input.value);
+        const amount = Number(input.value);
 
-    if (!amount || amount <= 0) return;
+        if (!amount || amount <= 0) return;
 
-    updateNutrition(card, amount);
-});
+        updateNutrition(card, amount);
+    });
 
+    document.addEventListener('click', function (e) {
+
+        if (!e.target.classList.contains('custom-portion-delete')) return;
+
+        const card = e.target.closest('.food-card');
+
+        const customBox = card.querySelector('.custom-portion-box');
+        const select = card.querySelector('.portion-select');
+        const input = card.querySelector('.custom-portion-input');
+
+        customBox.classList.remove('active');
+        input.value = '';
+
+        select.style.display = '';
+        select.value = '100';
+
+        updateNutrition(card, 100);
+    });
+
+    const shortcutContainer = document.getElementById('categoryShortcuts');
+    const sections = document.querySelectorAll('#ingredientsContainer .category');
+
+    sections.forEach(section => {
+
+        const title = section.querySelector('.category-header h2');
+        if (!title) return;
+
+        const categoryName = title.textContent.trim();
+
+        const exists = data.some(item =>
+            item.categorie?.trim().toLowerCase() === categoryName.toLowerCase()
+        );
+
+        if (!exists) return;
+
+        const card = document.createElement('button');
+
+        card.className = 'category-shortcut';
+        card.type = 'button';
+        card.textContent = categoryName;
+
+        card.addEventListener('click', () => {
+            section.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+
+        shortcutContainer.appendChild(card);
+    });
+
+    initPlateSystem();
+    initLiveSearch();
+}
 
 function updateNutrition(card, amount) {
 
@@ -172,158 +236,159 @@ function updateNutrition(card, amount) {
         (fat * multiplier).toFixed(1) + 'g';
 }
 
-
-document.addEventListener('click', function(e) {
-
-    if (!e.target.classList.contains('custom-portion-delete')) return;
-
-    const card = e.target.closest('.food-card');
-
-    const customBox = card.querySelector('.custom-portion-box');
-    const select = card.querySelector('.portion-select');
-    const input = card.querySelector('.custom-portion-input');
-
-    customBox.classList.remove('active');
-    input.value = '';
-
-    select.style.display = '';
-    select.value = '100';
-
-    updateNutrition(card, 100);
-});
-
-const shortcutContainer =
-    document.getElementById('categoryShortcuts');
-
-const sections =
-    document.querySelectorAll('#ingredientsContainer .category');
-
-sections.forEach(section => {
-
-    const title =
-        section.querySelector('.category-header h2');
-
-    if (!title) return;
-
-    const categoryName =
-        title.textContent.trim();
-
-    const exists = data.some(item =>
-        item.categorie?.trim().toLowerCase() ===
-        categoryName.toLowerCase()
-    );
-
-    if (!exists) return;
-
-    const card =
-        document.createElement('button');
-
-    card.className = 'category-shortcut';
-    card.type = 'button';
-    card.textContent = categoryName;
-
-    card.addEventListener('click', () => {
-        section.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
-    });
-
-    shortcutContainer.appendChild(card);
-});
-
-initPlateSystem();
-
-}
-
 loadFood();
+
+
+/* =========================
+   LIVE SEARCH
+========================= */
+
+function initLiveSearch() {
+
+    const input = document.getElementById('liveSearch');
+    const section = document.getElementById('searchResultsSection');
+    const grid = document.getElementById('searchResultsGrid');
+
+    input.addEventListener('input', function (e) {
+
+        const term = e.target.value.trim().toLowerCase();
+
+        if (!term) {
+            section.classList.remove('active');
+            grid.innerHTML = '';
+            return;
+        }
+
+        const matches = foodData.filter(item =>
+            item.name.toLowerCase().includes(term)
+        );
+
+        if (matches.length === 0) {
+            section.classList.remove('active');
+            grid.innerHTML = '';
+            return;
+        }
+
+        grid.innerHTML = matches.map(renderCard).join('');
+        section.classList.add('active');
+
+        highlightSelectedCards();
+    });
+}
 
 
 /* =========================
    PLATE SYSTEM
 ========================= */
 
+const STORAGE_KEY = 'plateSelection';
+const EXPIRY_MS = 10 * 60 * 1000;
+
+let selectedItems = [];
+
+let plateList, plateTotals, saveBtn, saveToast;
+
+function loadSaved() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+
+    const saved = JSON.parse(raw);
+    const elapsed = Date.now() - saved.timestamp;
+
+    if (elapsed < EXPIRY_MS) {
+        selectedItems = saved.items;
+    } else {
+        localStorage.removeItem(STORAGE_KEY);
+    }
+}
+
+function persist() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        items: selectedItems,
+        timestamp: Date.now()
+    }));
+}
+
+/* Keeps every card on the page (main grid + search results) visually in sync */
+function highlightSelectedCards() {
+    document.querySelectorAll('.food-card').forEach(card => {
+        const name = card.querySelector('.food-title h3')?.textContent.trim();
+        const isSelected = selectedItems.some(i => i.name === name);
+        card.classList.toggle('selected', isSelected);
+    });
+    renderPanel();
+}
+
+function renderPanel() {
+    plateList.innerHTML = '';
+
+    let totalKcal = 0;
+    let totalProtein = 0;
+
+    selectedItems.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <span>${item.name}</span>
+            <span class="plate-item-right">
+                ${item.kcal} kcal
+                <button class="plate-item-remove" type="button" data-name="${item.name}" title="Remove">×</button>
+            </span>
+        `;
+        plateList.appendChild(li);
+
+        totalKcal += item.kcal;
+        totalProtein += item.protein;
+    });
+
+    plateTotals.textContent = `${Math.round(totalKcal)} kcal · ${totalProtein.toFixed(1)}g protein`;
+
+    const username = localStorage.getItem('username');
+
+    if (!username) {
+        saveBtn.disabled = true;
+        saveBtn.classList.remove('active');
+        return;
+    }
+
+    if (selectedItems.length >= 3) {
+        saveBtn.disabled = false;
+        saveBtn.classList.add('active');
+    } else {
+        saveBtn.disabled = true;
+        saveBtn.classList.remove('active');
+    }
+}
+
+function removeItemByName(name) {
+    selectedItems = selectedItems.filter(i => i.name !== name);
+    persist();
+    highlightSelectedCards();
+}
+
+function showSaveToast() {
+    saveToast.classList.add('show');
+    clearTimeout(showSaveToast._t);
+    showSaveToast._t = setTimeout(() => {
+        saveToast.classList.remove('show');
+    }, 3000);
+}
+
 function initPlateSystem() {
 
-    const STORAGE_KEY = 'plateSelection';
-    const EXPIRY_MS = 10 * 60 * 1000;
+    plateList = document.getElementById('plateList');
+    plateTotals = document.getElementById('plateTotals');
+    saveBtn = document.getElementById('savePlateBtn');
+    saveToast = document.getElementById('saveToast');
 
-    let selectedItems = [];
+    const username = localStorage.getItem('username');
 
-    const plateList = document.getElementById('plateList');
-const plateTotals = document.getElementById('plateTotals');
-const saveBtn = document.getElementById('savePlateBtn');
-const username = localStorage.getItem('username');
-
-if (!username) {
-    saveBtn.textContent = 'Log in to save your plate';
-    saveBtn.disabled = true;
-    saveBtn.classList.remove('active');
-}
-    function loadSaved() {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-
-        const saved = JSON.parse(raw);
-        const elapsed = Date.now() - saved.timestamp;
-
-        if (elapsed < EXPIRY_MS) {
-            selectedItems = saved.items;
-        } else {
-            localStorage.removeItem(STORAGE_KEY);
-        }
+    if (!username) {
+        saveBtn.textContent = 'Log in to save your plate';
+        saveBtn.disabled = true;
+        saveBtn.classList.remove('active');
     }
 
-    function persist() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-            items: selectedItems,
-            timestamp: Date.now()
-        }));
-    }
-
-    function highlightSavedCards() {
-        selectedItems.forEach(item => {
-            document.querySelectorAll('.food-card').forEach(card => {
-                const name = card.querySelector('.food-title h3')?.textContent.trim();
-                if (name === item.name) card.classList.add('selected');
-            });
-        });
-        renderPanel();
-    }
-
-    function renderPanel() {
-        plateList.innerHTML = '';
-
-        let totalKcal = 0;
-        let totalProtein = 0;
-
-        selectedItems.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = `<span>${item.name}</span><span>${item.kcal} kcal</span>`;
-            plateList.appendChild(li);
-
-            totalKcal += item.kcal;
-            totalProtein += item.protein;
-        });
-
-        plateTotals.textContent = `${Math.round(totalKcal)} kcal · ${totalProtein.toFixed(1)}g protein`;
-
-        if (!username) {
-    saveBtn.disabled = true;
-    saveBtn.classList.remove('active');
-    return;
-}
-
-if (selectedItems.length >= 3) {
-    saveBtn.disabled = false;
-    saveBtn.classList.add('active');
-} else {
-    saveBtn.disabled = true;
-    saveBtn.classList.remove('active');
-}
-    }
-
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
 
         if (e.target.closest('.portion-wrapper')) return;
 
@@ -331,25 +396,29 @@ if (selectedItems.length >= 3) {
         if (!card) return;
 
         const name = card.querySelector('.food-title h3')?.textContent.trim();
-const kcal = Number(card.dataset.kcal);
-const protein = Number(card.dataset.protein);
-const fat = Number(card.dataset.fat);
+        const kcal = Number(card.dataset.kcal);
+        const protein = Number(card.dataset.protein);
+        const fat = Number(card.dataset.fat);
 
-const existingIndex = selectedItems.findIndex(i => i.name === name);
+        const existingIndex = selectedItems.findIndex(i => i.name === name);
 
-if (existingIndex > -1) {
-    selectedItems.splice(existingIndex, 1);
-    card.classList.remove('selected');
-} else {
-    selectedItems.push({ name, kcal, protein, fat });
-    card.classList.add('selected');
-}
+        if (existingIndex > -1) {
+            selectedItems.splice(existingIndex, 1);
+        } else {
+            selectedItems.push({ name, kcal, protein, fat });
+        }
 
         persist();
-        renderPanel();
+        highlightSelectedCards();
     });
 
-    saveBtn.addEventListener('click', async function() {
+    document.addEventListener('click', function (e) {
+        if (!e.target.classList.contains('plate-item-remove')) return;
+        e.stopPropagation();
+        removeItemByName(e.target.dataset.name);
+    });
+
+    saveBtn.addEventListener('click', async function () {
         if (selectedItems.length < 3) return;
 
         const username = localStorage.getItem('username') || 'guest';
@@ -366,12 +435,12 @@ if (existingIndex > -1) {
         }
 
         const itemsToInsert = selectedItems.map(item => ({
-    plate_id: plate.id,
-    name: item.name,
-    kcal: item.kcal,
-    protein: item.protein,
-    fat: item.fat
-}));
+            plate_id: plate.id,
+            name: item.name,
+            kcal: item.kcal,
+            protein: item.protein,
+            fat: item.fat
+        }));
 
         const { error: itemsError } = await supabaseClient
             .from('plate_items')
@@ -383,17 +452,15 @@ if (existingIndex > -1) {
         }
 
         //the cooking sound genshin impact ref
+        new Audio('cooking.mp3').play().catch(() => {});
 
-       new Audio('cooking.mp3').play().catch((error) => {
-    console.error("Cooking sound failed:", error);
-});
+        showSaveToast();
 
         selectedItems = [];
         localStorage.removeItem(STORAGE_KEY);
-        document.querySelectorAll('.food-card.selected').forEach(c => c.classList.remove('selected'));
-        renderPanel();
+        highlightSelectedCards();
     });
 
     loadSaved();
-    highlightSavedCards();
+    highlightSelectedCards();
 }

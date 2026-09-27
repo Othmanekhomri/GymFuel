@@ -13,6 +13,12 @@
     box-sizing: border-box;
 }
 
+:root {
+    --brand-cyan: #00d4ff;
+    --brand-purple: #a855f7;
+    --brand-magenta: #ff3dbb;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -24,25 +30,17 @@ body {
     overflow-x: hidden;
 }
 
-/* =========================
-   PROGRESS BAR
-========================= */
-
 .progress-bar {
     position: fixed;
     top: 0;
     left: 0;
     height: 3px;
     width: 0%;
-    background: linear-gradient(90deg, #8c1717, #ff5b3d, #ffb347);
+    background: linear-gradient(90deg, var(--brand-cyan), var(--brand-purple), var(--brand-magenta));
     z-index: 999;
     transition: width 0.1s linear;
-    box-shadow: 0 0 15px rgba(255, 91, 61, 0.7);
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
 }
-
-/* =========================
-   AURA CANVAS
-========================= */
 
 #aura {
     position: fixed;
@@ -51,10 +49,6 @@ body {
     pointer-events: none;
     opacity: 0.85;
 }
-
-/* =========================
-   SCENES
-========================= */
 
 .scene {
     position: relative;
@@ -110,15 +104,28 @@ body {
 }
 
 .glow-word {
-    background: linear-gradient(90deg, #ff5b3d, #ffb347);
+    background: linear-gradient(90deg, var(--brand-cyan), var(--brand-purple), var(--brand-magenta));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
 }
 
-/* =========================
-   HERO
-========================= */
+#logoIntro .logo-intro-img {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 30px;
+    border-radius: 28px;
+    object-fit: cover;
+    display: block;
+}
+
+#logoIntro p {
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: rgba(255,255,255,.6);
+}
 
 #hero {
     flex-direction: column;
@@ -174,21 +181,13 @@ body {
     50% { transform: translate(-50%, 10px); }
 }
 
-/* =========================
-   NUMBERED LINE (for discipline scenes)
-========================= */
-
 .line-number {
     font-size: 13px;
     font-weight: 900;
     letter-spacing: 3px;
-    color: #ff5b3d;
+    color: var(--brand-cyan);
     margin-bottom: 14px;
 }
-
-/* =========================
-   STAT ROW
-========================= */
 
 .stat-row {
     display: flex;
@@ -206,7 +205,7 @@ body {
     display: block;
     font-size: clamp(30px, 5vw, 48px);
     font-weight: 900;
-    background: linear-gradient(90deg, #ff5b3d, #ffb347);
+    background: linear-gradient(90deg, var(--brand-cyan), var(--brand-magenta));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -219,32 +218,185 @@ body {
     color: rgba(255,255,255,.5);
 }
 
-/* =========================
-   FINAL CTA
-========================= */
-
 #final {
-    background: radial-gradient(circle at 50% 30%, rgba(140,23,23,.35), transparent 60%);
+    background:
+        linear-gradient(to bottom, #000 0%, transparent 30%),
+        radial-gradient(circle at 50% 30%, rgba(168,85,247,.30), transparent 60%);
 }
 
 .cta-btn {
     display: inline-block;
     margin-top: 34px;
-    padding: 18px 40px;
-    border-radius: 14px;
-    background: white;
-    color: #111;
-    font-weight: 900;
-    font-size: 14px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.cta-btn:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 15px 35px rgba(255,255,255,.15);
+.uiverse {
+    --duration: 7s;
+    --easing: linear;
+    --c-color-1: rgba(0, 212, 255, 0.7);
+    --c-color-2: #a855f7;
+    --c-color-3: #ff3dbb;
+    --c-color-4: rgba(0, 212, 255, 0.7);
+    --c-shadow: rgba(168, 85, 247, 0.5);
+    --c-shadow-inset-top: rgba(0, 212, 255, 0.9);
+    --c-shadow-inset-bottom: rgba(255, 255, 255, 0.8);
+    --c-radial-inner: #a855f7;
+    --c-radial-outer: #00d4ff;
+    --c-color: #fff;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    outline: none;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    display: table;
+    border-radius: 24px;
+    padding: 0;
+    margin: 34px auto 0;
+    text-align: center;
+    font-weight: 900;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.5;
+    text-decoration: none;
+    color: var(--c-color);
+    background: radial-gradient(circle, var(--c-radial-inner), var(--c-radial-outer) 80%);
+    box-shadow: 0 0 14px var(--c-shadow);
+}
+
+.uiverse:before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    z-index: 3;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 24px;
+    box-shadow:
+        inset 0 3px 12px var(--c-shadow-inset-top),
+        inset 0 -3px 4px var(--c-shadow-inset-bottom);
+}
+
+.uiverse .wrapper {
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    overflow: hidden;
+    border-radius: 24px;
+    min-width: 170px;
+    padding: 16px 32px;
+}
+
+.uiverse .wrapper span {
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+}
+
+.uiverse:hover {
+    --duration: 1400ms;
+}
+
+.uiverse .wrapper .circle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    filter: blur(var(--blur, 8px));
+    background: var(--background, transparent);
+    transform: translate(var(--x, 0), var(--y, 0)) translateZ(0);
+    animation: var(--animation, none) var(--duration) var(--easing) infinite;
+}
+
+.uiverse .wrapper .circle.circle-1,
+.uiverse .wrapper .circle.circle-9,
+.uiverse .wrapper .circle.circle-10 {
+    --background: var(--c-color-4);
+}
+
+.uiverse .wrapper .circle.circle-3,
+.uiverse .wrapper .circle.circle-4 {
+    --background: var(--c-color-2);
+    --blur: 14px;
+}
+
+.uiverse .wrapper .circle.circle-5,
+.uiverse .wrapper .circle.circle-6 {
+    --background: var(--c-color-3);
+    --blur: 16px;
+}
+
+.uiverse .wrapper .circle.circle-2,
+.uiverse .wrapper .circle.circle-7,
+.uiverse .wrapper .circle.circle-8,
+.uiverse .wrapper .circle.circle-11,
+.uiverse .wrapper .circle.circle-12 {
+    --background: var(--c-color-1);
+    --blur: 12px;
+}
+
+.uiverse .wrapper .circle.circle-1 { --x: 0; --y: -40px; --animation: circle-1; }
+.uiverse .wrapper .circle.circle-2 { --x: 92px; --y: 8px; --animation: circle-2; }
+.uiverse .wrapper .circle.circle-3 { --x: -12px; --y: -12px; --animation: circle-3; }
+.uiverse .wrapper .circle.circle-4 { --x: 80px; --y: -12px; --animation: circle-4; }
+.uiverse .wrapper .circle.circle-5 { --x: 12px; --y: -4px; --animation: circle-5; }
+.uiverse .wrapper .circle.circle-6 { --x: 56px; --y: 16px; --animation: circle-6; }
+.uiverse .wrapper .circle.circle-7 { --x: 8px; --y: 28px; --animation: circle-7; }
+.uiverse .wrapper .circle.circle-8 { --x: 28px; --y: -4px; --animation: circle-8; }
+.uiverse .wrapper .circle.circle-9 { --x: 20px; --y: -12px; --animation: circle-9; }
+.uiverse .wrapper .circle.circle-10 { --x: 64px; --y: 16px; --animation: circle-10; }
+.uiverse .wrapper .circle.circle-11 { --x: 4px; --y: 4px; --animation: circle-11; }
+.uiverse .wrapper .circle.circle-12 { --blur: 14px; --x: 52px; --y: 4px; --animation: circle-12; }
+
+@keyframes circle-1 {
+    33% { transform: translate(0px, 16px) translateZ(0); }
+    66% { transform: translate(12px, 64px) translateZ(0); }
+}
+@keyframes circle-2 {
+    33% { transform: translate(80px, -10px) translateZ(0); }
+    66% { transform: translate(72px, -48px) translateZ(0); }
+}
+@keyframes circle-3 {
+    33% { transform: translate(20px, 12px) translateZ(0); }
+    66% { transform: translate(12px, 4px) translateZ(0); }
+}
+@keyframes circle-4 {
+    33% { transform: translate(76px, -12px) translateZ(0); }
+    66% { transform: translate(112px, -8px) translateZ(0); }
+}
+@keyframes circle-5 {
+    33% { transform: translate(84px, 28px) translateZ(0); }
+    66% { transform: translate(40px, -32px) translateZ(0); }
+}
+@keyframes circle-6 {
+    33% { transform: translate(28px, -16px) translateZ(0); }
+    66% { transform: translate(76px, -56px) translateZ(0); }
+}
+@keyframes circle-7 {
+    33% { transform: translate(8px, 28px) translateZ(0); }
+    66% { transform: translate(20px, -60px) translateZ(0); }
+}
+@keyframes circle-8 {
+    33% { transform: translate(32px, -4px) translateZ(0); }
+    66% { transform: translate(56px, -20px) translateZ(0); }
+}
+@keyframes circle-9 {
+    33% { transform: translate(20px, -12px) translateZ(0); }
+    66% { transform: translate(80px, -8px) translateZ(0); }
+}
+@keyframes circle-10 {
+    33% { transform: translate(68px, 20px) translateZ(0); }
+    66% { transform: translate(100px, 28px) translateZ(0); }
+}
+@keyframes circle-11 {
+    33% { transform: translate(4px, 4px) translateZ(0); }
+    66% { transform: translate(68px, 20px) translateZ(0); }
+}
+@keyframes circle-12 {
+    33% { transform: translate(56px, 0px) translateZ(0); }
+    66% { transform: translate(60px, -32px) translateZ(0); }
 }
 
 footer {
@@ -257,37 +409,151 @@ footer {
     letter-spacing: 1px;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
-
 @media (max-width: 600px) {
     .stat-row {
         gap: 28px;
     }
 }
 
-
 #musicToggle {
     position: fixed;
     bottom: 25px;
     right: 25px;
-    width: 48px;
-    height: 48px;
-    border: 1px solid rgba(205, 158, 41, 0.564);
-    border-radius: 50%;
-    background: rgba(15,15,15,.85);
-    color:  linear-gradient(90deg, #ff5b3d, #ffb347);
-    font-size: 18px;
+    width: 56px;
+    height: 56px;
+    border: none;
+    background: transparent;
+    padding: 0;
     cursor: pointer;
     z-index: 1000;
-    backdrop-filter: blur(10px);
-    transition: transform .2s ease, background .2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
 }
 
-#musicToggle:hover {
-    transform: scale(1.08);
-    background: rgba(35,35,35,.95);
+.loader {
+    --color-one: var(--brand-cyan);
+    --color-two: var(--brand-purple);
+    --color-three: rgba(0, 212, 255, 0.5);
+    --color-four: rgba(168, 85, 247, 0.5);
+    --color-five: rgba(0, 212, 255, 0.25);
+    --time-animation: 2s;
+    --size: 0.56;
+    position: relative;
+    border-radius: 50%;
+    transform: scale(var(--size));
+    box-shadow:
+        0 0 25px 0 var(--color-three),
+        0 20px 50px 0 var(--color-four);
+    animation: colorize calc(var(--time-animation) * 3) ease-in-out infinite;
+    pointer-events: none;
+}
+
+.loader::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border-top: solid 1px var(--color-one);
+    border-bottom: solid 1px var(--color-two);
+    background: linear-gradient(180deg, var(--color-five), var(--color-four));
+    box-shadow:
+        inset 0 10px 10px 0 var(--color-three),
+        inset 0 -10px 10px 0 var(--color-four);
+}
+
+.loader .box {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(180deg, var(--color-one) 30%, var(--color-two) 70%);
+    mask: url(#musicClipping);
+    -webkit-mask: url(#musicClipping);
+}
+
+.loader svg {
+    position: absolute;
+}
+
+.loader svg #musicClipping {
+    filter: contrast(15);
+    animation: roundness calc(var(--time-animation) / 2) linear infinite;
+}
+
+.loader svg #musicClipping polygon {
+    filter: blur(7px);
+}
+
+.loader svg #musicClipping polygon:nth-child(1) {
+    transform-origin: 75% 25%;
+    transform: rotate(90deg);
+}
+
+.loader svg #musicClipping polygon:nth-child(2) {
+    transform-origin: 50% 50%;
+    animation: rotation var(--time-animation) linear infinite reverse;
+}
+
+.loader svg #musicClipping polygon:nth-child(3) {
+    transform-origin: 50% 60%;
+    animation: rotation var(--time-animation) linear infinite;
+    animation-delay: calc(var(--time-animation) / -3);
+}
+
+.loader svg #musicClipping polygon:nth-child(4) {
+    transform-origin: 40% 40%;
+    animation: rotation var(--time-animation) linear infinite reverse;
+}
+
+.loader svg #musicClipping polygon:nth-child(5) {
+    transform-origin: 40% 40%;
+    animation: rotation var(--time-animation) linear infinite reverse;
+    animation-delay: calc(var(--time-animation) / -2);
+}
+
+.loader svg #musicClipping polygon:nth-child(6) {
+    transform-origin: 60% 40%;
+    animation: rotation var(--time-animation) linear infinite;
+}
+
+.loader svg #musicClipping polygon:nth-child(7) {
+    transform-origin: 60% 40%;
+    animation: rotation var(--time-animation) linear infinite;
+    animation-delay: calc(var(--time-animation) / -1.5);
+}
+
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes roundness {
+    0% { filter: contrast(15); }
+    20% { filter: contrast(3); }
+    40% { filter: contrast(3); }
+    60% { filter: contrast(15); }
+    100% { filter: contrast(15); }
+}
+
+@keyframes colorize {
+    0% { filter: hue-rotate(0deg); }
+    20% { filter: hue-rotate(-30deg); }
+    40% { filter: hue-rotate(-60deg); }
+    60% { filter: hue-rotate(-90deg); }
+    80% { filter: hue-rotate(-45deg); }
+    100% { filter: hue-rotate(0deg); }
+}
+
+.loader.muted,
+.loader.muted * {
+    animation-play-state: paused !important;
+}
+
+.loader.muted {
+    opacity: 0.35;
 }
 </style>
 </head>
@@ -298,26 +564,36 @@ footer {
     <source src="lobbymusic.mp3" type="audio/mpeg">
 </audio>
 
-<button id="musicToggle">🔊</button>
+<button id="musicToggle" aria-label="Toggle music">
+    <div class="loader" id="musicLoader">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+            <defs>
+                <mask id="musicClipping">
+                    <polygon points="0,0 100,0 100,100 0,100" fill="black"></polygon>
+                    <polygon points="25,25 75,25 50,75" fill="white"></polygon>
+                    <polygon points="50,25 75,75 25,75" fill="white"></polygon>
+                    <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+                    <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+                    <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+                    <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+                </mask>
+            </defs>
+        </svg>
+        <div class="box"></div>
+    </div>
+</button>
     
 <div id="navbarPlaceholder"></div>
 
-<script>
-fetch('navbar.html')
-  .then(res => res.text())
-  .then(html => {
-    document.getElementById('navbarPlaceholder').innerHTML = html;
-    document.querySelectorAll('#navbarPlaceholder script').forEach(oldScript => {
-      const newScript = document.createElement('script');
-      newScript.textContent = oldScript.textContent;
-      oldScript.replaceWith(newScript);
-    });
-  });
-</script>
 <div class="progress-bar" id="progressBar"></div>
 <canvas id="aura"></canvas>
 
-<!-- ============ HERO ============ -->
+<section class="scene" id="logoIntro">
+    <div class="scene-inner">
+        <img src="gymfuelicon.png" alt="GymFuel logo" class="logo-intro-img">
+        <p>Introducing the official logo of our website</p>
+    </div>
+</section>
 
 <section class="scene" id="hero">
     <div class="badge">GYMFUEL PRESENTS </div>
@@ -325,8 +601,6 @@ fetch('navbar.html')
     <p class="sub">A story about focus, hunger, and the version of you<br>that hasn't shown up yet.</p>
     <div class="scroll-cue">Scroll to begin ↓</div>
 </section>
-
-<!-- ============ SCENE 1 ============ -->
 
 <section class="scene">
     <div class="scene-inner">
@@ -337,8 +611,6 @@ fetch('navbar.html')
     </div>
 </section>
 
-<!-- ============ SCENE 2 ============ -->
-
 <section class="scene">
     <div class="scene-inner">
         <div class="line-number">002</div>
@@ -347,8 +619,6 @@ fetch('navbar.html')
         Not a reward. A tool — sharpened daily, used with intent.</p>
     </div>
 </section>
-
-<!-- ============ SCENE 3 — AURA ============ -->
 
 <section class="scene">
     <div class="scene-inner">
@@ -374,8 +644,6 @@ fetch('navbar.html')
     </div>
 </section>
 
-<!-- ============ SCENE 4 ============ -->
-
 <section class="scene">
     <div class="scene-inner">
         <div class="line-number">004</div>
@@ -384,8 +652,6 @@ fetch('navbar.html')
         one extra rep, one meal prepped instead of skipped. Repeat until it's who you are.</p>
     </div>
 </section>
-
-<!-- ============ SCENE 5 ============ -->
 
 <section class="scene">
     <div class="scene-inner">
@@ -396,15 +662,29 @@ fetch('navbar.html')
     </div>
 </section>
 
-<!-- ============ FINAL ============ -->   
-
 <section class="scene" id="final">
     <div class="scene-inner">
         <div class="tag">Final Chapter</div>
         <h2>Your fuel.<br>Your fight.<br><span class="glow-word">Your legacy.</span></h2>
         <p>GymFuel isn't here to motivate you for a day. It's here for the days
         you don't feel like showing up — because that's when it actually counts.</p>
-        <a href="main.html" class="cta-btn">Start Fueling →</a>
+        <a href="main.html" class="cta-btn uiverse">
+            <div class="wrapper">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-3"></div>
+                <div class="circle circle-4"></div>
+                <div class="circle circle-5"></div>
+                <div class="circle circle-6"></div>
+                <div class="circle circle-7"></div>
+                <div class="circle circle-8"></div>
+                <div class="circle circle-9"></div>
+                <div class="circle circle-10"></div>
+                <div class="circle circle-11"></div>
+                <div class="circle circle-12"></div>
+                <span>Start Fueling →</span>
+            </div>
+        </a>
     </div>
 </section>
 
@@ -414,10 +694,6 @@ fetch('navbar.html')
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase-client.js"></script> 
 <script>
-
-/* ===========================
-   SCROLL REVEAL
-=========================== */
 
 const sceneInners = document.querySelectorAll(".scene-inner");
 
@@ -431,10 +707,6 @@ const observer = new IntersectionObserver((entries) => {
 
 sceneInners.forEach(el => observer.observe(el));
 
-/* ===========================
-   PROGRESS BAR
-=========================== */
-
 const progressBar = document.getElementById("progressBar");
 
 window.addEventListener("scroll", () => {
@@ -443,10 +715,6 @@ window.addEventListener("scroll", () => {
     const percent = (scrollTop / docHeight) * 100;
     progressBar.style.width = percent + "%";
 });
-
-/* ===========================
-   AURA PARTICLE FIELD
-=========================== */
 
 const canvas = document.getElementById("aura");
 const ctx = canvas.getContext("2d");
@@ -460,17 +728,17 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-const PARTICLE_COUNT = 55;
+const PARTICLE_COUNT = 160;
 const particles = [];
 
-const colors = ["255,91,61", "255,179,71", "140,23,23", "255,255,255"];
+const colors = ["0,212,255", "168,85,247", "255,61,187", "120,200,255"];
 
 for (let i = 0; i < PARTICLE_COUNT; i++) {
     particles.push({
         x: Math.random() * w,
         y: Math.random() * h,
         r: Math.random() * 2 + 0.6,
-        speed: Math.random() * 0.3 + 0.05,
+        speed: Math.random() * 0.5 + 0.05,
         drift: (Math.random() - 0.5) * 0.3,
         color: colors[Math.floor(Math.random() * colors.length)],
         alpha: Math.random() * 0.5 + 0.15
@@ -501,39 +769,48 @@ function animate() {
 }
 animate();
 
-/* keep canvas synced with real page height as content loads */
 window.addEventListener("load", resize);
-
-
-
-/* ===========================
-   BACKGROUND MUSIC
-=========================== */
 
 const bgMusic = document.getElementById("bgMusic");
 const musicToggle = document.getElementById("musicToggle");
+const musicLoader = document.getElementById("musicLoader");
 
 bgMusic.volume = 0.18;
 
 let musicMuted = localStorage.getItem("gymfuelMusicMuted") === "true";
 
 bgMusic.muted = musicMuted;
-musicToggle.textContent = musicMuted ? "🔇" : "🔊";
+
+if (musicMuted) {
+    musicLoader.classList.add("muted");
+}
 
 function startMusic() {
+    if (musicMuted || !bgMusic.paused) return;
+
     bgMusic.play().catch(() => {
-        // Browser blocked autoplay.
-        // Music will start after the user's first interaction.
+        // Browser may block autoplay with sound.
     });
 }
 
-window.addEventListener("load", startMusic);
+let musicStarted = false;
 
-document.addEventListener("click", () => {
-    if (bgMusic.paused && !musicMuted) {
-        startMusic();
+function tryStartMusic() {
+    if (musicStarted || musicMuted) return;
+
+    startMusic();
+
+    if (!bgMusic.paused) {
+        musicStarted = true;
+        window.removeEventListener("scroll", tryStartMusic);
+        window.removeEventListener("wheel", tryStartMusic);
+        window.removeEventListener("touchstart", tryStartMusic);
     }
-}, { once: true });
+}
+
+window.addEventListener("scroll", tryStartMusic, { passive: true });
+window.addEventListener("wheel", tryStartMusic, { passive: true });
+window.addEventListener("touchstart", tryStartMusic, { passive: true });
 
 musicToggle.addEventListener("click", (event) => {
     event.stopPropagation();
@@ -543,13 +820,25 @@ musicToggle.addEventListener("click", (event) => {
 
     localStorage.setItem("gymfuelMusicMuted", musicMuted);
 
-    musicToggle.textContent = musicMuted ? "🔇" : "🔊";
+    musicLoader.classList.toggle("muted", musicMuted);
 
     if (!musicMuted) {
-        bgMusic.play();
+        startMusic();
     }
 });
 </script>
 
+<script>
+fetch('navbar.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('navbarPlaceholder').innerHTML = html;
+    document.querySelectorAll('#navbarPlaceholder script').forEach(oldScript => {
+      const newScript = document.createElement('script');
+      newScript.textContent = oldScript.textContent;
+      oldScript.replaceWith(newScript);
+    });
+  });
+</script>
 </body>
 </html>

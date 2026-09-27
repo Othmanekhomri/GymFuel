@@ -45,10 +45,6 @@
             align-items: center;
         }
 
-        /* =========================
-           PROFILE HEADER CARD
-        ========================= */
-
         .profile-card {
             width: 100%;
             max-width: 560px;
@@ -120,13 +116,9 @@
             transform: translateY(-2px);
         }
 
-        /* =========================
-           TROPHIES SECTION
-        ========================= */
-
         .trophies-section {
             width: 100%;
-            max-width: 560px;
+            max-width: 700px;
             margin-top: 25px;
             padding: 30px;
 
@@ -149,26 +141,164 @@
         }
 
         .trophies-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 22px;
         }
 
         .trophy-slot {
-            aspect-ratio: 1;
+            width: 190px;
+            aspect-ratio: 190 / 254;
             border-radius: 16px;
             border: 1px dashed rgba(255,255,255,.22);
             display: flex;
             align-items: center;
             justify-content: center;
             color: rgba(255,255,255,.3);
-            font-size: 11px;
+            font-size: 12px;
             text-align: center;
+        }
+
+        .card {
+            overflow: visible;
+            width: 190px;
+            height: 254px;
+            cursor: pointer;
+            perspective: 1000px;
+        }
+
+        .card .content {
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 400ms;
+            box-shadow: 0px 0px 10px 1px #000000ee;
+            border-radius: 12px;
+        }
+
+        .card.flipped .content {
+            transform: rotateY(180deg);
+        }
+
+        .card .front, .card .back {
+            background-color: #151515;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .card .back {
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .card .back::before {
+            position: absolute;
+            content: ' ';
+            display: block;
+            width: 160px;
+            height: 160%;
+            background: linear-gradient(90deg, transparent, #a855f7, #ff3dbb, #a855f7, transparent);
+            animation: rotation_481 5000ms infinite linear;
+        }
+
+        .card .back-content {
+            position: absolute;
+            width: 96%;
+            height: 96%;
+            background-color: #151515;
+            border-radius: 10px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .card .back-content img {
+            width: 110px !important;
+            height: 110px !important;
+            object-fit: contain;
+        }
+
+        .card .back-content .badge-name {
+            font-size: 15px;
+            font-weight: 900;
+        }
+
+        .card .back-content .flip-hint {
+            font-size: 10px;
+            color: rgba(255,255,255,.4);
+            letter-spacing: .5px;
+        }
+
+        @keyframes rotation_481 {
+            0% { transform: rotateZ(0deg); }
+            100% { transform: rotateZ(360deg); }
+        }
+
+        .card .front {
+            transform: rotateY(180deg);
+            color: white;
+        }
+
+        .card .front .front-content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            text-align: center;
+        }
+
+        .card .front-content .badge-tag {
+            background-color: #00000055;
+            padding: 3px 12px;
+            border-radius: 10px;
+            backdrop-filter: blur(2px);
+            width: fit-content;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .card .front-content .front-name {
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .card .description {
+            box-shadow: 0px 0px 10px 5px #00000088;
+            width: 100%;
+            padding: 12px;
+            background-color: #00000099;
+            backdrop-filter: blur(5px);
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: rgba(255,255,255,.85);
         }
 
         @media (max-width: 500px) {
             .trophies-grid {
-                grid-template-columns: repeat(2, 1fr);
+                gap: 14px;
             }
         }
 .profile-kcal {
@@ -233,6 +363,55 @@
                 }
                 document.getElementById('profileKcal').textContent = `${data.call} kcal / day`;
             });
+
+        loadBadges(username);
+    }
+
+    async function loadBadges(username) {
+        const { data, error } = await supabaseClient
+            .from('user_badges')
+            .select('badges(name, description, icon_url)')
+            .eq('user_name', username);
+
+        if (error) {
+            console.error('Could not load badges:', error.message);
+            return;
+        }
+
+        if (!data || data.length === 0) return;
+
+        const grid = document.getElementById('trophiesGrid');
+        grid.innerHTML = '';
+
+        data.forEach(row => {
+            const badge = row.badges;
+            if (!badge) return;
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="content">
+                    <div class="back">
+                        <div class="back-content">
+                            <img src="${badge.icon_url}.png" alt="${badge.name}">
+                            <div class="badge-name">${badge.name}</div>
+                            <div class="flip-hint">Tap to flip</div>
+                        </div>
+                    </div>
+                    <div class="front">
+                        <div class="front-content">
+                            <div class="badge-tag">Earned</div>
+                            <div class="front-name">${badge.name}</div>
+                            <div class="description">${badge.description}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            card.addEventListener('click', function () {
+                card.classList.toggle('flipped');
+            });
+            grid.appendChild(card);
+        });
     }
 
     document.getElementById('logoutBtn').addEventListener('click', function() {
