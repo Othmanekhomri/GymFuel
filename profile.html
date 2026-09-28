@@ -1,427 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GymFuel - Profile</title>
-
-    <style>
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            min-height: 100vh;
-            font-family: Arial, Helvetica, sans-serif;
-            color: white;
-            background:
-                linear-gradient(
-                    rgba(8, 8, 12, .62),
-                    rgba(8, 8, 12, .82)
-                ),
-                url("https://images.unsplash.com/photo-1723639904881-d7213fc8a526?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
-                center center / cover fixed no-repeat;
-            overflow-x: hidden;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .page {
-            min-height: 100vh;
-            padding: 120px 20px 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .profile-card {
-            width: 100%;
-            max-width: 560px;
-            padding: 35px 30px;
-            text-align: center;
-
-            background: rgba(18,18,22,.72);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255,255,255,.14);
-            border-radius: 24px;
-            box-shadow:
-                0 30px 80px rgba(0,0,0,.45),
-                inset 0 1px 0 rgba(255,255,255,.09);
-
-            animation: enter .8s ease both;
-        }
-
-        @keyframes enter {
-            from { opacity: 0; transform: translateY(25px) scale(.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .avatar {
-            width: 84px;
-            height: 84px;
-            margin: 0 auto 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #fff, #bbb);
-            color: #111;
-            font-size: 34px;
-            font-weight: 900;
-        }
-
-        .profile-name {
-            font-size: clamp(28px, 6vw, 40px);
-            letter-spacing: -1px;
-            margin-bottom: 6px;
-        }
-
-        .profile-sub {
-            color: rgba(255,255,255,.55);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 26px;
-        }
-
-        .logout-btn {
-            display: inline-block;
-            padding: 12px 26px;
-            border-radius: 14px;
-            background: rgba(255,255,255,.08);
-            border: 1px solid rgba(255,255,255,.22);
-            color: white;
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: .5px;
-            cursor: pointer;
-            transition: .25s ease;
-        }
-
-        .logout-btn:hover {
-            background: rgba(255,90,90,.18);
-            border-color: rgba(255,120,120,.5);
-            transform: translateY(-2px);
-        }
-
-        .trophies-section {
-            width: 100%;
-            max-width: 700px;
-            margin-top: 25px;
-            padding: 30px;
-
-            background: rgba(18,18,22,.55);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,.12);
-            border-radius: 24px;
-        }
-
-        .trophies-section h2 {
-            font-size: 20px;
-            margin-bottom: 5px;
-        }
-
-        .trophies-section p {
-            color: rgba(255,255,255,.5);
-            font-size: 12px;
-            margin-bottom: 20px;
-        }
-
-        .trophies-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 22px;
-        }
-
-        .trophy-slot {
-            width: 190px;
-            aspect-ratio: 190 / 254;
-            border-radius: 16px;
-            border: 1px dashed rgba(255,255,255,.22);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255,255,255,.3);
-            font-size: 12px;
-            text-align: center;
-        }
-
-        .card {
-            overflow: visible;
-            width: 190px;
-            height: 254px;
-            cursor: pointer;
-            perspective: 1000px;
-        }
-
-        .card .content {
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            transition: transform 400ms;
-            box-shadow: 0px 0px 10px 1px #000000ee;
-            border-radius: 12px;
-        }
-
-        .card.flipped .content {
-            transform: rotateY(180deg);
-        }
-
-        .card .front, .card .back {
-            background-color: #151515;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .card .back {
-            width: 100%;
-            height: 100%;
-            justify-content: center;
-            display: flex;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .card .back::before {
-            position: absolute;
-            content: ' ';
-            display: block;
-            width: 160px;
-            height: 160%;
-            background: linear-gradient(90deg, transparent, #a855f7, #ff3dbb, #a855f7, transparent);
-            animation: rotation_481 5000ms infinite linear;
-        }
-
-        .card .back-content {
-            position: absolute;
-            width: 96%;
-            height: 96%;
-            background-color: #151515;
-            border-radius: 10px;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 16px;
-            padding: 14px;
-            text-align: center;
-        }
-
-        .card .back-content img {
-            width: 110px !important;
-            height: 110px !important;
-            object-fit: contain;
-        }
-
-        .card .back-content .badge-name {
-            font-size: 15px;
-            font-weight: 900;
-        }
-
-        .card .back-content .flip-hint {
-            font-size: 10px;
-            color: rgba(255,255,255,.4);
-            letter-spacing: .5px;
-        }
-
-        @keyframes rotation_481 {
-            0% { transform: rotateZ(0deg); }
-            100% { transform: rotateZ(360deg); }
-        }
-
-        .card .front {
-            transform: rotateY(180deg);
-            color: white;
-        }
-
-        .card .front .front-content {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 14px;
-            text-align: center;
-        }
-
-        .card .front-content .badge-tag {
-            background-color: #00000055;
-            padding: 3px 12px;
-            border-radius: 10px;
-            backdrop-filter: blur(2px);
-            width: fit-content;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .card .front-content .front-name {
-            font-size: 16px;
-            font-weight: 900;
-        }
-
-        .card .description {
-            box-shadow: 0px 0px 10px 5px #00000088;
-            width: 100%;
-            padding: 12px;
-            background-color: #00000099;
-            backdrop-filter: blur(5px);
-            border-radius: 8px;
-            font-size: 12px;
-            line-height: 1.5;
-            color: rgba(255,255,255,.85);
-        }
-
-        @media (max-width: 500px) {
-            .trophies-grid {
-                gap: 14px;
-            }
-        }
-.profile-kcal {
-    color: rgba(255,255,255,.75);
-    font-size: 14px;
-    font-weight: 800;
-    margin-bottom: 20px;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GymFuel - Profile</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    min-height: 100vh; font-family: Arial, Helvetica, sans-serif; color: white;
+    background: #000;
+    overflow-x: hidden;
 }
-    </style>
+#aura { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .85; }
+.page { position: relative; z-index: 1; }
+a { text-decoration: none; color: inherit; }
+
+.page { min-height: 100vh; padding: 120px 20px 60px; display: flex; flex-direction: column; align-items: center; }
+
+.profile-card {
+    width: 100%; max-width: 560px; padding: 35px 30px; text-align: center;
+    background: rgba(18,18,22,.72); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,.14); border-radius: 24px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.09);
+    animation: enter .8s ease both;
+}
+@keyframes enter {
+    from { opacity: 0; transform: translateY(25px) scale(.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.avatar {
+    width: 84px; height: 84px; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; background: linear-gradient(135deg, #fff, #bbb); color: #111; font-size: 34px; font-weight: 900;
+}
+.profile-name { font-size: clamp(28px, 6vw, 40px); letter-spacing: -1px; margin-bottom: 6px; }
+.profile-sub { color: rgba(255,255,255,.55); font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 26px; }
+.profile-kcal { color: rgba(255,255,255,.75); font-size: 14px; font-weight: 800; margin-bottom: 20px; }
+.logout-btn {
+    display: inline-block; padding: 12px 26px; border-radius: 14px;
+    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.22);
+    color: white; font-size: 12px; font-weight: 800; letter-spacing: .5px; cursor: pointer; transition: .25s ease;
+}
+.logout-btn:hover { background: rgba(255,90,90,.18); border-color: rgba(255,120,120,.5); transform: translateY(-2px); }
+
+/* TROPHIES */
+.trophies-section {
+    width: 100%; max-width: 700px; margin-top: 25px; padding: 30px;
+    background: rgba(18,18,22,.55); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,.12); border-radius: 24px;
+}
+.trophies-section h2 { font-size: 20px; margin-bottom: 5px; }
+.trophies-section p { color: rgba(255,255,255,.5); font-size: 12px; margin-bottom: 20px; }
+.trophies-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 22px; }
+
+.card { width: 190px; height: 254px; cursor: pointer; perspective: 1000px; }
+.card .content {
+    position: relative; width: 100%; height: 100%; transform-style: preserve-3d;
+    transition: transform 400ms; box-shadow: 0 0 10px 1px #000000ee; border-radius: 12px;
+}
+.card.flipped .content { transform: rotateY(180deg); }
+
+.card .front, .card .back {
+    position: absolute; width: 100%; height: 100%; background-color: #151515;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; overflow: hidden;
+}
+
+/* picture side (static, no moving color) */
+.card .back { display: flex; align-items: center; justify-content: center; }
+.card:not(.locked) .back::before {
+    content: ''; position: absolute; display: block; width: 160px; height: 160%;
+    background: linear-gradient(90deg, transparent, #a855f7, #ff3dbb, #a855f7, transparent);
+    animation: rotation_481 5000ms infinite linear;
+}
+@keyframes rotation_481 { 0% { transform: rotateZ(0deg); } 100% { transform: rotateZ(360deg); } }
+.card .back-content {
+    position: absolute; width: 96%; height: 96%; background-color: #151515; border-radius: 10px; color: white;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px; padding: 14px; text-align: center;
+}
+.card .back-content img { width: 110px; height: 110px; object-fit: contain; }
+.card .back-content .badge-name { font-size: 15px; font-weight: 900; }
+.card .back-content .flip-hint { font-size: 10px; color: rgba(255,255,255,.4); letter-spacing: .5px; }
+
+/* description side */
+.card .front { transform: rotateY(180deg); color: white; }
+.card .front .front-content {
+    position: absolute; width: 100%; height: 100%; padding: 16px;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 14px; text-align: center;
+}
+.card .badge-tag {
+    background-color: #00000055; padding: 3px 12px; border-radius: 10px; width: fit-content;
+    font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+}
+.card .front-name { font-size: 16px; font-weight: 900; }
+.card .description {
+    box-shadow: 0 0 10px 5px #00000088; width: 100%; padding: 12px; background-color: #00000099;
+    border-radius: 8px; font-size: 12px; line-height: 1.5; color: rgba(255,255,255,.85);
+}
+
+/* NOT OWNED YET: dimmed */
+.card.locked .content { box-shadow: none; }
+.card.locked .back, .card.locked .front { border: 1px solid rgba(255,255,255,.14); background: #151515; }
+.card.locked .back-content { width: 100%; height: 100%; border-radius: 12px; }
+.card:not(.locked) .badge-tag { background: rgba(168,85,247,.22); color: #d8b4fe; border: 1px solid rgba(168,85,247,.55); }
+.card.locked .back-content img { filter: grayscale(1) brightness(.45); opacity: .55; }
+.card.locked .back-content .badge-name { color: rgba(255,255,255,.4); }
+.card.locked .badge-tag { color: rgba(255,255,255,.6); }
+
+@media (max-width: 500px) { .trophies-grid { gap: 14px; } }
+</style>
 </head>
 
 <body>
+<canvas id="aura"></canvas>
+<div id="navbarPlaceholder"></div>
 
-    <div id="navbarPlaceholder"></div>
+<main class="page">
 
-    <main class="page">
+    <section class="profile-card">
+        <div class="avatar" id="avatarLetter">?</div>
+        <div class="profile-name" id="profileName">Loading...</div>
+        <div class="profile-sub">GYMFUEL MEMBER</div>
+        <div class="profile-kcal" id="profileKcal">— kcal / day</div>
+        <button class="logout-btn" id="logoutBtn">Log Out</button>
+    </section>
 
-        <section class="profile-card">
-            <div class="avatar" id="avatarLetter">?</div>
-            <div class="profile-name" id="profileName">Loading...</div>
-            <div class="profile-sub">GYMFUEL MEMBER</div>
-            
-<div class="profile-kcal" id="profileKcal">— kcal / day</div>
+    <section class="trophies-section">
+        <h2>Trophies</h2>
+        <p id="trophiesCount">Tap a trophy to see how to earn it.</p>
+        <div class="trophies-grid" id="trophiesGrid"></div>
+    </section>
 
-            <button class="logout-btn" id="logoutBtn">Log Out</button>
-        </section>
+</main>
 
-        <section class="trophies-section">
-            <h2>Trophies</h2>
-            <p>Coming soon — track your progress here.</p>
-
-            <div class="trophies-grid" id="trophiesGrid">
-                <div class="trophy-slot">Empty</div>
-                <div class="trophy-slot">Empty</div>
-                <div class="trophy-slot">Empty</div>
-            </div>
-        </section>
-
-    </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase-client.js"></script> 
-    <script>
-
-      (function() {
+<script src="./supabase-client.js"></script>
+<script>
+(function () {
     const username = localStorage.getItem('username');
 
     if (!username) {
         window.location.href = "login.html";
-    } else {
-        document.getElementById('profileName').textContent = username;
-        document.getElementById('avatarLetter').textContent = username.charAt(0).toUpperCase();
-
-        supabaseClient
-            .from('bruh')
-            .select('call')
-            .eq('name', username)
-            .single()
-            .then(({ data, error }) => {
-                if (error) {
-                    console.error('Could not load kcal:', error.message);
-                    return;
-                }
-                document.getElementById('profileKcal').textContent = `${data.call} kcal / day`;
-            });
-
-        loadBadges(username);
+        return;
     }
 
+    document.getElementById('profileName').textContent = username;
+    document.getElementById('avatarLetter').textContent = username.charAt(0).toUpperCase();
+
+    supabaseClient
+        .from('bruh')
+        .select('call')
+        .eq('name', username)
+        .single()
+        .then(({ data, error }) => {
+            if (error) { console.error('Could not load kcal:', error.message); return; }
+            document.getElementById('profileKcal').textContent = `${data.call} kcal / day`;
+        });
+
+    loadBadges(username);
+
     async function loadBadges(username) {
-        const { data, error } = await supabaseClient
+        // 1) every badge the website offers
+        const { data: allBadges, error: allError } = await supabaseClient
+            .from('badges')
+            .select('*');
+
+        if (allError) { console.error('Could not load badges:', allError.message); return; }
+
+        // 2) the ones this user owns
+        const { data: owned, error: ownedError } = await supabaseClient
             .from('user_badges')
-            .select('badges(name, description, icon_url)')
+            .select('badges(name)')
             .eq('user_name', username);
 
-        if (error) {
-            console.error('Could not load badges:', error.message);
-            return;
-        }
+        if (ownedError) { console.error('Could not load your badges:', ownedError.message); return; }
 
-        if (!data || data.length === 0) return;
+        const ownedNames = new Set((owned || []).filter(r => r.badges).map(r => r.badges.name));
+
+        // owned first, then locked
+        const list = (allBadges || []).map(b => ({ ...b, isOwned: ownedNames.has(b.name) }))
+                                      .sort((a, b) => Number(b.isOwned) - Number(a.isOwned));
 
         const grid = document.getElementById('trophiesGrid');
         grid.innerHTML = '';
 
-        data.forEach(row => {
-            const badge = row.badges;
-            if (!badge) return;
-
+        list.forEach(badge => {
             const card = document.createElement('div');
-            card.className = 'card';
+            card.className = 'card' + (badge.isOwned ? '' : ' locked');
             card.innerHTML = `
                 <div class="content">
                     <div class="back">
                         <div class="back-content">
-                            <img src="${badge.icon_url}.png" alt="${badge.name}">
+                            <img src="badges/${badge.icon_url}.png" alt="${badge.name}">
                             <div class="badge-name">${badge.name}</div>
                             <div class="flip-hint">Tap to flip</div>
                         </div>
                     </div>
                     <div class="front">
                         <div class="front-content">
-                            <div class="badge-tag">Earned</div>
+                            <div class="badge-tag">${badge.isOwned ? 'Earned' : 'Locked'}</div>
                             <div class="front-name">${badge.name}</div>
                             <div class="description">${badge.description}</div>
                         </div>
                     </div>
                 </div>
             `;
-            card.addEventListener('click', function () {
-                card.classList.toggle('flipped');
-            });
+            card.addEventListener('click', () => card.classList.toggle('flipped'));
             grid.appendChild(card);
         });
+
+        document.getElementById('trophiesCount').textContent =
+            `${ownedNames.size} of ${list.length} unlocked — tap a trophy to see how to earn it.`;
     }
 
-    document.getElementById('logoutBtn').addEventListener('click', function() {
+    document.getElementById('logoutBtn').addEventListener('click', function () {
         localStorage.removeItem('username');
         window.location.href = "index.html";
     });
 })();
-
-
 </script>
+
+<script>
+const canvas = document.getElementById("aura");
+const ctx = canvas.getContext("2d");
+let w, h;
+function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+const colors = ["0,212,255", "168,85,247", "255,61,187", "120,200,255"];
+const particles = [];
+for (let i = 0; i < 160; i++) {
+    particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 2 + 0.6,
+        speed: Math.random() * 0.5 + 0.05,
+        drift: (Math.random() - 0.5) * 0.3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: Math.random() * 0.5 + 0.15
+    });
+}
+
+function animate() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = `rgba(${p.color}, ${p.alpha})`;
+        ctx.fill();
+        p.y -= p.speed;
+        p.x += p.drift;
+        if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+</script>
+
 <script>
 fetch('navbar.html')
   .then(res => res.text())
