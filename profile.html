@@ -65,7 +65,7 @@ a { text-decoration: none; color: inherit; }
     backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; overflow: hidden;
 }
 
-/* picture side (static, no moving color) */
+/* picture side */
 .card .back { display: flex; align-items: center; justify-content: center; }
 .card:not(.locked) .back::before {
     content: ''; position: absolute; display: block; width: 160px; height: 160%;
@@ -107,6 +107,45 @@ a { text-decoration: none; color: inherit; }
 .card.locked .badge-tag { color: rgba(255,255,255,.6); }
 
 @media (max-width: 500px) { .trophies-grid { gap: 14px; } }
+
+/* INFINITY STONE */
+.enter-btn {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    opacity: 0; pointer-events: none; color: #d8b4fe; font: 700 12px serif; letter-spacing: 4px; cursor: pointer;
+    text-shadow: 0 0 10px #a855f7; transition: color .3s;
+}
+.enter-btn.show { opacity: 1; pointer-events: auto; animation: enterFade 3.5s ease forwards, enterPulse 1.6s 3.5s ease-in-out infinite; }
+.enter-btn:hover { color: #fff; }
+@keyframes enterFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes enterPulse { 50% { opacity: .45; } }
+.dust-word { display: inline-block; white-space: nowrap; }
+.dust-ch { display: inline-block; }
+.card.stripped .description { background: transparent; box-shadow: none; transition: background 1s, box-shadow 1s; }
+.card.stripped .badge-tag { background: transparent !important; border-color: transparent !important; transition: background 1s, border-color 1s; }
+.grain { position: fixed; border-radius: 50%; pointer-events: none; opacity: 0; will-change: transform; }
+
+body.bh-go .card:not(.infinity-card) { opacity: 0; transition: none; }
+#debris { position: fixed; inset: 0; z-index: 10000; pointer-events: none; }
+#bhCanvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 9999; }
+#bhFlash { position: fixed; width: 80px; height: 80px; border-radius: 50%; background: #fff; box-shadow: 0 0 60px 40px #fff; z-index: 10000; pointer-events: none; opacity: 1;
+  transform: translate(-50%,-50%) scale(1); transition: transform .45s cubic-bezier(.12,.8,.2,1), opacity 1.5s ease-out .2s; }
+#bhMsg { position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%); width: min(90vw,560px); z-index: 10001; text-align: center;
+  color: #e9d5ff; font: 600 17px/1.8 Arial, sans-serif; letter-spacing: .4px; text-shadow: 0 0 14px rgba(168,85,247,.9); opacity: 0; transition: opacity 1.2s; pointer-events: none; }
+#bhMsg.show { opacity: 1; }
+/* return star: orbits with the stars, then grows and settles under the text */
+#bhReturn { position: fixed; left: 0; top: 0; z-index: 10002; background: none; border: none; color: #fff; font: 34px/1 Arial, Helvetica, sans-serif; cursor: default;
+  text-shadow: 0 0 8px #fff, 0 0 20px rgba(255,255,255,.55); opacity: 0; pointer-events: none; transition: opacity 2s, text-shadow .3s; will-change: transform; }
+#bhReturn.show { opacity: 1; }
+#bhReturn.ready { pointer-events: auto; cursor: pointer; animation: twinkle 2.6s ease-in-out infinite; }
+#bhReturn.ready:hover { text-shadow: 0 0 12px #fff, 0 0 30px rgba(255,255,255,.8); }
+#bhReturn:focus-visible { outline: 1px solid #fff; outline-offset: 8px; border-radius: 50%; }
+@keyframes twinkle { 50% { opacity: .55; } }
+#bhRing { position: fixed; width: 80px; height: 80px; border-radius: 50%; border: 2px solid rgba(255,255,255,.9); z-index: 10000; pointer-events: none; opacity: .9;
+  transform: translate(-50%,-50%) scale(1); transition: transform 1.8s cubic-bezier(.1,.6,.2,1), opacity 1.8s ease-out; }
+#bhBars i { position: fixed; left: 0; width: 100%; height: 0; background: #000; z-index: 10003; pointer-events: none; transition: height 2.5s ease; }
+#bhBars i:first-child { top: 0; } #bhBars i:last-child { bottom: 0; }
+#bhBars.on i { height: 7vh; }
+.infinity-card .flip-hint { color: rgba(216,180,254,.75); letter-spacing: 1px; }
 </style>
 </head>
 
@@ -133,6 +172,7 @@ a { text-decoration: none; color: inherit; }
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.141.0/build/three.min.js"></script>
 <script src="./supabase-client.js"></script>
 <script>
 (function () {
@@ -159,14 +199,12 @@ a { text-decoration: none; color: inherit; }
     loadBadges(username);
 
     async function loadBadges(username) {
-        // 1) every badge the website offers
         const { data: allBadges, error: allError } = await supabaseClient
             .from('badges')
             .select('*');
 
         if (allError) { console.error('Could not load badges:', allError.message); return; }
 
-        // 2) the ones this user owns
         const { data: owned, error: ownedError } = await supabaseClient
             .from('user_badges')
             .select('badges(name)')
@@ -176,7 +214,6 @@ a { text-decoration: none; color: inherit; }
 
         const ownedNames = new Set((owned || []).filter(r => r.badges).map(r => r.badges.name));
 
-        // owned first, then locked
         const list = (allBadges || []).map(b => ({ ...b, isOwned: ownedNames.has(b.name) }))
                                       .sort((a, b) => Number(b.isOwned) - Number(a.isOwned));
 
@@ -184,15 +221,16 @@ a { text-decoration: none; color: inherit; }
         grid.innerHTML = '';
 
         list.forEach(badge => {
+            const isInf = Number(badge.id) === 7;
             const card = document.createElement('div');
-            card.className = 'card' + (badge.isOwned ? '' : ' locked');
+            card.className = 'card' + (badge.isOwned ? '' : ' locked') + (isInf ? ' infinity-card' : '');
             card.innerHTML = `
                 <div class="content">
                     <div class="back">
                         <div class="back-content">
                             <img src="badges/${badge.icon_url}.png" alt="${badge.name}">
                             <div class="badge-name">${badge.name}</div>
-                            <div class="flip-hint">Tap to flip</div>
+                            <div class="flip-hint">${isInf ? "Don't tap to flip" : 'Tap to flip'}</div>
                         </div>
                     </div>
                     <div class="front">
@@ -200,11 +238,20 @@ a { text-decoration: none; color: inherit; }
                             <div class="badge-tag">${badge.isOwned ? 'Earned' : 'Locked'}</div>
                             <div class="front-name">${badge.name}</div>
                             <div class="description">${badge.description}</div>
+                            ${isInf ? '<div class="enter-btn" id="enterBtn">ENTER</div>' : ''}
                         </div>
                     </div>
                 </div>
             `;
-            card.addEventListener('click', () => card.classList.toggle('flipped'));
+            card.addEventListener('click', () => {
+                if (isInf) {
+                    if (card.classList.contains('flipped')) return;
+                    card.classList.add('flipped');
+                    startInfinity(card);
+                    return;
+                }
+                card.classList.toggle('flipped');
+            });
             grid.appendChild(card);
         });
 
@@ -244,22 +291,521 @@ for (let i = 0; i < 160; i++) {
     });
 }
 
+let auraHole = null;
 function animate() {
     ctx.clearRect(0, 0, w, h);
     particles.forEach(p => {
+        if (p.dead) return;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
         ctx.shadowBlur = 8;
         ctx.shadowColor = `rgba(${p.color}, ${p.alpha})`;
         ctx.fill();
-        p.y -= p.speed;
-        p.x += p.drift;
-        if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+        if (auraHole) {
+            const dx = auraHole.x - p.x, dy = auraHole.y - p.y, d = Math.hypot(dx, dy) || 1;
+            const pull = auraHole.t * (2 + 900 / d);
+            p.x += (dx / d * .6 - dy / d * 1.4) * pull;
+            p.y += (dy / d * .6 + dx / d * 1.4) * pull;
+            if (d < auraHole.r * .7 + 8) p.dead = true;
+        } else {
+            p.y -= p.speed;
+            p.x += p.drift;
+            if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+        }
     });
     requestAnimationFrame(animate);
 }
 animate();
+</script>
+
+<script>
+/* ===== INFINITY STONE: earthquake -> staggered break -> orbit -> ENTER -> black hole eats all -> shrinks -> flash -> colored stars ===== */
+let sAc, shardsEaten = false;
+function playSong() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) sAc = new AC();
+    const song = new Audio('blackhole.mp3');       // put blackhole.mp3 next to this html file
+    song.volume = 0;
+    song.play().catch(e => console.warn('Could not play blackhole.mp3:', e));
+    const fade = setInterval(() => {
+        song.volume = Math.min(.9, song.volume + .03);
+        if (song.volume >= .9) clearInterval(fade);
+    }, 100);
+}
+function boom() {
+    if (!sAc) return;
+    const t = sAc.currentTime, o = sAc.createOscillator(), g = sAc.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(90, t);
+    o.frequency.exponentialRampToValueAtTime(28, t + 1);
+    g.gain.setValueAtTime(.9, t);
+    g.gain.exponentialRampToValueAtTime(.001, t + 2.5);
+    o.connect(g); g.connect(sAc.destination); o.start(t); o.stop(t + 2.5);
+}
+
+/* earthquake rumble: brown noise + sub-bass with a trembling gain, swells with the quake and fades once everything has left */
+function startRumble() {
+    if (!sAc) return;
+    if (sAc.state === 'suspended') sAc.resume();
+    const t = sAc.currentTime, n = sAc.sampleRate * 2, buf = sAc.createBuffer(1, n, sAc.sampleRate), d = buf.getChannelData(0);
+    let l = 0;
+    for (let i = 0; i < n; i++) { l = (l + .02 * (Math.random() * 2 - 1)) / 1.02; d[i] = l * 3.5; }
+    const src = sAc.createBufferSource(); src.buffer = buf; src.loop = true;
+    const lp = sAc.createBiquadFilter(); lp.type = 'lowpass';
+    lp.frequency.setValueAtTime(90, t); lp.frequency.linearRampToValueAtTime(260, t + 4.5);
+    const sub = sAc.createOscillator(), subG = sAc.createGain();
+    sub.type = 'sine'; sub.frequency.setValueAtTime(30, t); sub.frequency.linearRampToValueAtTime(48, t + 4.5); subG.gain.value = .7;
+    const env = sAc.createGain(), trem = sAc.createGain(), lfo = sAc.createOscillator(), lfoG = sAc.createGain();
+    trem.gain.value = .7; lfo.frequency.value = 9; lfoG.gain.value = .3;          // shaky amplitude
+    lfo.connect(lfoG); lfoG.connect(trem.gain);
+    env.gain.setValueAtTime(0, t);
+    env.gain.linearRampToValueAtTime(.75, t + 4.5);                                  // builds with the quake
+    env.gain.setValueAtTime(.75, t + 8);
+    env.gain.linearRampToValueAtTime(0, t + 10);                                     // dies as the last pieces reach orbit
+    src.connect(lp); lp.connect(env); sub.connect(subG); subG.connect(env);
+    env.connect(trem); trem.connect(sAc.destination);
+    [src, sub, lfo].forEach(o => { o.start(t); o.stop(t + 10.2); });
+}
+
+/* the card's text turns to sand and joins the orbit */
+function dustCardText(card, debris, grains, ccx, ccy) {
+    const chars = [];
+    card.querySelectorAll('.badge-tag, .front-name, .description').forEach(el => {
+        const words = el.textContent.trim().split(/\s+/);
+        el.textContent = '';
+        words.forEach((wd, i) => {
+            const ws = document.createElement('span');
+            ws.className = 'dust-word';
+            [...wd].forEach(c => {
+                const s = document.createElement('span');
+                s.className = 'dust-ch'; s.textContent = c;
+                ws.appendChild(s); chars.push(s);
+            });
+            el.appendChild(ws);
+            if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
+        });
+    });
+    setTimeout(() => {
+        card.classList.add('stripped');
+        chars.forEach(s => {
+            const r = s.getBoundingClientRect();
+            if (!r.width) return;
+            const delay = Math.random() * 4.5, col = getComputedStyle(s).color;
+            s.style.transition = `opacity .3s ease ${delay}s`;
+            s.style.opacity = 0;
+            for (let i = 0; i < 5; i++) {
+                const q = document.createElement('i'), sz = 1.5 + Math.random() * 1.8;
+                const px = r.left + Math.random() * r.width, py = r.top + Math.random() * r.height;
+                q.className = 'grain';
+                q.style.cssText = `left:${px}px;top:${py}px;width:${sz}px;height:${sz}px;background:${col}`;
+                debris.appendChild(q);
+                grains.push({
+                    q, px, py, a: Math.atan2(py - ccy, px - ccx), r0: Math.hypot(px - ccx, py - ccy),
+                    tr: 110 + Math.random() * 170, w: 1 + Math.random() * 1.2,
+                    appear: delay, rel: delay + .3 + Math.random() * 1.2, shown: false, done: false, delay: 0, dur: 2000
+                });
+            }
+        });
+    }, 1000);
+}
+
+function startInfinity(card) {
+    playSong();
+    startRumble();
+    document.body.style.overflow = 'hidden';
+    const skip = ['SCRIPT', 'STYLE', 'CANVAS', 'LINK', 'META'];
+    const vw = innerWidth, vh = innerHeight;
+    const cr = card.getBoundingClientRect();
+    const ccx = cr.left + cr.width / 2, ccy = cr.top + cr.height / 2;
+
+    const leaves = [...document.body.querySelectorAll('*')].filter(el => {
+        if (el.children.length || skip.includes(el.tagName) || card.contains(el)) return false;
+        if (!el.textContent.trim() && el.tagName !== 'IMG') return false;
+        const c = el.closest('.card');
+        if (c && !!el.closest('.front') !== c.classList.contains('flipped')) return false;
+        const r = el.getBoundingClientRect();
+        return r.width > 0 && r.bottom > 0 && r.top < vh && r.right > 0 && r.left < vw;
+    });
+    leaves.forEach(el => {
+        if (getComputedStyle(el).display === 'inline') el.style.display = 'inline-block';
+        el.style.transition = 'none';
+    });
+    const pc = document.querySelector('.profile-card');
+    pc.style.animation = 'none';
+    const boxes = [...leaves, pc, ...document.querySelectorAll('.card:not(.infinity-card)'), card];
+
+    const debris = document.createElement('div');
+    debris.id = 'debris';
+    document.body.appendChild(debris);
+    const bars = document.createElement('div');          // cinematic letterbox
+    bars.id = 'bhBars'; bars.innerHTML = '<i></i><i></i>';
+    document.body.appendChild(bars);
+    requestAnimationFrame(() => bars.classList.add('on'));
+    [...document.body.children].filter(el => {           // the fixed navbar (site name) gets pushed below the top bar
+        if (skip.includes(el.tagName) || el.id === 'debris' || el.id === 'bhBars') return false;
+        const cs = getComputedStyle(el), r = el.getBoundingClientRect();
+        return (cs.position === 'fixed' || cs.position === 'sticky') && r.height > 0 && r.top < 20 && r.height < vh * .4;
+    }).forEach(el => { el.style.transition = 'translate 2.5s ease'; el.style.translate = '0 7vh'; });
+
+    const grains = [], dustT0 = performance.now() + 1000;
+    dustCardText(card, debris, grains, ccx, ccy);
+    setTimeout(() => document.getElementById('enterBtn').classList.add('show'), 10000);
+
+    let phase = 0, shards = [], eating = false, eatT0 = 0, oT0 = 0, last = performance.now(), hx = vw / 2, hy = vh / 2;
+    const t0 = last, QUAKE = 4500;   // ms of earthquake before things break
+
+    function breakApart() {
+        document.body.classList.add('bh-go');
+        boxes.forEach(el => el.style.transform = '');
+        const rects = leaves.map(el => el.getBoundingClientRect());
+        // glass panels / borders melt away slowly
+        document.querySelectorAll('body *').forEach(el => {
+            if (el.children.length && !card.contains(el) && !skip.includes(el.tagName) && el.id !== 'debris') {
+                el.style.transition = 'none';
+                el.style.background = 'transparent';
+                el.style.borderColor = 'transparent';
+                el.style.boxShadow = 'none';
+                el.style.backdropFilter = 'none';
+                el.style.webkitBackdropFilter = 'none';
+            }
+        });
+        leaves.forEach((el, i) => {
+            const r = rects[i], cs = getComputedStyle(el), W = r.width, H = r.height;
+            const base = el.cloneNode(true);
+            base.removeAttribute('id');
+            for (const p of cs) base.style.setProperty(p, cs.getPropertyValue(p));
+            const S = (k, v) => base.style.setProperty(k, v, 'important');
+            S('position', 'fixed'); S('left', r.left + 'px'); S('top', r.top + 'px');
+            S('right', 'auto'); S('bottom', 'auto'); S('width', W + 'px'); S('height', H + 'px');
+            S('margin', '0'); S('transform', 'none'); S('transition', 'none'); S('animation', 'none');
+            S('visibility', 'visible'); S('pointer-events', 'none');
+            const j = () => .5 + (Math.random() - .5) * .3;
+            const c = [W * j(), H * j()];
+            const P = [[0, 0], [W * j(), 0], [W, 0], [W, H * j()], [W, H], [W * j(), H], [0, H], [0, H * j()]];
+            for (let s = 0; s < 4; s++) {
+                const pts = [c, P[s * 2], P[s * 2 + 1], P[(s * 2 + 2) % 8]];
+                const q = base.cloneNode(true);
+                q.style.setProperty('clip-path', 'polygon(' + pts.map(p => p[0] + 'px ' + p[1] + 'px').join(',') + ')', 'important');
+                const lx = pts.reduce((a, p) => a + p[0], 0) / 4, ly = pts.reduce((a, p) => a + p[1], 0) / 4;
+                q.style.setProperty('transform-origin', lx + 'px ' + ly + 'px', 'important');
+                debris.appendChild(q);
+                const px = r.left + lx, py = r.top + ly;
+                const r0 = Math.max(Math.hypot(px - ccx, py - ccy), 60);
+                shards.push({
+                    q, px, py, r0, a: Math.atan2(py - ccy, px - ccx), rot: 0,
+                    rt: 130 + Math.min(r0, 700) * .4 + Math.random() * 60,   // orbit radius it will settle into
+                    spin: (Math.random() - .5) * 4,
+                    rd: 0, rdur: 1800 + Math.random() * 800,                    // release delay + release duration (ms)
+                    delay: 0, dur: 2000, done: false
+                });
+            }
+            el.style.visibility = 'hidden';
+        });
+        // shards nearest the card are torn away first, the far ones last
+        const maxR = Math.max(...shards.map(s => s.r0));
+        shards.forEach(s => {
+            s.rd = (s.r0 / maxR) * 2000 + Math.random() * 1500;   // torn off one by one while the quake continues
+            s.w = (1.2 + Math.random() * .6) * Math.pow(200 / s.rt, .6);
+        });
+    }
+
+    function eat(e) {
+        const br = document.getElementById('enterBtn').getBoundingClientRect();
+        hx = e.clientX || br.left + br.width / 2; hy = e.clientY || br.top + br.height / 2;
+        eating = true; eatT0 = performance.now();
+        shards.forEach(s => { s.delay = Math.random() * 1600; s.dur = 1500 + Math.random() * 900; });
+        grains.forEach(s => { s.delay = Math.random() * 1600; s.dur = 1500 + Math.random() * 900; });
+        boom();
+        document.getElementById('enterBtn').classList.remove('show');
+        document.getElementById('enterBtn').style.opacity = 0;
+        card.style.transition = 'opacity 1.5s';
+        card.style.opacity = 0;
+        startBlackHole(hx, hy);
+    }
+    document.getElementById('enterBtn').addEventListener('click', e => { e.stopPropagation(); eat(e); }, { once: true });
+
+    function stepGrains(now, dt) {
+        const T = (now - dustT0) / 1000;
+        let alive = 0;
+        grains.forEach(s => {
+            if (s.done) return;
+            if (T < s.appear) { alive++; return; }
+            if (!s.shown) { s.shown = true; s.q.style.opacity = 1; }
+            const lt = T - s.rel;
+            let cx = ccx, cy = ccy, rr = s.r0, sc = 1, ox = 0, oy = 0;
+            if (lt > 0) {
+                rr = s.r0 + (s.tr - s.r0) * (1 - Math.exp(-lt * 1.1));
+                s.a += s.w * Math.min(1, lt) * dt;
+            } else { ox = (Math.random() - .5) * 1.2; oy = (Math.random() - .5) * 1.2; }
+            if (eating) {
+                const k = Math.min(1, Math.max(0, (now - eatT0 - s.delay) / s.dur));
+                cx = ccx + (hx - ccx) * k; cy = ccy + (hy - ccy) * k;
+                rr *= Math.pow(1 - k, 1.3); sc = 1 - k * k * .95;
+                if (k >= 1) { s.done = true; s.q.remove(); return; }
+                s.a += s.w * 8 * k * k * dt;
+            }
+            alive++;
+            s.q.style.transform = `translate(${cx + rr * Math.cos(s.a) - s.px + ox}px,${cy + rr * Math.sin(s.a) - s.py + oy}px) scale(${sc})`;
+        });
+        return alive;
+    }
+
+    function frame(now) {
+        const dt = Math.min(.05, (now - last) / 1000); last = now;
+        const gAlive = stepGrains(now, dt);
+        if (phase === 0) {
+            // massive earthquake: violence ramps up for 5 seconds
+            const T = now - t0, k = Math.min(1, T / QUAKE), amp = 3 + 42 * k * k;
+            boxes.forEach(el => el.style.transform =
+                `translate(${(Math.random() - .5) * amp}px,${(Math.random() - .5) * amp}px) rotate(${(Math.random() - .5) * amp * .3}deg)`);
+            if (T >= QUAKE) { breakApart(); phase = 1; oT0 = now; }
+        } else {
+            const ot = now - oT0;
+            const qa = 45 * Math.max(0, 1 - ot / 4200);   // the card keeps shaking too
+            card.style.transform = qa > .3 ? `translate(${(Math.random() - .5) * qa}px,${(Math.random() - .5) * qa}px) rotate(${(Math.random() - .5) * qa * .3}deg)` : '';
+            let alive = 0;
+            shards.forEach(s => {
+                if (s.done) return;
+                // release progress: 0 = still trembling in place, 1 = fully in orbit (eased)
+                const rk = Math.min(1, Math.max(0, (ot - s.rd) / s.rdur)), e = rk * rk * (3 - 2 * rk);
+                let cx = ccx, cy = ccy, rr = s.r0 + (s.rt - s.r0) * e, sc = 1, spd = 1;
+                let jx = 0, jy = 0, jr = 0;
+                const ja = 63 * (1 - e);          // same violence as the quake, fades only once the piece is in orbit                        // keeps trembling until it lets go
+                if (ja > .05) { jx = (Math.random() - .5) * ja; jy = (Math.random() - .5) * ja; jr = (Math.random() - .5) * ja * .3 * Math.PI / 180; }
+                if (eating) {
+                    const k = Math.min(1, Math.max(0, (now - eatT0 - s.delay) / s.dur));
+                    cx = ccx + (hx - ccx) * k; cy = ccy + (hy - ccy) * k;
+                    rr *= Math.pow(1 - k, 1.3); spd = 1 + 8 * k * k; sc = 1 - k * k * .95;
+                    if (k >= 1) { s.done = true; s.q.remove(); return; }
+                }
+                alive++;
+                const ee = eating ? Math.max(e, .6) : e;
+                s.a += s.w * spd * ee * dt; s.rot += s.spin * spd * ee * dt;
+                s.q.style.setProperty('transform',
+                    `translate(${cx + rr * Math.cos(s.a) - s.px + jx}px,${cy + rr * Math.sin(s.a) - s.py + jy}px) rotate(${s.rot + jr}rad) scale(${sc})`, 'important');
+            });
+            if (eating && !alive && !gAlive) { shardsEaten = true; return; }
+        }
+        requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+}
+
+/* ---------- BLACK HOLE (three.js): tilted disc + spiral particles ---------- */
+function startBlackHole(hx, hy) {
+    const W = innerWidth, H = innerHeight, pr = Math.min(devicePixelRatio || 1, 2);
+    const cv = document.createElement('canvas');
+    cv.id = 'bhCanvas';
+    document.body.appendChild(cv);
+    const rn = new THREE.WebGLRenderer({ canvas: cv, alpha: true, antialias: true });
+    rn.setPixelRatio(pr); rn.setSize(W, H, false); rn.setClearColor(0x000000, 0);
+
+    const d = 9 * Math.max(1, 1.1 * H / W);
+    const cam = new THREE.PerspectiveCamera(45, W / H, .1, 1000);
+    cam.position.set(0, d * .38, d); cam.lookAt(0, 0, 0);   // tilted: you see the ring as an ellipse, not a flat band
+    cam.setViewOffset(W, H, W / 2 - hx, H / 2 - hy, W, H);
+    const scene = new THREE.Scene(), hole = new THREE.Group();
+    scene.add(hole);
+
+    const N = 128, nd = new Uint8Array(N * N * 4);
+    const hs = (i, j, o, f) => { i = (i % f + f) % f; j = (j % f + f) % f; const s = Math.sin(i * 127.1 + j * 311.7 + o * 74.7) * 43758.5453; return s - Math.floor(s); };
+    const sm = t => t * t * (3 - 2 * t);
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+        let v = 0, a = 1, tot = 0;
+        for (let o = 0; o < 3; o++) {
+            const f = 8 << o, fx = x / N * f, fy = y / N * f, x0 = Math.floor(fx), y0 = Math.floor(fy), tx = sm(fx - x0), ty = sm(fy - y0);
+            const m1 = hs(x0, y0, o, f) * (1 - tx) + hs(x0 + 1, y0, o, f) * tx, m2 = hs(x0, y0 + 1, o, f) * (1 - tx) + hs(x0 + 1, y0 + 1, o, f) * tx;
+            v += (m1 * (1 - ty) + m2 * ty) * a; tot += a; a *= .5;
+        }
+        const k = (y * N + x) * 4, c = Math.min(255, Math.max(0, ((v / tot - .5) * 1.6 + .5) * 255));
+        nd[k] = nd[k + 1] = nd[k + 2] = c; nd[k + 3] = 255;
+    }
+    const noise = new THREE.DataTexture(nd, N, N, THREE.RGBAFormat);
+    noise.wrapS = noise.wrapT = THREE.RepeatWrapping; noise.magFilter = noise.minFilter = THREE.LinearFilter; noise.needsUpdate = true;
+
+    const inner = { value: new THREE.Color('#ff8080') }, outer = { value: new THREE.Color('#3633ff') };
+    const mat = (u, vs, fs, extra) => new THREE.RawShaderMaterial(Object.assign({ glslVersion: THREE.GLSL3, uniforms: u, vertexShader: vs, fragmentShader: fs, depthWrite: false }, extra));
+    const add = { blending: THREE.AdditiveBlending, transparent: true };
+
+    hole.add(new THREE.Mesh(new THREE.SphereGeometry(1, 48, 32), new THREE.MeshBasicMaterial({ color: 0x000000 })));
+
+    const discU = { uTime: { value: 0 }, uNoiseTexture: { value: noise }, uInnerColor: inner, uOuterColor: outer };
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(5, 1, 0, 64, 10, true), mat(discU,
+`uniform mat4 projectionMatrix; uniform mat4 modelViewMatrix;
+in vec3 position; in vec2 uv; out vec2 vUv;
+void main(){ gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); vUv = uv; }`,
+`precision highp float; precision highp int;
+uniform float uTime; uniform sampler2D uNoiseTexture; uniform vec3 uInnerColor; uniform vec3 uOuterColor;
+in vec2 vUv; layout(location = 0) out vec4 pc_FragColor;
+float il(float v,float a,float b){ return (v-a)/(b-a); }
+void main(){
+  vec3 col = vec3(0.0); float it = 3.0;
+  for(float i=0.0;i<3.0;i++){
+    float pg = i/(it-1.0);
+    float inten = smoothstep(0.0,1.0,1.0-((vUv.y-pg)*it)*0.5);
+    vec2 uv = vUv; uv.y *= 2.0; uv.x += uTime/((i*10.0)+1.0);
+    vec3 rc = mix(uInnerColor,uOuterColor,pg);
+    rc = mix(vec3(0.0),rc,texture(uNoiseTexture,uv).r*inten);
+    col = min(col+rc,vec3(1.0));
+  }
+  float edge = min(il(vUv.y,0.0,0.02), il(vUv.y,1.0,0.5));
+  pc_FragColor = vec4(mix(vec3(0.0),col,edge),1.0);
+}`, Object.assign({ side: THREE.DoubleSide }, add)));
+    hole.add(disc);
+
+    const PN = 50000, pa = [new Float32Array(PN), new Float32Array(PN), new Float32Array(PN)];
+    pa.forEach(a => { for (let i = 0; i < PN; i++) a[i] = Math.random(); });
+    const pg = new THREE.BufferGeometry();
+    pg.setAttribute('position', new THREE.BufferAttribute(pa[0], 1));
+    pg.setAttribute('aSize', new THREE.BufferAttribute(pa[1], 1));
+    pg.setAttribute('aRandom', new THREE.BufferAttribute(pa[2], 1));
+    const partU = { uTime: { value: 0 }, uInnerColor: inner, uOuterColor: outer, uViewHeight: { value: H * pr }, uSize: { value: .015 } };
+    const pts = new THREE.Points(pg, mat(partU,
+`uniform mat4 projectionMatrix; uniform mat4 modelViewMatrix;
+uniform float uTime; uniform vec3 uInnerColor; uniform vec3 uOuterColor; uniform float uViewHeight; uniform float uSize;
+in float position; in float aSize; in float aRandom; out vec3 vColor;
+void main(){
+  float op = smoothstep(0.0,1.0,position);
+  op = mix(0.05,op,pow(aRandom,1.7));
+  float radius = 1.0 + op*5.0;
+  float angle = op - uTime*(1.0-op)*3.0;
+  vec4 mv = modelViewMatrix * vec4(sin(angle)*radius,0.0,cos(angle)*radius,1.0);
+  gl_Position = projectionMatrix * mv;
+  gl_PointSize = aSize*uSize*uViewHeight*(1.0/-mv.z);
+  vColor = mix(uInnerColor,uOuterColor,op);
+}`,
+`precision highp float; precision highp int;
+in vec3 vColor; layout(location = 0) out vec4 pc_FragColor;
+void main(){ if(length(gl_PointCoord-vec2(0.5))>0.5) discard; pc_FragColor = vec4(vColor,0.5); }`, add));
+    pts.frustumCulled = false;
+    hole.add(pts);
+
+    auraHole = { x: hx, y: hy, t: 0, r: 1 };
+
+    function explode() {
+        boom();
+        cv.remove(); rn.dispose();
+        startFinale(hx, hy);
+        // the flash is born AT the black hole and floods the screen from there
+        const S = 2 * Math.hypot(Math.max(hx, W - hx), Math.max(hy, H - hy)) / 80 * 1.4;
+        const f = document.createElement('div'), ring = document.createElement('div');
+        f.id = 'bhFlash'; ring.id = 'bhRing';
+        f.style.cssText = ring.style.cssText = `left:${hx}px;top:${hy}px;`;
+        document.body.appendChild(f); document.body.appendChild(ring);
+        void f.offsetWidth;
+        f.style.transform = `translate(-50%,-50%) scale(${S})`; f.style.opacity = 0;
+        ring.style.transform = `translate(-50%,-50%) scale(${S * 1.1})`; ring.style.opacity = 0;
+        setTimeout(() => { f.remove(); ring.remove(); }, 3400);
+    }
+
+    let phase = 0, ps = 0, tt = 0;
+    const t0 = performance.now();
+    let last = t0;
+    (function loop(now) {
+        const dt = Math.min(.05, (now - last) / 1000); last = now;
+        let g, spd = 1;
+        if (phase === 0) {                          // grows and eats EVERYTHING before it may shrink
+            const T = now - t0;
+            g = Math.max(.001, 1 - Math.pow(1 - Math.min(1, T / 3000), 3));
+            auraHole.t = Math.min(3, T / 1000);     // pull keeps getting stronger
+            const allEaten = shardsEaten && particles.every(p => p.dead);
+            if ((allEaten && T > 3500) || T > 14000) {
+                particles.forEach(p => p.dead = true);
+                phase = 1; ps = now;
+            }
+        } else {                                    // slowly shrinks, spinning faster, shaking
+            const k = Math.min(1, (now - ps) / 2600);
+            g = Math.max(.02, 1 - k * k); spd = 1 + 8 * k;
+            hole.position.set((Math.random() - .5) * .25 * k, (Math.random() - .5) * .25 * k, 0);
+            if (k >= 1) { explode(); return; }
+        }
+        tt += dt * spd;
+        hole.scale.setScalar(g);
+        discU.uTime.value = tt; partU.uTime.value = tt + 9999;
+        auraHole.r = .15 * H * g;
+        rn.render(scene, cam);
+        requestAnimationFrame(loop);
+    })(t0);
+}
+
+/* ---------- FINALE: the uploaded design, copied: ring of stars bursts out (y += (expansePos-y)/80 per frame), trails, whole-page rotation ---------- */
+function startFinale(hx, hy) {
+    const W = innerWidth, H = innerHeight, dpr = Math.min(devicePixelRatio || 1, 2), cx = W / 2, cy = H / 2;
+    const cv = document.createElement('canvas');
+    cv.id = 'starCanvas'; cv.width = W * dpr; cv.height = H * dpr;
+    cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:9999';
+    document.body.appendChild(cv);
+    const c = cv.getContext('2d');
+    c.scale(dpr, dpr);
+    c.fillStyle = 'rgba(25,25,25,1)'; c.fillRect(0, 0, W, H);
+
+    const cols = ["0,212,255", "168,85,247", "255,61,187", "120,200,255"];   // site particle colors
+    const step = Math.hypot(W, H) / 2 * 1.02 / 100, stars = [];               // design: 10px per id%100 step
+    for (let i = 0; i < 1500; i++) {
+        stars.push({
+            r: 0,           // born inside the black hole
+            target: (i % 100) * step - (Math.floor(Math.random() * 20) + 1),           // design: expansePos
+            speed: (Math.floor(Math.random() * 2.5) + 1.5) * Math.PI / 180,
+            start: (Math.floor(Math.random() * 360) + 1) * Math.PI / 180,
+            col: cols[Math.floor(Math.random() * cols.length)], al: .45 + .55 * Math.random(),
+            px: 0, py: 0, init: false
+        });
+    }
+
+    const btn = document.createElement('button');
+    btn.id = 'bhReturn'; btn.innerHTML = '&#10022;'; btn.setAttribute('aria-label', 'Return to profile'); btn.title = 'Return to profile';
+    document.body.appendChild(btn);
+    btn.addEventListener('click', () => location.reload());
+    setTimeout(() => btn.classList.add('show'), 1500);
+    let settleT = 0, fx = cx, fy = cy + 120, oa = Math.random() * 6.28, rot = 0;
+
+    const msg = document.createElement('div');
+    msg.id = 'bhMsg';
+    document.body.appendChild(msg);
+    setTimeout(() => {
+        void msg.offsetWidth; msg.classList.add('show');
+        const text = "You were never meant to hold this. Infinity belongs to no one. Not the strongest, not the wisest. It waits for perfection, and perfection has never walked this world. Until it does, this stays untouched, even by the hand that made it..";
+        let n = 0;
+        (function type() {
+            msg.textContent = text.slice(0, ++n);
+            if (n < text.length) setTimeout(type, 30);
+            else setTimeout(() => {
+                const r = msg.getBoundingClientRect();
+                fy = Math.min(H * .93 - 60, r.bottom + 80);
+                settleT = performance.now();
+            }, 2500);
+        })();
+    }, 1800);
+
+    const t0 = performance.now();
+    let last = t0;
+    (function loop(now) {
+        const dt = Math.min(.05, (now - last) / 1000); last = now;
+        const T = now - t0, ke = Math.min(1, T / 2500), ce = ke * ke * (3 - 2 * ke);
+        const ccx = hx + (cx - hx) * ce, ccy = hy + (cy - hy) * ce;      // born at the hole, settles on the page center
+        const f = 1 - Math.pow(1 - 1 / 80, dt * 60);                       // design's expansion rate, frame-rate independent
+        c.fillStyle = 'rgba(25,25,25,0.2)'; c.fillRect(0, 0, W, H);
+        c.lineWidth = 1.2;
+        for (const s of stars) {
+            s.r += (s.target - s.r) * f;
+            const a = s.start + T * s.speed / 100;                         // design: currentTime * speed / 2
+            const x = ccx + s.r * Math.cos(a), y = ccy + s.r * Math.sin(a);
+            if (!s.init) { s.init = true; s.px = x; s.py = y; }
+            c.strokeStyle = `rgba(${s.col},${s.al})`;
+            c.beginPath(); c.moveTo(s.px, s.py); c.lineTo(x, y); c.stroke();
+            s.px = x; s.py = y;
+        }
+        oa += .44 * dt;
+        const R = Math.min(W, H) * .3, ox = cx + R * Math.cos(oa), oy = cy + R * .8 * Math.sin(oa);
+        let e2 = 0;
+        if (settleT) { const kk = Math.min(1, (now - settleT) / 6000); e2 = kk * kk * (3 - 2 * kk); if (kk >= 1) btn.classList.add('ready'); }
+        rot += (1 - e2) * 2 * dt;
+        const x = ox + (fx - ox) * e2, y = oy + (fy - oy) * e2, sc = .8 + 1.6 * e2;
+        btn.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%) rotate(${rot}rad) scale(${sc})`;
+        requestAnimationFrame(loop);
+    })(t0);
+}
 </script>
 
 <script>
