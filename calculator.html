@@ -4,876 +4,426 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GymFuel — Calorie Calculator</title>
-
 <style>
+:root{--cyan:#00d4ff;--purple:#a855f7;--magenta:#ff3dbb;
+  --glass-bg:hsl(0 0% 10% / 0.35);
+  --glass-border:1px solid rgba(255,255,255,.12);
+  --glass-shadow:0 18px 50px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08);
+  --glass-shadow-sm:0 6px 18px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:black;height:100%;min-height:100%;color:#fff;font-family:Arial,Helvetica,sans-serif;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
 
-/* =========================================================
-   RESET
-========================================================= */
+/* STARFIELD */
+#canvas{height:100%;width:100%;position:fixed;top:0;left:0;opacity:0;z-index:0}
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.page{position:relative;z-index:1;min-height:100vh;padding:120px 18px 60px;display:flex;flex-direction:column;align-items:center}
+
+/* NAVBAR */
+.navbar{position:fixed;top:14px;left:50%;transform:translateX(-50%);width:min(1100px,calc(100% - 28px));height:68px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;background:rgba(14,14,18,.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.12);border-radius:22px;z-index:1000}
+.nav-links{display:flex;align-items:center;gap:5px}
+.nav-links a{display:flex;align-items:center;gap:7px;padding:10px 14px;color:#d8d8d8;border-radius:14px;font-size:13px;font-weight:700;transition:.25s}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.09)}
+.menu-btn{display:none;width:43px;height:43px;border:none;border-radius:13px;background:rgba(255,255,255,.08);color:#fff;font-size:21px;cursor:pointer}
+.login-btn{padding:10px 20px;margin-left:8px;border-radius:14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:13px;font-weight:700;transition:.25s}
+.login-btn:hover{background:rgba(255,255,255,.22)}
+
+/* HEADER */
+.head{text-align:center;max-width:560px;margin-bottom:30px}
+.head h1{font-size:clamp(38px,9vw,64px);font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:14px}
+.head p{color:rgba(255,255,255,.6);font-size:15px;line-height:1.6}
+
+/* PANEL — liquid glass */
+.panel{width:100%;max-width:640px;padding:30px;background:var(--glass-bg);backdrop-filter:blur(4px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);border:var(--glass-border);border-radius:22px;box-shadow:var(--glass-shadow)}
+.group-title{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:10px}
+.gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+.goal-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+
+/* SELECT CARDS — liquid glass */
+.opt{position:relative;cursor:pointer;text-align:center;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);box-shadow:var(--glass-shadow-sm);backdrop-filter:blur(4px) saturate(1.3);-webkit-backdrop-filter:blur(12px) saturate(1.3);transition:border-color .25s,background .25s,transform .25s}
+.opt:hover{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.1);transform:translateY(-2px)}
+.opt.selected{border-color:var(--purple);background:rgba(168,85,247,.18)}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt:focus-within{outline:1px solid var(--cyan);outline-offset:3px}
+.gender-card{padding:16px 10px}
+.gender-card img{width:80px;height:80px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 10px;border:2px solid rgba(255,255,255,.18);background:#fff}
+.gender-card.selected img{border-color:var(--purple)}
+.gender-card h3,.goal-card h3{font-size:13px;font-weight:700}
+.goal-card{padding:16px 8px}
+
+/* FIELDS */
+.field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.field-top{display:flex;justify-content:space-between;align-items:center;min-height:26px;gap:6px}
+.field-top .name{font-size:12px;color:rgba(255,255,255,.55)}
+.seg{display:inline-flex;padding:2px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);flex-shrink:0}
+.seg label{position:relative;padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);cursor:pointer;transition:.2s}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label.on{background:var(--purple);color:#fff}
+.seg label:focus-within{outline:1px solid var(--cyan)}
+.inputs{display:flex;gap:8px}
+input[type=number],select{width:100%;min-width:0;padding:13px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);color:#fff;font:700 15px Arial,Helvetica,sans-serif;outline:none;transition:.2s}
+input[type=number]:focus,select:focus{border-color:var(--cyan);background:rgba(255,255,255,.1)}
+input::placeholder{color:rgba(255,255,255,.28)}
+select option{background:#111;color:#fff}
+.hide{display:none!important}
+
+/* BUTTON + RESULT */
+.calc-btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(90deg,var(--cyan),var(--purple));color:#fff;font:900 14px Arial,Helvetica,sans-serif;letter-spacing:.5px;cursor:pointer;transition:.25s}
+.calc-btn:hover{box-shadow:0 0 24px rgba(168,85,247,.5)}
+.error-msg{display:none;margin-top:14px;padding:12px;border-radius:10px;border:1px solid rgba(255,61,187,.45);background:rgba(255,61,187,.08);color:#ff8fd6;font-size:13px;text-align:center}
+.error-msg.show{display:block}
+.result-box{display:none;margin-top:24px;padding:26px;text-align:center;border-radius:18px;border:var(--glass-border);background:var(--glass-bg);box-shadow:var(--glass-shadow-sm)}
+.result-box.show{display:block}
+.result-label{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:6px}
+.result-number{font-size:clamp(44px,12vw,58px);font-weight:900;letter-spacing:-2px;background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.result-unit{font-size:13px;color:rgba(255,255,255,.55)}
+.result-note{margin-top:14px;font-size:13px;color:rgba(255,255,255,.55);line-height:1.5}
+#saveCalBtn{margin-top:16px;display:none}
+
+/* UIVERSE BUTTON (from the Start Fueling button) */
+.uiverse{--duration:7s;--easing:linear;--c-color-1:rgba(0,212,255,.7);--c-color-2:#a855f7;--c-color-3:#ff3dbb;--c-color-4:rgba(0,212,255,.7);--c-shadow:rgba(168,85,247,.5);--c-shadow-inset-top:rgba(0,212,255,.9);--c-shadow-inset-bottom:rgba(255,255,255,.8);--c-radial-inner:#a855f7;--c-radial-outer:#00d4ff;--c-color:#fff;-webkit-tap-highlight-color:transparent;-webkit-appearance:none;outline:none;position:relative;cursor:pointer;border:none;display:block;width:90%;border-radius:24px;padding:0;margin:0 auto;text-align:center;font-family:Arial,Helvetica,sans-serif;font-weight:900;font-size:14px;text-transform:uppercase;letter-spacing:1px;line-height:1.5;color:var(--c-color);background:radial-gradient(circle,var(--c-radial-inner),var(--c-radial-outer) 80%);box-shadow:0 0 14px var(--c-shadow)}
+.uiverse:before{content:"";pointer-events:none;position:absolute;z-index:3;left:0;top:0;right:0;bottom:0;border-radius:24px;box-shadow:inset 0 3px 12px var(--c-shadow-inset-top),inset 0 -3px 4px var(--c-shadow-inset-bottom)}
+.uiverse .wrapper{-webkit-mask-image:-webkit-radial-gradient(white,black);overflow:hidden;border-radius:24px;min-width:170px;padding:16px 32px}
+.uiverse .wrapper span{display:inline-block;position:relative;z-index:1}
+.uiverse:hover{--duration:1400ms}
+.uiverse .wrapper .circle{position:absolute;left:0;top:0;width:40px;height:40px;border-radius:50%;filter:blur(var(--blur,8px));background:var(--background,transparent);transform:translate(var(--x,0),var(--y,0)) translateZ(0);animation:var(--animation,none) var(--duration) var(--easing) infinite}
+.uiverse .wrapper .circle.circle-1,.uiverse .wrapper .circle.circle-9,.uiverse .wrapper .circle.circle-10{--background:var(--c-color-4)}
+.uiverse .wrapper .circle.circle-3,.uiverse .wrapper .circle.circle-4{--background:var(--c-color-2);--blur:14px}
+.uiverse .wrapper .circle.circle-5,.uiverse .wrapper .circle.circle-6{--background:var(--c-color-3);--blur:16px}
+.uiverse .wrapper .circle.circle-2,.uiverse .wrapper .circle.circle-7,.uiverse .wrapper .circle.circle-8,.uiverse .wrapper .circle.circle-11,.uiverse .wrapper .circle.circle-12{--background:var(--c-color-1);--blur:12px}
+.uiverse .wrapper .circle.circle-1{--x:0;--y:-40px;--animation:circle-1}
+.uiverse .wrapper .circle.circle-2{--x:92px;--y:8px;--animation:circle-2}
+.uiverse .wrapper .circle.circle-3{--x:-12px;--y:-12px;--animation:circle-3}
+.uiverse .wrapper .circle.circle-4{--x:80px;--y:-12px;--animation:circle-4}
+.uiverse .wrapper .circle.circle-5{--x:12px;--y:-4px;--animation:circle-5}
+.uiverse .wrapper .circle.circle-6{--x:56px;--y:16px;--animation:circle-6}
+.uiverse .wrapper .circle.circle-7{--x:8px;--y:28px;--animation:circle-7}
+.uiverse .wrapper .circle.circle-8{--x:28px;--y:-4px;--animation:circle-8}
+.uiverse .wrapper .circle.circle-9{--x:20px;--y:-12px;--animation:circle-9}
+.uiverse .wrapper .circle.circle-10{--x:64px;--y:16px;--animation:circle-10}
+.uiverse .wrapper .circle.circle-11{--x:4px;--y:4px;--animation:circle-11}
+.uiverse .wrapper .circle.circle-12{--blur:14px;--x:52px;--y:4px;--animation:circle-12}
+@keyframes circle-1{33%{transform:translate(0px,16px) translateZ(0)}66%{transform:translate(12px,64px) translateZ(0)}}
+@keyframes circle-2{33%{transform:translate(80px,-10px) translateZ(0)}66%{transform:translate(72px,-48px) translateZ(0)}}
+@keyframes circle-3{33%{transform:translate(20px,12px) translateZ(0)}66%{transform:translate(12px,4px) translateZ(0)}}
+@keyframes circle-4{33%{transform:translate(76px,-12px) translateZ(0)}66%{transform:translate(112px,-8px) translateZ(0)}}
+@keyframes circle-5{33%{transform:translate(84px,28px) translateZ(0)}66%{transform:translate(40px,-32px) translateZ(0)}}
+@keyframes circle-6{33%{transform:translate(28px,-16px) translateZ(0)}66%{transform:translate(76px,-56px) translateZ(0)}}
+@keyframes circle-7{33%{transform:translate(8px,28px) translateZ(0)}66%{transform:translate(20px,-60px) translateZ(0)}}
+@keyframes circle-8{33%{transform:translate(32px,-4px) translateZ(0)}66%{transform:translate(56px,-20px) translateZ(0)}}
+@keyframes circle-9{33%{transform:translate(20px,-12px) translateZ(0)}66%{transform:translate(80px,-8px) translateZ(0)}}
+@keyframes circle-10{33%{transform:translate(68px,20px) translateZ(0)}66%{transform:translate(100px,28px) translateZ(0)}}
+@keyframes circle-11{33%{transform:translate(4px,4px) translateZ(0)}66%{transform:translate(68px,20px) translateZ(0)}}
+@keyframes circle-12{33%{transform:translate(56px,0px) translateZ(0)}66%{transform:translate(60px,-32px) translateZ(0)}}
+
+footer{position:relative;z-index:1;padding:36px 20px;text-align:center;color:rgba(255,255,255,.35);font-size:12px}
+
+/* MOBILE */
+@media(max-width:850px){
+  .menu-btn{display:block}
+  .nav-links{position:absolute;top:74px;left:0;right:0;padding:10px;display:none;flex-direction:column;background:rgba(15,15,18,.95);border:1px solid rgba(255,255,255,.1);border-radius:18px}
+  .nav-links.active{display:flex}
+  .nav-links a{width:100%}
 }
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #111;
-    color: #181818;
-    overflow-x: hidden;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-/* =========================================================
-   FLOATING NAVBAR
-========================================================= */
-
-.navbar {
-    position: fixed;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(1100px, calc(100% - 28px));
-    height: 68px;
-    padding: 8px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(14, 14, 18, 0.82);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 22px;
-    box-shadow: 0 18px 50px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08);
-    z-index: 1000;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    color: white;
-    font-size: 21px;
-    font-weight: 900;
-    letter-spacing: -1px;
-    padding-left: 12px;
-}
-
-.logo-icon {
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 11px;
-    background: linear-gradient(135deg, #ffffff, #bdbdbd);
-    color: #111;
-    font-size: 18px;
-    box-shadow: 0 4px 15px rgba(255,255,255,.15);
-    transform: rotate(-6deg);
-}
-
-.nav-links {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.nav-links a {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 10px 14px;
-    color: #d8d8d8;
-    border-radius: 14px;
-    font-size: 13px;
-    font-weight: 700;
-    transition: .25s ease;
-}
-
-.nav-links a:hover {
-    color: white;
-    background: rgba(255,255,255,.09);
-    transform: translateY(-2px);
-}
-
-.nav-icon {
-    font-size: 16px;
-    transition: .3s ease;
-}
-
-.nav-links a:hover .nav-icon {
-    transform: scale(1.25) rotate(-8deg);
-}
-
-.menu-btn {
-    display: none;
-    width: 43px;
-    height: 43px;
-    border: none;
-    border-radius: 13px;
-    background: rgba(255,255,255,.08);
-    color: white;
-    font-size: 21px;
-    cursor: pointer;
-}
-
-/* =========================================================
-   SECTION (themed like the rest of the site)
-========================================================= */
-
-.section {
-    position: relative;
-    min-height: 100vh;
-    padding: 145px 25px 100px;
-    overflow: hidden;
-    isolation: isolate;
-    background: transparent;
-}
-
-.section::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-    background-image:
-        linear-gradient(135deg, var(--theme-color), rgba(0,0,0,.48)),
-        var(--section-image);
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}
-
-.section::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: linear-gradient(180deg, rgba(0,0,0,.30), rgba(0,0,0,.48) 55%, rgba(0,0,0,.70));
-}
-
-#calculator {
-    --theme-color: rgba(120, 0, 200, .68);
-    --section-image: url("https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=2000&q=85");
-}
-
-/* =========================================================
-   SECTION HEADER
-========================================================= */
-
-.section-header {
-    max-width: 1000px;
-    margin: 0 auto 45px;
-    text-align: center;
-    color: white;
-}
-
-.section-label {
-    display: inline-block;
-    padding: 7px 13px;
-    margin-bottom: 15px;
-    border-radius: 30px;
-    background: rgba(255,255,255,.13);
-    border: 1px solid rgba(255,255,255,.18);
-    backdrop-filter: blur(10px);
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-.section-header h1 {
-    font-size: clamp(42px, 7vw, 78px);
-    line-height: .95;
-    letter-spacing: -4px;
-    margin-bottom: 18px;
-    text-shadow: 0 8px 30px rgba(0,0,0,.35);
-}
-
-.section-header p {
-    max-width: 650px;
-    margin: auto;
-    color: rgba(255,255,255,.82);
-    font-size: 16px;
-    line-height: 1.6;
-}
-
-/* =========================================================
-   CALCULATOR CARD / FORM
-========================================================= */
-
-.calc-wrap {
-    max-width: 900px;
-    margin: 0 auto;
-    background: rgba(255,255,255,.97);
-    border: 1px solid rgba(255,255,255,.65);
-    border-radius: 28px;
-    padding: 40px;
-    box-shadow: 0 20px 55px rgba(0,0,0,.35);
-}
-
-.calc-wrap h2 {
-    font-size: 26px;
-    margin-bottom: 8px;
-    letter-spacing: -.7px;
-}
-
-.calc-wrap > p {
-    color: #666;
-    font-size: 14px;
-    margin-bottom: 30px;
-}
-
-/* GENDER SELECT */
-
-.gender-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-    margin-bottom: 28px;
-}
-
-.gender-card {
-    position: relative;
-    cursor: pointer;
-    border-radius: 20px;
-    border: 2px solid #e4e4e4;
-    background: #f7f7f7;
-    padding: 18px;
-    text-align: center;
-    transition: .25s ease;
-}
-
-.gender-card:hover {
-    transform: translateY(-4px);
-    border-color: #b8b8b8;
-}
-
-.gender-card.selected {
-    border-color: #5714c4;
-    background: #fdf0f0;
-    box-shadow: 0 10px 25px rgba(140,23,23,.15);
-}
-
-.gender-card img {
-    width: 90px;
-    height: 90px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin: 0 auto 12px;
-    display: block;
-    border: 3px solid #ddd;
-    background: #fff;
-}
-
-.gender-card.selected img {
-    border-color: #5714c4;
-}
-
-.gender-card h3 {
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: .5px;
-    text-transform: uppercase;
-}
-
-.gender-card input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-}
-
-/* FORM GRID: 2 per row */
-
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-.field {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.field label {
-    font-size: 12px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #555;
-}
-
-.field input {
-    padding: 14px 16px;
-    border-radius: 12px;
-    border: 1.5px solid #e0e0e0;
-    background: #f7f7f7;
-    font-size: 15px;
-    font-weight: 700;
-    color: #181818;
-    transition: .2s ease;
-    outline: none;
-}
-
-.field input:focus {
-    border-color: #8c1717;
-    background: #fff;
-}
-
-/* GOAL ROW: 3 across, full width */
-
-.goal-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin: 10px 0 30px;
-}
-
-.goal-card {
-    position: relative;
-    cursor: pointer;
-    border-radius: 16px;
-    border: 2px solid #e4e4e4;
-    background: #f7f7f7;
-    padding: 18px 10px;
-    text-align: center;
-    transition: .25s ease;
-}
-
-.goal-card:hover {
-    transform: translateY(-3px);
-    border-color: #b8b8b8;
-}
-
-.goal-card.selected {
-    border-color: #5714c4;
-    background: #fdf0f0;
-    box-shadow: 0 10px 25px rgba(140,23,23,.15);
-}
-
-.goal-card span {
-    font-size: 22px;
-    display: block;
-    margin-bottom: 6px;
-}
-
-.goal-card h3 {
-    font-size: 13px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-}
-
-.goal-card input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-}
-
-/* CALCULATE BUTTON */
-
-.calc-btn {
-    width: 100%;
-    padding: 18px;
-    border: none;
-    border-radius: 14px;
-    background: #181818;
-    color: white;
-    font-size: 15px;
-    font-weight: 900;
-    letter-spacing: .5px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: .25s ease;
-}
-
-.calc-btn:hover {
-    background: #5714c4;
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0,0,0,.25);
-}
-
-/* RESULT */
-
-.result-box {
-    margin-top: 28px;
-    padding: 28px;
-    border-radius: 18px;
-    background: #181818;
-    color: white;
-    text-align: center;
-    display: none;
-}
-
-.result-box.show {
-    display: block;
-}
-
-.result-box .result-label {
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,.55);
-    margin-bottom: 8px;
-}
-
-.result-box .result-number {
-    font-size: 48px;
-    font-weight: 900;
-    letter-spacing: -2px;
-}
-
-.result-box .result-unit {
-    font-size: 15px;
-    font-weight: 700;
-    color: rgba(255,255,255,.6);
-    margin-top: 4px;
-}
-
-.result-box .result-note {
-    margin-top: 14px;
-    font-size: 13px;
-    color: rgba(255,255,255,.55);
-    line-height: 1.5;
-}
-
-.error-msg {
-    display: none;
-    margin-top: 14px;
-    padding: 12px 16px;
-    border-radius: 10px;
-    background: #fdf0f0;
-    color: #8c1717;
-    font-size: 13px;
-    font-weight: 700;
-    text-align: center;
-}
-
-.error-msg.show {
-    display: block;
-}
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width: 850px) {
-
-    .navbar {
-        height: 62px;
-        border-radius: 19px;
-    }
-
-    .logo {
-        font-size: 18px;
-    }
-
-    .logo-icon {
-        width: 32px;
-        height: 32px;
-    }
-
-    .menu-btn {
-        display: block;
-    }
-
-    .nav-links {
-        position: absolute;
-        top: 70px;
-        left: 0;
-        right: 0;
-        padding: 10px;
-        display: none;
-        flex-direction: column;
-        background: rgba(15,15,18,.94);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255,255,255,.1);
-        border-radius: 18px;
-        box-shadow: 0 20px 40px rgba(0,0,0,.35);
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
-
-    .nav-links a {
-        width: 100%;
-        padding: 13px 15px;
-    }
-
-    .section {
-        padding: 120px 16px 80px;
-    }
-
-    .section-header h1 {
-        letter-spacing: -2px;
-    }
-
-    .calc-wrap {
-        padding: 26px;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .goal-row {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 450px) {
-
-    .navbar {
-        width: calc(100% - 18px);
-        top: 9px;
-    }
-
-    .logo {
-        padding-left: 5px;
-    }
-
-    .section-header h1 {
-        font-size: 44px;
-    }
-
-    .section-header p {
-        font-size: 14px;
-    }
-
-    .gender-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.login-btn {
-    padding: 10px 20px;
-    margin-left: 8px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: white;
-    font-size: 13px;
-    font-weight: 700;
-    box-shadow:
-        0 4px 15px rgba(0,0,0,.15),
-        inset 0 1px 0 rgba(255,255,255,.25);
-    transition: .25s ease;
-}
-
-.login-btn:hover {
-    background: rgba(255, 255, 255, 0.28);
-    transform: translateY(-2px);
+@media(max-width:600px){
+  .page{padding:104px 14px 40px}
+  .panel{padding:20px 16px;border-radius:18px}
+  .form-grid{grid-template-columns:1fr;gap:16px}
+  .gender-grid{gap:10px}
+  .goal-row{gap:8px}
+  .gender-card{padding:12px 6px}
+  .gender-card img{width:64px;height:64px}
+  .goal-card{padding:14px 4px}
+  .goal-card h3,.gender-card h3{font-size:12px}
 }
 </style>
 </head>
-
 <body>
 
-<!-- =========================================================
-     NAVBAR
-========================================================= -->
-
+<canvas id="canvas"></canvas>
 <div id="navbarPlaceholder"></div>
 
-<div id="top"></div>
+<main class="page">
+  <div class="head">
+    <h1>DAILY INTAKE</h1>
+    <p>Enter your stats in the units you use, choose a goal, and get the calories your body needs each day.</p>
+  </div>
 
-<!-- =========================================================
-     CALCULATOR SECTION
-========================================================= -->
+  <section class="panel">
+    <form id="calcForm">
 
-<section class="section" id="calculator">
+      <p class="group-title">Gender</p>
+      <div class="gender-grid">
+        <label class="opt gender-card" id="maleCard">
+          <input type="radio" name="gender" value="male">
+          <img src="https://i.pinimg.com/236x/77/3c/53/773c5301c71b72a4f9c00d63fd410408.jpg?nii=t" alt="Male icon">
+          <h3>Man</h3>
+        </label>
+        <label class="opt gender-card" id="femaleCard">
+          <input type="radio" name="gender" value="female">
+          <img src="https://crithype.com/wp-content/uploads/2026/08/Shalla-Bal-Silver-Surfer-PFP-1-1024x765.jpg" alt="Female icon">
+          <h3>Woman</h3>
+        </label>
+      </div>
 
-    <div class="section-header">
-
-        <div class="section-label">
-            🧮 Calorie Mode
+      <div class="form-grid">
+        <div class="field">
+          <div class="field-top"><label class="name" for="age">Age (years)</label></div>
+          <input type="number" id="age" placeholder="24" min="10" max="100">
         </div>
 
-        <h1>DAILY INTAKE</h1>
-
-        <p>
-            Fill in your details below and we'll work out roughly
-            how many calories your body needs each day, based on
-            whether you're looking to bulk, cut or maintain.
-        </p>
-
-    </div>
-
-    <div class="calc-wrap">
-
-        <h2>Tell us about yourself</h2>
-        <p>Pick your gender, enter your stats and choose your goal — then hit calculate.</p>
-
-        <form id="calcForm">
-
-            <!-- GENDER -->
-
-            <div class="gender-grid">
-
-                <label class="gender-card" id="maleCard">
-                    <input type="radio" name="gender" value="male">
-                    <img src="https://i.pinimg.com/736x/b3/08/d0/b308d0910b7246035b10f1dc94490fef.jpg" alt="Male icon">
-                    <h3>Man</h3>
-                </label>
-
-                <label class="gender-card" id="femaleCard">
-                    <input type="radio" name="gender" value="female">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJgWMbLJBFDWw8abn96pQJ7kwZAt3_7OoUqAyVBmAd5A&s=10" alt="Female icon">
-                    <h3>Woman</h3>
-                </label>
-
+        <div class="field">
+          <div class="field-top">
+            <label class="name" for="weight" id="weightLabel">Weight (kg)</label>
+            <div class="seg">
+              <label class="on"><input type="radio" name="wUnit" value="kg" checked>kg</label>
+              <label><input type="radio" name="wUnit" value="lb">lbs</label>
             </div>
+          </div>
+          <input type="number" id="weight" placeholder="75" step="0.1" min="20" max="700">
+        </div>
 
-            <!-- AGE / HEIGHT -->
-
-            <div class="form-grid">
-
-                <div class="field">
-                    <label for="age">Age (years)</label>
-                    <input type="number" id="age" placeholder="e.g. 24" min="10" max="100">
-                </div>
-
-                <div class="field">
-                    <label for="height">Height (cm)</label>
-                    <input type="number" id="height" placeholder="e.g. 178" min="100" max="250">
-                </div>
-
+        <div class="field">
+          <div class="field-top">
+            <label class="name" for="height" id="heightLabel">Height (cm)</label>
+            <div class="seg">
+              <label class="on"><input type="radio" name="hUnit" value="cm" checked>cm</label>
+              <label><input type="radio" name="hUnit" value="ft">ft / in</label>
             </div>
+          </div>
+          <div class="inputs">
+            <input type="number" id="height" placeholder="178" min="100" max="250">
+            <input type="number" id="feet" class="hide" placeholder="5 ft" min="3" max="8">
+            <input type="number" id="inches" class="hide" placeholder="10 in" min="0" max="11" step="0.5">
+          </div>
+        </div>
 
-            <!-- WEIGHT (single, full width) -->
+        <div class="field">
+          <div class="field-top"><label class="name" for="activity">Activity level</label></div>
+          <select id="activity">
+            <option value="sedentary">Light</option>
+            <option value="light">Actife</option>
+          </select>
+        </div>
+      </div>
 
-            <div class="form-grid">
+      <p class="group-title">Goal</p>
+      <div class="goal-row">
+        <label class="opt goal-card" id="cutCard"><input type="radio" name="goal" value="cut"><h3>Cut</h3></label>
+        <label class="opt goal-card" id="maintainCard"><input type="radio" name="goal" value="maintain"><h3>Maintain</h3></label>
+        <label class="opt goal-card" id="bulkCard"><input type="radio" name="goal" value="bulk"><h3>Bulk</h3></label>
+      </div>
 
-                <div class="field">
-                    <label for="weight">Weight (kg)</label>
-                    <input type="number" id="weight" placeholder="e.g. 75" min="30" max="300">
-                </div>
+      <button type="submit" class="uiverse"><div class="wrapper"><div class="circle circle-1"></div><div class="circle circle-2"></div><div class="circle circle-3"></div><div class="circle circle-4"></div><div class="circle circle-5"></div><div class="circle circle-6"></div><div class="circle circle-7"></div><div class="circle circle-8"></div><div class="circle circle-9"></div><div class="circle circle-10"></div><div class="circle circle-11"></div><div class="circle circle-12"></div><span>CALCULATE</span></div></button>
+      <div class="error-msg" id="errorMsg">Fill in every field and choose a gender and a goal.</div>
 
-                <div class="field">
-                    <label for="activity">Activity Level</label>
-                    <input list="activityOptions" id="activity" placeholder="e.g. Moderate">
-                    <datalist id="activityOptions">
-                        <option value="Sedentary">
-                        <option value="Light">
-                        <option value="Moderate">
-                        <option value="Active">
-                        <option value="Very Active">
-                    </datalist>
-                </div>
+      <div class="result-box" id="resultBox">
+        <div class="result-label">Your daily target</div>
+        <div class="result-number" id="resultNumber">0</div>
+        <div class="result-unit">kcal / day</div>
+        <div class="result-note" id="resultNote"></div>
+        <button type="button" class="calc-btn" id="saveCalBtn">Save</button>
+      </div>
+    </form>
+  </section>
+</main>
 
-            </div>
-
-            <!-- GOAL: bulk / cut / maintain, 3 in a row -->
-
-            <div class="goal-row">
-
-                <label class="goal-card" id="cutCard">
-                    <input type="radio" name="goal" value="cut">
-                    <span>🔥</span>
-                    <h3>Cut</h3>
-                </label>
-
-                <label class="goal-card" id="maintainCard">
-                    <input type="radio" name="goal" value="maintain">
-                    <span>⚖️</span>
-                    <h3>Maintain</h3>
-                </label>
-
-                <label class="goal-card" id="bulkCard">
-                    <input type="radio" name="goal" value="bulk">
-                    <span>💪</span>
-                    <h3>Bulk</h3>
-                </label>
-
-            </div>
-
-            <button type="submit" class="calc-btn">Calculate</button>
-
-            <div class="error-msg" id="errorMsg">
-                Please fill in all fields and pick a gender and goal first.
-            </div>
-
-            <div class="result-box" id="resultBox">
-                <div class="result-label">Your Daily Target</div>
-                <div class="result-number" id="resultNumber">0</div>
-                <div class="result-unit">KCAL / DAY</div>
-                <div class="result-note" id="resultNote"></div>
-                <button type="button" class="calc-btn" id="saveCalBtn" style="background-color: #5714c4;  margin-top:16px; display:none;">
-                    Save
-                </button>
-            </div>
-
-        </form>
-
-    </div>
-
-</section>
-
-<!-- =========================================================
-     FOOTER
-========================================================= -->
-
-<footer style="padding:40px 20px; text-align:center; background:#090909; color:#777; font-size:13px;">
-    GymFuel — Fuel your goals.
-</footer>
+<footer>GymFuel — Fuel your goals.</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase-client.js"></script>
 
 <script>
+/* ---------- NAVBAR ---------- */
+fetch('navbar.html').then(r => r.text()).then(html => {
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  const scripts = temp.querySelectorAll('script');
+  scripts.forEach(s => s.remove());
+  document.getElementById('navbarPlaceholder').replaceWith(...temp.childNodes);
+  scripts.forEach(o => { const n = document.createElement('script'); n.textContent = o.textContent; document.body.appendChild(n); });
+});
 
-fetch('navbar.html')
-  .then(res => res.text())
-  .then(html => {
-    const temp = document.createElement('div');
-    temp.innerHTML = html;
-
-    // Move everything except <script> tags into the page
-    const scripts = temp.querySelectorAll('script');
-    scripts.forEach(s => s.remove());
-    document.getElementById('navbarPlaceholder').replaceWith(...temp.childNodes);
-
-    // Now re-add each script so it actually executes
-    scripts.forEach(oldScript => {
-      const newScript = document.createElement('script');
-      newScript.textContent = oldScript.textContent;
-      document.body.appendChild(newScript);
-    });
-  });
-
-/* SELECT CARDS (gender + goal) */
-
-function setupSelectableCards(cardIds, inputSelector) {
-    cardIds.forEach(id => {
-        const card = document.getElementById(id);
-        card.addEventListener("click", () => {
-            document.querySelectorAll(inputSelector).forEach(c => c.classList.remove("selected"));
-            card.classList.add("selected");
-        });
-    });
+/* ---------- SELECT CARDS ---------- */
+function setupCards(ids) {
+  ids.forEach(id => document.getElementById(id).addEventListener('click', () => {
+    ids.forEach(i => document.getElementById(i).classList.remove('selected'));
+    document.getElementById(id).classList.add('selected');
+  }));
 }
+setupCards(['maleCard', 'femaleCard']);
+setupCards(['cutCard', 'maintainCard', 'bulkCard']);
 
-setupSelectableCards(["maleCard", "femaleCard"], ".gender-card");
-setupSelectableCards(["bulkCard", "cutCard", "maintainCard"], ".goal-card");
+/* ---------- UNIT TOGGLES ---------- */
+const weightIn = document.getElementById('weight'), heightIn = document.getElementById('height');
+const feetIn = document.getElementById('feet'), inchesIn = document.getElementById('inches');
+const weightLabel = document.getElementById('weightLabel'), heightLabel = document.getElementById('heightLabel');
 
-/* ACTIVITY MULTIPLIERS */
+document.querySelectorAll('.seg').forEach(seg => {
+  seg.querySelectorAll('input').forEach(inp => inp.addEventListener('change', () => {
+    seg.querySelectorAll('label').forEach(l => l.classList.remove('on'));
+    inp.parentElement.classList.add('on');
 
-const activityMultipliers = {
-    "sedentary": 1.2,
-    "light": 1.375,
-    "moderate": 1.55,
-    "active": 1.725,
-    "very active": 1.9
-};
+    if (inp.name === 'wUnit') {
+      const v = parseFloat(weightIn.value);
+      if (v) weightIn.value = (inp.value === 'lb' ? v * 2.20462 : v / 2.20462).toFixed(1);
+      weightLabel.textContent = inp.value === 'lb' ? 'Weight (lbs)' : 'Weight (kg)';
+      weightIn.placeholder = inp.value === 'lb' ? '165' : '75';
+    } else if (inp.value === 'ft') {
+      const cm = parseFloat(heightIn.value);
+      if (cm) { const t = cm / 2.54; feetIn.value = Math.floor(t / 12); inchesIn.value = (t % 12).toFixed(1).replace(/\.0$/, ''); }
+      heightIn.classList.add('hide'); feetIn.classList.remove('hide'); inchesIn.classList.remove('hide');
+      heightLabel.textContent = 'Height (ft / in)';
+    } else {
+      const ft = parseFloat(feetIn.value) || 0, inch = parseFloat(inchesIn.value) || 0;
+      if (ft || inch) heightIn.value = Math.round((ft * 12 + inch) * 2.54);
+      heightIn.classList.remove('hide'); feetIn.classList.add('hide'); inchesIn.classList.add('hide');
+      heightLabel.textContent = 'Height (cm)';
+    }
+  }));
+});
 
-/* FORM SUBMIT */
-
-const form = document.getElementById("calcForm");
-const errorMsg = document.getElementById("errorMsg");
-const resultBox = document.getElementById("resultBox");
-const resultNumber = document.getElementById("resultNumber");
-const resultNote = document.getElementById("resultNote");
-const saveCalBtn = document.getElementById("saveCalBtn");
-const loggedInUser = localStorage.getItem("username");
-
+/* ---------- CALCULATION ---------- */
+const mult = { 'sedentary': 1.2, 'light': 1.375, 'moderate': 1.55, 'active': 1.725, 'very active': 1.9 };
+const form = document.getElementById('calcForm'), errorMsg = document.getElementById('errorMsg');
+const resultBox = document.getElementById('resultBox'), resultNumber = document.getElementById('resultNumber');
+const resultNote = document.getElementById('resultNote'), saveCalBtn = document.getElementById('saveCalBtn');
+const loggedInUser = localStorage.getItem('username');
 let goalCalories = 0;
 
-form.addEventListener("submit", (e) => {
-    e.preventDefault();
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const g = document.querySelector('input[name="gender"]:checked');
+  const goal = document.querySelector('input[name="goal"]:checked');
+  const age = parseFloat(document.getElementById('age').value);
+  const wUnit = document.querySelector('input[name="wUnit"]:checked').value;
+  const hUnit = document.querySelector('input[name="hUnit"]:checked').value;
 
-    const genderInput = document.querySelector('input[name="gender"]:checked');
-    const goalInput = document.querySelector('input[name="goal"]:checked');
+  let weight = parseFloat(weightIn.value);
+  if (weight && wUnit === 'lb') weight = weight / 2.20462;          // lbs -> kg
 
-    const age = parseFloat(document.getElementById("age").value);
-    const height = parseFloat(document.getElementById("height").value);
-    const weight = parseFloat(document.getElementById("weight").value);
-    const activityRaw = document.getElementById("activity").value.trim().toLowerCase();
+  let height;
+  if (hUnit === 'ft') {
+    const ft = parseFloat(feetIn.value), inch = parseFloat(inchesIn.value) || 0;
+    height = ft ? (ft * 12 + inch) * 2.54 : NaN;                     // ft/in -> cm
+  } else height = parseFloat(heightIn.value);
 
-    const activityMultiplier = activityMultipliers[activityRaw] || 1.375;
+  if (!g || !goal || !age || !height || !weight) {
+    errorMsg.classList.add('show'); resultBox.classList.remove('show'); return;
+  }
+  errorMsg.classList.remove('show');
 
-    if (!genderInput || !goalInput || !age || !height || !weight) {
-        errorMsg.classList.add("show");
-        resultBox.classList.remove("show");
-        return;
-    }
+  /* Mifflin-St Jeor */
+  const bmr = 10 * weight + 6.25 * height - 5 * age + (g.value === 'male' ? 5 : -161);
+  const tdee = bmr * (mult[document.getElementById('activity').value] || 1.375);
+  let note;
+  if (goal.value === 'bulk') { goalCalories = tdee + 350; note = 'Includes a surplus of about +350 kcal to support steady muscle growth.'; }
+  else if (goal.value === 'cut') { goalCalories = tdee - 400; note = 'Includes a deficit of about -400 kcal for a gradual, sustainable cut.'; }
+  else { goalCalories = tdee; note = 'Your maintenance level: enough to keep your weight steady.'; }
 
-    errorMsg.classList.remove("show");
-
-    const gender = genderInput.value;
-    const goal = goalInput.value;
-
-    /* Mifflin-St Jeor BMR */
-    let bmr;
-    if (gender === "male") {
-        bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
-    } else {
-        bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
-    }
-
-    let tdee = bmr * activityMultiplier;
-
-    let note = "";
-
-    if (goal === "bulk") {
-        goalCalories = tdee + 350;
-        note = "This includes a surplus of about +350 kcal to support steady muscle growth.";
-    } else if (goal === "cut") {
-        goalCalories = tdee - 400;
-        note = "This includes a deficit of about -400 kcal for a gradual, sustainable cut.";
-    } else {
-        goalCalories = tdee;
-        note = "This is your maintenance level — enough to keep your weight steady.";
-    }
-
-    resultNumber.textContent = Math.round(goalCalories).toLocaleString();
-    resultNote.textContent = note;
-    resultBox.classList.add("show");
-
-    if (loggedInUser) {
-        saveCalBtn.style.display = "block";
-        saveCalBtn.textContent = "Save";
-    }
-
-    resultBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  resultNumber.textContent = Math.round(goalCalories).toLocaleString();
+  resultNote.textContent = note;
+  resultBox.classList.add('show');
+  if (loggedInUser) { saveCalBtn.style.display = 'block'; saveCalBtn.textContent = 'Save'; }
+  resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
 
-/* SAVE TO DB */
-
-saveCalBtn.addEventListener("click", async function() {
-
-    const value = Math.round(goalCalories);
-
-    const { error } = await supabaseClient
-        .from('bruh')
-        .update({ call: value })
-        .eq('name', loggedInUser);
-
-    if (error) {
-        console.error('Could not save:', error.message);
-        return;
-    }
-
-    saveCalBtn.textContent = "Saved ✓";
+/* ---------- SAVE TO DB ---------- */
+saveCalBtn.addEventListener('click', async () => {
+  const { error } = await supabaseClient.from('bruh').update({ call: Math.round(goalCalories) }).eq('name', loggedInUser);
+  if (error) { console.error('Could not save:', error.message); return; }
+  saveCalBtn.textContent = 'Saved ✓';
 });
-
 </script>
 
+<script>
+/* ---------- STARFIELD ---------- */
+var Space = {
+  init: function(){
+    var self = this;
+    this.config = {
+      perspective: 3,
+      star_colors: ['0,212,255', '168,85,247', '255,61,187', '120,200,255'],
+      speed: 1,
+      stars_count: 2
+    };
+    this.canvas = document.getElementById('canvas');
+    this.context = canvas.getContext('2d');
+    this.start();
+    window.onresize = function(){
+      self.start();
+    };
+  },
+
+  randomColor: function(){
+    var c = this.config.star_colors;
+    return c[Math.floor(Math.random() * c.length)];
+  },
+
+  start: function(){
+    var self = this;
+
+    this.canvas.width  = this.canvas.offsetWidth;
+    this.canvas.height = this.canvas.offsetHeight;
+    this.canvas_center_x = this.canvas.width / 2;
+    this.canvas_center_y = this.canvas.height / 2;
+
+    this.stars_count = this.canvas.width / this.config.stars_count;
+    this.focal_length = this.canvas.width / this.config.perspective;
+    this.speed = this.config.speed * this.canvas.width / 2000;
+
+    this.stars = [];
+
+    for(i = 0; i < this.stars_count; i++){
+      this.stars.push({
+        x: Math.random() * this.canvas.width,
+        y: Math.random() * this.canvas.height,
+        z: Math.random() * this.canvas.width,
+        color: this.randomColor()
+      });
+    }
+
+    window.cancelAnimationFrame(this.animation_frame);
+    this.canvas.style.opacity = 1;
+    this.render();
+  },
+
+  render: function(){
+    var self = this;
+    this.animation_frame = window.requestAnimationFrame(function(){
+      self.render();
+    });
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    for(var i = 0, length = this.stars.length; i < length; i += 1){
+      var star = this.stars[i];
+      star.z -= this.speed;
+      if(star.z <= 0) {
+        this.stars[i] = {
+          x: Math.random() * this.canvas.width,
+          y: Math.random() * this.canvas.height,
+          z: this.canvas.width,
+          color: this.randomColor()
+        };
+      }
+
+      var star_x = (star.x - this.canvas_center_x) * (this.focal_length / star.z) + this.canvas_center_x;
+      var star_y = (star.y - this.canvas_center_y) * (this.focal_length / star.z) + this.canvas_center_y;
+      var star_radius  = Math.max(0, 1.4 * (this.focal_length / star.z) / 2);
+      var star_opacity = 1.2 - star.z / this.canvas.width;
+
+      this.context.fillStyle = 'rgba(' + star.color + ',' + star_opacity + ')';
+      this.context.beginPath();
+      this.context.arc(star_x, star_y, star_radius, 0, Math.PI * 2);
+      this.context.fill();
+    }
+  }
+};
+
+window.onload = function(){
+  Space.init();
+};
+</script>
 </body>
 </html>
