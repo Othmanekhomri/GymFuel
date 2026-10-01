@@ -1,534 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GymFuel - Community Chat</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GymFuel — We Moved</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <style>
 :root {
-    --cyan: #00d4ff;
-    --purple: #a855f7;
-    --magenta: #ff3dbb;
-    --glass-bg: hsl(0 0% 10% / 0.35);
-    --glass-border: 1px solid rgba(255,255,255,.12);
-    --glass-shadow: 0 18px 50px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08);
-    --glass-shadow-sm: 0 6px 18px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.08);
+    --brand-cyan: #00d4ff;
+    --brand-purple: #a855f7;
+    --brand-magenta: #ff3dbb;
 }
 
-.admin-badge {
-    margin-left: 5px;
-    padding: 2px 7px;
-    border-radius: 8px;
-    background: linear-gradient(90deg, rgba(255,150,220,.35), rgba(168,85,247,.35));
-    color: white;
-    font-size: 8px;
-    font-weight: 900;
-    letter-spacing: .5px;
-    vertical-align: middle;
-    border: 1px solid rgba(255,170,230,.7);
-    box-shadow: 0 0 12px rgba(200,120,255,.35);
-}
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            min-height: 100vh;
-            font-family: Arial, Helvetica, sans-serif;
-            color: white;
-            background: black;
-            overflow-x: hidden;
-        }
-
-        /* STARFIELD */
-        #canvas {
-            height: 100%;
-            width: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            z-index: 0;
-        }
-
-        a { text-decoration: none; color: inherit; }
-
-        .page {
-            position: relative;
-            z-index: 1;
-            min-height: 100vh;
-            padding: 120px 20px 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .page-title {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .page-title h1 {
-            font-size: clamp(30px, 5vw, 42px);
-            letter-spacing: -1px;
-            margin-bottom: 6px;
-        }
-
-        .page-title p {
-            color: rgba(255,255,255,.55);
-            font-size: 13px;
-        }
-
-        /* =========================
-           CHAT WINDOW
-        ========================= */
-
-        .chat-window {
-            width: 100%;
-            max-width: 640px;
-            height: 65vh;
-
-            display: flex;
-            flex-direction: column;
-
-            background: var(--glass-bg);
-            backdrop-filter: blur(4px) saturate(1.3);
-            -webkit-backdrop-filter: blur(20px) saturate(1.3);
-            border: var(--glass-border);
-            border-radius: 24px;
-            box-shadow: var(--glass-shadow);
-            overflow: hidden;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 22px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .chat-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,.15);
-            border-radius: 10px;
-        }
-
-        .msg {
-            max-width: 78%;
-            padding: 10px 14px;
-            border-radius: 16px;
-            font-size: 13px;
-            line-height: 1.5;
-            animation: pop .25s ease both;
-        }
-
-        @keyframes pop {
-            from { opacity: 0; transform: translateY(8px) scale(.97); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .msg-name {
-            display: block;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: .5px;
-            margin-bottom: 4px;
-            color: rgba(255,255,255,.5);
-        }
-
-        .msg.other {
-            align-self: flex-start;
-            background: rgba(255,255,255,.06);
-            border: 1px solid rgba(255,255,255,.14);
-            box-shadow: var(--glass-shadow-sm);
-            border-bottom-left-radius: 4px;
-        }
-
-        .msg.mine {
-            align-self: flex-end;
-            background: rgba(168,85,247,.28);
-            border: 1px solid rgba(168,85,247,.5);
-            box-shadow: var(--glass-shadow-sm);
-            border-bottom-right-radius: 4px;
-        }
-
-       .msg.admin {
-    /* admin bubble: light pink + purple glass */
-    background: linear-gradient(135deg, rgba(255,150,220,.22), rgba(168,85,247,.24));
-    border: 1px solid rgba(255,170,230,.6);
-    box-shadow: 0 0 18px rgba(200,120,255,.25), inset 0 1px 0 rgba(255,255,255,.12);
-    border-radius: 16px;
+html, body {
+    height: 100%;
+    overflow: hidden;
 }
 
-        .msg.system {
-            align-self: center;
-            background: transparent;
-            color: rgba(255,255,255,.4);
-            font-size: 11px;
-            padding: 4px 10px;
-        }
-
-        /* =========================
-           INPUT BAR
-        ========================= */
-
-        .chat-input-bar {
-            display: flex;
-            gap: 10px;
-            padding: 16px;
-            border-top: 1px solid rgba(255,255,255,.10);
-            background: rgba(255,255,255,.03);
-        }
-
-        .chat-input {
-            flex: 1;
-            height: 46px;
-            padding: 0 16px;
-            border-radius: 14px;
-            border: 1px solid rgba(255,255,255,.14);
-            background: rgba(255,255,255,.07);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
-            color: white;
-            font-size: 13px;
-            outline: none;
-            transition: .25s ease;
-        }
-
-        .chat-input::placeholder {
-            color: rgba(255,255,255,.35);
-        }
-
-        .chat-input:focus {
-            background: rgba(255,255,255,.1);
-            border-color: rgba(255,255,255,.4);
-        }
-
-        .chat-send-btn {
-            width: 46px;
-            height: 46px;
-            border: 1px solid rgba(255,255,255,.3);
-            border-radius: 14px;
-            background: rgba(255,255,255,.15);
-            box-shadow: 0 4px 15px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.25);
-            color: white;
-            font-size: 17px;
-            cursor: pointer;
-            transition: .25s ease;
-        }
-
-        .chat-send-btn:hover {
-            transform: translateY(-2px);
-            background: rgba(255,255,255,.28);
-            box-shadow: 0 10px 25px rgba(0,0,0,.35);
-        }
-
-        .login-required {
-            max-width: 640px;
-            text-align: center;
-            padding: 30px;
-            color: rgba(255,255,255,.6);
-            font-size: 13px;
-        }
-
-        @media (max-width: 600px) {
-            .chat-window {
-                height: 72vh;
-            }
-        }
-.chat-rules {
-    width: 100%;
-    max-width: 640px;
-    margin-bottom: 16px;
-    padding: 14px 18px;
-    border-radius: 16px;
-    background: var(--glass-bg);
-    border: var(--glass-border);
-    box-shadow: var(--glass-shadow-sm);
-    backdrop-filter: blur(4px) saturate(1.3);
-    -webkit-backdrop-filter: blur(20px) saturate(1.3);
+body {
+    background:
+        radial-gradient(circle at 50% 30%, rgba(168,85,247,.30), transparent 60%),
+        #000;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.chat-rules p {
-    font-size: 12.5px;
-    line-height: 1.6;
-    color: rgba(255,255,255,.65);
+#aura {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+.page {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    padding: 20px;
 }
-    </style>
-</head>
 
+.inner { max-width: 900px; }
+
+h1 {
+    font-size: clamp(32px, 7vw, 76px);
+    line-height: 1.05;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+}
+
+.glow-word {
+    background: linear-gradient(90deg, var(--brand-cyan), var(--brand-purple), var(--brand-magenta));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+p {
+    font-size: clamp(15px, 2.2vw, 20px);
+    line-height: 1.7;
+    color: rgba(255,255,255,.68);
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+/* Button (same design as GymFuel) */
+.uiverse {
+    --duration: 7s;
+    --easing: linear;
+    --c-color-1: rgba(0, 212, 255, 0.7);
+    --c-color-2: #a855f7;
+    --c-color-3: #ff3dbb;
+    --c-color-4: rgba(0, 212, 255, 0.7);
+    --c-shadow: rgba(168, 85, 247, 0.5);
+    --c-shadow-inset-top: rgba(0, 212, 255, 0.9);
+    --c-shadow-inset-bottom: rgba(255, 255, 255, 0.8);
+    --c-radial-inner: #a855f7;
+    --c-radial-outer: #00d4ff;
+    --c-color: #fff;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    outline: none;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    display: table;
+    border-radius: 24px;
+    padding: 0;
+    margin: 34px auto 0;
+    text-align: center;
+    font-weight: 900;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.5;
+    text-decoration: none;
+    color: var(--c-color);
+    background: radial-gradient(circle, var(--c-radial-inner), var(--c-radial-outer) 80%);
+    box-shadow: 0 0 14px var(--c-shadow);
+}
+
+.uiverse:before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    border-radius: 24px;
+    box-shadow:
+        inset 0 3px 12px var(--c-shadow-inset-top),
+        inset 0 -3px 4px var(--c-shadow-inset-bottom);
+}
+
+.uiverse .wrapper {
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    overflow: hidden;
+    border-radius: 24px;
+    min-width: 170px;
+    padding: 16px 32px;
+}
+
+.uiverse .wrapper span {
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+}
+
+.uiverse:hover { --duration: 1400ms; }
+
+.uiverse .wrapper .circle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    filter: blur(var(--blur, 8px));
+    background: var(--background, transparent);
+    transform: translate(var(--x, 0), var(--y, 0)) translateZ(0);
+    animation: var(--animation, none) var(--duration) var(--easing) infinite;
+}
+
+.uiverse .wrapper .circle.circle-1,
+.uiverse .wrapper .circle.circle-9,
+.uiverse .wrapper .circle.circle-10 { --background: var(--c-color-4); }
+
+.uiverse .wrapper .circle.circle-3,
+.uiverse .wrapper .circle.circle-4 { --background: var(--c-color-2); --blur: 14px; }
+
+.uiverse .wrapper .circle.circle-5,
+.uiverse .wrapper .circle.circle-6 { --background: var(--c-color-3); --blur: 16px; }
+
+.uiverse .wrapper .circle.circle-2,
+.uiverse .wrapper .circle.circle-7,
+.uiverse .wrapper .circle.circle-8,
+.uiverse .wrapper .circle.circle-11,
+.uiverse .wrapper .circle.circle-12 { --background: var(--c-color-1); --blur: 12px; }
+
+.uiverse .wrapper .circle.circle-1 { --x: 0; --y: -40px; --animation: circle-1; }
+.uiverse .wrapper .circle.circle-2 { --x: 92px; --y: 8px; --animation: circle-2; }
+.uiverse .wrapper .circle.circle-3 { --x: -12px; --y: -12px; --animation: circle-3; }
+.uiverse .wrapper .circle.circle-4 { --x: 80px; --y: -12px; --animation: circle-4; }
+.uiverse .wrapper .circle.circle-5 { --x: 12px; --y: -4px; --animation: circle-5; }
+.uiverse .wrapper .circle.circle-6 { --x: 56px; --y: 16px; --animation: circle-6; }
+.uiverse .wrapper .circle.circle-7 { --x: 8px; --y: 28px; --animation: circle-7; }
+.uiverse .wrapper .circle.circle-8 { --x: 28px; --y: -4px; --animation: circle-8; }
+.uiverse .wrapper .circle.circle-9 { --x: 20px; --y: -12px; --animation: circle-9; }
+.uiverse .wrapper .circle.circle-10 { --x: 64px; --y: 16px; --animation: circle-10; }
+.uiverse .wrapper .circle.circle-11 { --x: 4px; --y: 4px; --animation: circle-11; }
+.uiverse .wrapper .circle.circle-12 { --blur: 14px; --x: 52px; --y: 4px; --animation: circle-12; }
+
+@keyframes circle-1 { 33% { transform: translate(0px, 16px) translateZ(0); } 66% { transform: translate(12px, 64px) translateZ(0); } }
+@keyframes circle-2 { 33% { transform: translate(80px, -10px) translateZ(0); } 66% { transform: translate(72px, -48px) translateZ(0); } }
+@keyframes circle-3 { 33% { transform: translate(20px, 12px) translateZ(0); } 66% { transform: translate(12px, 4px) translateZ(0); } }
+@keyframes circle-4 { 33% { transform: translate(76px, -12px) translateZ(0); } 66% { transform: translate(112px, -8px) translateZ(0); } }
+@keyframes circle-5 { 33% { transform: translate(84px, 28px) translateZ(0); } 66% { transform: translate(40px, -32px) translateZ(0); } }
+@keyframes circle-6 { 33% { transform: translate(28px, -16px) translateZ(0); } 66% { transform: translate(76px, -56px) translateZ(0); } }
+@keyframes circle-7 { 33% { transform: translate(8px, 28px) translateZ(0); } 66% { transform: translate(20px, -60px) translateZ(0); } }
+@keyframes circle-8 { 33% { transform: translate(32px, -4px) translateZ(0); } 66% { transform: translate(56px, -20px) translateZ(0); } }
+@keyframes circle-9 { 33% { transform: translate(20px, -12px) translateZ(0); } 66% { transform: translate(80px, -8px) translateZ(0); } }
+@keyframes circle-10 { 33% { transform: translate(68px, 20px) translateZ(0); } 66% { transform: translate(100px, 28px) translateZ(0); } }
+@keyframes circle-11 { 33% { transform: translate(4px, 4px) translateZ(0); } 66% { transform: translate(68px, 20px) translateZ(0); } }
+@keyframes circle-12 { 33% { transform: translate(56px, 0px) translateZ(0); } 66% { transform: translate(60px, -32px) translateZ(0); } }
+</style>
+</head>
 <body>
 
-    <canvas id="canvas"></canvas>
+<canvas id="aura"></canvas>
 
-    <div id="navbarPlaceholder"></div>
+<div class="page">
+    <div class="inner">
+        <h1>Sorry, we moved our project to a <span class="glow-word">whole new place.</span></h1>
+        <p>Please click the button, it will take you to the new website. Thanks for understanding!</p>
 
-    <main class="page">
-
-        <div class="page-title">
-            <h1>💬 Community Chat</h1>
-            <p>Talk with other GymFuel members in real time.</p>
-        </div>
-<div class="chat-rules">
-    <p>You're all adults here, so I'll keep this short: be respectful. I put real work into building this space for you — one careless message can ruin the image of this site for so many people. Chat like you'd want to be treated.</p>
-</div>
-        <div class="chat-window">
-            <div class="chat-messages" id="chatMessages"></div>
-
-            <div class="chat-input-bar">
-                <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." maxlength="300">
-                <button class="chat-send-btn" id="chatSendBtn">➤</button>
+        <!-- 👇 PUT YOUR NEW WEBSITE LINK IN href -->
+        <a href="https://YOUR-NEW-LINK-HERE" class="uiverse">
+            <div class="wrapper">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-3"></div>
+                <div class="circle circle-4"></div>
+                <div class="circle circle-5"></div>
+                <div class="circle circle-6"></div>
+                <div class="circle circle-7"></div>
+                <div class="circle circle-8"></div>
+                <div class="circle circle-9"></div>
+                <div class="circle circle-10"></div>
+                <div class="circle circle-11"></div>
+                <div class="circle circle-12"></div>
+                <span>Go to new website →</span>
             </div>
-        </div>
+        </a>
+    </div>
+</div>
 
-    </main>
+<script>
+const canvas = document.getElementById("aura");
+const ctx = canvas.getContext("2d");
+let w, h;
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./supabase-client.js"></script>
-
-    <script>
-    (function() {
-
-        const username = localStorage.getItem('username');
-        const messagesBox = document.getElementById('chatMessages');
-        const input = document.getElementById('chatInput');
-        const sendBtn = document.getElementById('chatSendBtn');
-
-        if (!username) {
-            messagesBox.innerHTML = '<div class="msg system">Log in to join the chat.</div>';
-            input.disabled = true;
-            sendBtn.disabled = true;
-        }
-
-        /* =========================
-           BASIC BAD WORD FILTER
-           (English + French, common ones)
-        ========================= */
-
-        const bannedWords = [
-            // English
-            "fuck","shit","bitch","asshole","bastard","dick","pussy","cunt","slut","whore","nigger","faggot",
-            // French
-            "merde","putain","salope","connard","enculé","pute","batard","con","couille","branleur"
-        ];
-
-        function containsBadWord(text) {
-            const lower = text.toLowerCase();
-            return bannedWords.some(word => lower.includes(word));
-        }
-
-        function cleanMessage(text) {
-            let result = text;
-            bannedWords.forEach(word => {
-                const regex = new RegExp(word, "gi");
-                result = result.replace(regex, "*".repeat(word.length));
-            });
-            return result;
-        }
-
-        function scrollToBottom() {
-            messagesBox.scrollTop = messagesBox.scrollHeight;
-        }
-
-        function renderMessage(msg) {
-            const div = document.createElement('div');
-            const isMine = msg.user_name === username;
-const isAdmin = msg.user_name === 'othmankun';
-            div.className = 'msg ' + (isMine ? 'mine' : 'other');
-
-if (isAdmin) {
-    div.classList.add('admin');
+function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
 }
-            
+resize();
+window.addEventListener("resize", resize);
 
-div.innerHTML = `
-    <span class="msg-name">${msg.user_name}${isAdmin ? ' <span class="admin-badge">ADMIN</span>' : ''}</span>
-    ${msg.text}
-`;
+const colors = ["0,212,255", "168,85,247", "255,61,187", "120,200,255"];
+const particles = [];
 
-            messagesBox.appendChild(div);
-        }
-
-        async function loadMessages() {
-            const { data, error } = await supabaseClient
-                .from('messages')
-                .select('user_name, text, created_at')
-                .order('created_at', { ascending: true })
-                .limit(100);
-
-            if (error) {
-                console.error('Could not load messages:', error.message);
-                return;
-            }
-
-            data.forEach(renderMessage);
-            scrollToBottom();
-        }
-
-        async function sendMessage() {
-            const text = input.value.trim();
-            if (!text) return;
-
-            const safeText = cleanMessage(text);
-
-            const { error } = await supabaseClient
-                .from('messages')
-                .insert({ user_name: username, text: safeText });
-
-            if (error) {
-                console.error('Could not send message:', error.message);
-                return;
-            }
-
-            input.value = '';
-        }
-
-        if (username) {
-
-            loadMessages();
-
-            sendBtn.addEventListener('click', sendMessage);
-
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') sendMessage();
-            });
-
-            // Real-time: listen for new messages from anyone
-            supabaseClient
-                .channel('messages-channel')
-                .on('postgres_changes', {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'messages'
-                }, payload => {
-                    renderMessage(payload.new);
-                    scrollToBottom();
-                })
-                .subscribe();
-        }
-
-    })();
-    </script>
-
-    <script>
-        fetch('navbar.html')
-          .then(res => res.text())
-          .then(html => {
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
-
-            const scripts = temp.querySelectorAll('script');
-            scripts.forEach(s => s.remove());
-            document.getElementById('navbarPlaceholder').replaceWith(...temp.childNodes);
-
-            scripts.forEach(oldScript => {
-              const newScript = document.createElement('script');
-              newScript.textContent = oldScript.textContent;
-              document.body.appendChild(newScript);
-            });
-          });
-    </script>
-
-    <script>
-/* ---------- STARFIELD ---------- */
-var Space = {
-  init: function(){
-    var self = this;
-    this.config = {
-      perspective: 3,
-      star_colors: ['0,212,255', '168,85,247', '255,61,187', '120,200,255'],
-      speed: 1,
-      stars_count: 2
-    };
-    this.canvas = document.getElementById('canvas');
-    this.context = canvas.getContext('2d');
-    this.start();
-    window.onresize = function(){
-      self.start();
-    };
-  },
-
-  randomColor: function(){
-    var c = this.config.star_colors;
-    return c[Math.floor(Math.random() * c.length)];
-  },
-
-  start: function(){
-    var self = this;
-
-    this.canvas.width  = this.canvas.offsetWidth;
-    this.canvas.height = this.canvas.offsetHeight;
-    this.canvas_center_x = this.canvas.width / 2;
-    this.canvas_center_y = this.canvas.height / 2;
-
-    this.stars_count = this.canvas.width / this.config.stars_count;
-    this.focal_length = this.canvas.width / this.config.perspective;
-    this.speed = this.config.speed * this.canvas.width / 2000;
-
-    this.stars = [];
-
-    for(i = 0; i < this.stars_count; i++){
-      this.stars.push({
-        x: Math.random() * this.canvas.width,
-        y: Math.random() * this.canvas.height,
-        z: Math.random() * this.canvas.width,
-        color: this.randomColor()
-      });
-    }
-
-    window.cancelAnimationFrame(this.animation_frame);
-    this.canvas.style.opacity = 1;
-    this.render();
-  },
-
-  render: function(){
-    var self = this;
-    this.animation_frame = window.requestAnimationFrame(function(){
-      self.render();
+for (let i = 0; i < 160; i++) {
+    particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 2 + 0.6,
+        speed: Math.random() * 0.5 + 0.05,
+        drift: (Math.random() - 0.5) * 0.3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: Math.random() * 0.5 + 0.15
     });
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    for(var i = 0, length = this.stars.length; i < length; i += 1){
-      var star = this.stars[i];
-      star.z -= this.speed;
-      if(star.z <= 0) {
-        this.stars[i] = {
-          x: Math.random() * this.canvas.width,
-          y: Math.random() * this.canvas.height,
-          z: this.canvas.width,
-          color: this.randomColor()
-        };
-      }
+}
 
-      var star_x = (star.x - this.canvas_center_x) * (this.focal_length / star.z) + this.canvas_center_x;
-      var star_y = (star.y - this.canvas_center_y) * (this.focal_length / star.z) + this.canvas_center_y;
-      var star_radius  = Math.max(0, 1.4 * (this.focal_length / star.z) / 2);
-      var star_opacity = 1.2 - star.z / this.canvas.width;
-
-      this.context.fillStyle = 'rgba(' + star.color + ',' + star_opacity + ')';
-      this.context.beginPath();
-      this.context.arc(star_x, star_y, star_radius, 0, Math.PI * 2);
-      this.context.fill();
-    }
-  }
-};
-
-window.onload = function(){
-  Space.init();
-};
-    </script>
-
+function animate() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = `rgba(${p.color}, ${p.alpha})`;
+        ctx.fill();
+        p.y -= p.speed;
+        p.x += p.drift;
+        if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+</script>
 </body>
 </html>

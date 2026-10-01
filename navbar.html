@@ -1,342 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GymFuel — We Moved</title>
 <style>
-.navbar {
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --brand-cyan: #00d4ff;
+    --brand-purple: #a855f7;
+    --brand-magenta: #ff3dbb;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background:
+        radial-gradient(circle at 50% 30%, rgba(168,85,247,.30), transparent 60%),
+        #000;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#aura {
     position: fixed;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(1100px, calc(100% - 28px));
-    height: 68px;
-    padding: 8px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: hsl(0 0% 10% / 0.35);
-    backdrop-filter: url(#navGlassFilter) blur(4px) saturate(1.3);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 22px;
-    box-shadow:
-        0 18px 50px rgba(0,0,0,.35),
-        inset 0 1px 0 rgba(255,255,255,.08);
-    z-index: 1000;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.85;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    color: white;
-    text-decoration: none;
-    font-size: 21px;
-    font-weight: 900;
-    padding-left: 12px;
-}
-
-.logo-icon {
-    width: 35px;
-    height: 35px;
+.page {
+    position: relative;
+    z-index: 1;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #111;
-    font-size: 18px;
-    overflow: hidden;
+    text-align: center;
+    padding: 20px;
 }
 
-.logo-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
+.inner { max-width: 900px; }
 
-.nav-links {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.nav-links a {
-    padding: 10px 13px;
-    color: #d8d8d8;
-    text-decoration: none;
-    border-radius: 14px;
-    font-size: 13px;
-    font-weight: 700;
-    transition: .25s ease;
-}
-
-.nav-links a:hover,
-.nav-links a.active {
-    color: white;
-    background: rgba(255,255,255,.10);
-    transform: translateY(-2px);
-}
-
-.nav-dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.nav-dropdown-btn {
-    background: none;
-    border: none;
-    padding: 10px 13px;
-    color: #d8d8d8;
-    border-radius: 14px;
-    font-size: 13px;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    transition: .25s ease;
-}
-
-.nav-dropdown-btn:hover {
-    color: white;
-    background: rgba(255,255,255,.10);
-    transform: translateY(-2px);
-}
-
-.nav-dropdown-content {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: #111;
-    min-width: 150px;
-    flex-direction: column;
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-.nav-dropdown:hover .nav-dropdown-content {
-    display: flex;
-}
-
-.nav-dropdown-content a {
-    padding: 10px;
-    white-space: nowrap;
-    text-decoration: none;
-}
-
-.login-btn {
-    padding: 10px 20px;
-    margin-left: 8px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: white;
-    font-size: 13px;
-    font-weight: 700;
-    box-shadow:
-        0 4px 15px rgba(0,0,0,.15),
-        inset 0 1px 0 rgba(255,255,255,.25);
-    transition: .25s ease;
-}
-
-.login-btn:hover {
-    background: rgba(255, 255, 255, 0.28);
-    transform: translateY(-2px);
-}
-
-.menu-btn {
-    display: none;
-    width: 43px;
-    height: 43px;
-    border: none;
-    border-radius: 13px;
-    background: rgba(255,255,255,.08);
-    color: white;
-    font-size: 21px;
-    cursor: pointer;
-}
-
-@media (max-width: 850px) {
-
-    .menu-btn {
-        display: block;
-    }
-
-    .nav-links {
-        position: absolute;
-        top: 70px;
-        left: 0;
-        right: 0;
-        padding: 10px;
-        display: none;
-        flex-direction: column;
-        background: rgba(15,15,18,.96);
-        backdrop-filter: blur(20px);
-        border-radius: 18px;
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
-
-    .nav-links a {
-        width: 100%;
-        padding: 13px 15px;
-    }
-
-    .nav-dropdown {
-        width: 100%;
-    }
-
-    .nav-dropdown-btn {
-        width: 100%;
-        text-align: left;
-    }
-
-    .nav-dropdown-content {
-        position: static;
-        display: none;
-        background: rgba(255,255,255,.05);
-        border-radius: 12px;
-        margin-top: 5px;
-    }
-
-    .nav-dropdown.open .nav-dropdown-content {
-        display: flex;
-    }
-}
-.nav-links a[href="music.html"] {
-    position: relative;
-    color: #fff;
+h1 {
+    font-size: clamp(32px, 7vw, 76px);
+    line-height: 1.05;
     font-weight: 900;
-    z-index: 5;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
 }
 
-.nav-links a[href="music.html"]::before,
-.nav-links a[href="music.html"]::after {
+.glow-word {
+    background: linear-gradient(90deg, var(--brand-cyan), var(--brand-purple), var(--brand-magenta));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+p {
+    font-size: clamp(15px, 2.2vw, 20px);
+    line-height: 1.7;
+    color: rgba(255,255,255,.68);
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+/* Button (same design as GymFuel) */
+.uiverse {
+    --duration: 7s;
+    --easing: linear;
+    --c-color-1: rgba(0, 212, 255, 0.7);
+    --c-color-2: #a855f7;
+    --c-color-3: #ff3dbb;
+    --c-color-4: rgba(0, 212, 255, 0.7);
+    --c-shadow: rgba(168, 85, 247, 0.5);
+    --c-shadow-inset-top: rgba(0, 212, 255, 0.9);
+    --c-shadow-inset-bottom: rgba(255, 255, 255, 0.8);
+    --c-radial-inner: #a855f7;
+    --c-radial-outer: #00d4ff;
+    --c-color: #fff;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    outline: none;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    display: table;
+    border-radius: 24px;
+    padding: 0;
+    margin: 34px auto 0;
+    text-align: center;
+    font-weight: 900;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.5;
+    text-decoration: none;
+    color: var(--c-color);
+    background: radial-gradient(circle, var(--c-radial-inner), var(--c-radial-outer) 80%);
+    box-shadow: 0 0 14px var(--c-shadow);
+}
+
+.uiverse:before {
     content: "";
-    position: absolute;
-    top: -45px;
-    width: 50px;
-    height: 70px;
-    background: conic-gradient(from 180deg at 50% 0%, transparent, currentColor 50%, transparent);
-    filter: blur(4px);
-    opacity: 0.9;
-    z-index: 4;
     pointer-events: none;
-    transform-origin: top center;
-    animation: discoSpin 3s ease-in-out infinite, discoColor 4s linear infinite;
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    border-radius: 24px;
+    box-shadow:
+        inset 0 3px 12px var(--c-shadow-inset-top),
+        inset 0 -3px 4px var(--c-shadow-inset-bottom);
 }
 
-.nav-links a[href="music.html"]::before {
-    left: 5%;
-    animation-delay: 0s, 0s;
+.uiverse .wrapper {
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    overflow: hidden;
+    border-radius: 24px;
+    min-width: 170px;
+    padding: 16px 32px;
 }
 
-.nav-links a[href="music.html"]::after {
-    right: 5%;
-    animation-delay: -1.5s, -2s;
+.uiverse .wrapper span {
+    display: inline-block;
+    position: relative;
+    z-index: 1;
 }
 
-@keyframes discoSpin {
-    0%, 100% { transform: rotate(-20deg) scaleY(1); }
-    50% { transform: rotate(20deg) scaleY(1.2); }
+.uiverse:hover { --duration: 1400ms; }
+
+.uiverse .wrapper .circle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    filter: blur(var(--blur, 8px));
+    background: var(--background, transparent);
+    transform: translate(var(--x, 0), var(--y, 0)) translateZ(0);
+    animation: var(--animation, none) var(--duration) var(--easing) infinite;
 }
 
-@keyframes discoColor {
-    0%   { color: #ff0055; }
-    20%  { color: #ffb347; }
-    40%  { color: #00e5ff; }
-    60%  { color: #a855f7; }
-    80%  { color: #22ff88; }
-    100% { color: #ff0055; }
-}
+.uiverse .wrapper .circle.circle-1,
+.uiverse .wrapper .circle.circle-9,
+.uiverse .wrapper .circle.circle-10 { --background: var(--c-color-4); }
+
+.uiverse .wrapper .circle.circle-3,
+.uiverse .wrapper .circle.circle-4 { --background: var(--c-color-2); --blur: 14px; }
+
+.uiverse .wrapper .circle.circle-5,
+.uiverse .wrapper .circle.circle-6 { --background: var(--c-color-3); --blur: 16px; }
+
+.uiverse .wrapper .circle.circle-2,
+.uiverse .wrapper .circle.circle-7,
+.uiverse .wrapper .circle.circle-8,
+.uiverse .wrapper .circle.circle-11,
+.uiverse .wrapper .circle.circle-12 { --background: var(--c-color-1); --blur: 12px; }
+
+.uiverse .wrapper .circle.circle-1 { --x: 0; --y: -40px; --animation: circle-1; }
+.uiverse .wrapper .circle.circle-2 { --x: 92px; --y: 8px; --animation: circle-2; }
+.uiverse .wrapper .circle.circle-3 { --x: -12px; --y: -12px; --animation: circle-3; }
+.uiverse .wrapper .circle.circle-4 { --x: 80px; --y: -12px; --animation: circle-4; }
+.uiverse .wrapper .circle.circle-5 { --x: 12px; --y: -4px; --animation: circle-5; }
+.uiverse .wrapper .circle.circle-6 { --x: 56px; --y: 16px; --animation: circle-6; }
+.uiverse .wrapper .circle.circle-7 { --x: 8px; --y: 28px; --animation: circle-7; }
+.uiverse .wrapper .circle.circle-8 { --x: 28px; --y: -4px; --animation: circle-8; }
+.uiverse .wrapper .circle.circle-9 { --x: 20px; --y: -12px; --animation: circle-9; }
+.uiverse .wrapper .circle.circle-10 { --x: 64px; --y: 16px; --animation: circle-10; }
+.uiverse .wrapper .circle.circle-11 { --x: 4px; --y: 4px; --animation: circle-11; }
+.uiverse .wrapper .circle.circle-12 { --blur: 14px; --x: 52px; --y: 4px; --animation: circle-12; }
+
+@keyframes circle-1 { 33% { transform: translate(0px, 16px) translateZ(0); } 66% { transform: translate(12px, 64px) translateZ(0); } }
+@keyframes circle-2 { 33% { transform: translate(80px, -10px) translateZ(0); } 66% { transform: translate(72px, -48px) translateZ(0); } }
+@keyframes circle-3 { 33% { transform: translate(20px, 12px) translateZ(0); } 66% { transform: translate(12px, 4px) translateZ(0); } }
+@keyframes circle-4 { 33% { transform: translate(76px, -12px) translateZ(0); } 66% { transform: translate(112px, -8px) translateZ(0); } }
+@keyframes circle-5 { 33% { transform: translate(84px, 28px) translateZ(0); } 66% { transform: translate(40px, -32px) translateZ(0); } }
+@keyframes circle-6 { 33% { transform: translate(28px, -16px) translateZ(0); } 66% { transform: translate(76px, -56px) translateZ(0); } }
+@keyframes circle-7 { 33% { transform: translate(8px, 28px) translateZ(0); } 66% { transform: translate(20px, -60px) translateZ(0); } }
+@keyframes circle-8 { 33% { transform: translate(32px, -4px) translateZ(0); } 66% { transform: translate(56px, -20px) translateZ(0); } }
+@keyframes circle-9 { 33% { transform: translate(20px, -12px) translateZ(0); } 66% { transform: translate(80px, -8px) translateZ(0); } }
+@keyframes circle-10 { 33% { transform: translate(68px, 20px) translateZ(0); } 66% { transform: translate(100px, 28px) translateZ(0); } }
+@keyframes circle-11 { 33% { transform: translate(4px, 4px) translateZ(0); } 66% { transform: translate(68px, 20px) translateZ(0); } }
+@keyframes circle-12 { 33% { transform: translate(56px, 0px) translateZ(0); } 66% { transform: translate(60px, -32px) translateZ(0); } }
 </style>
+</head>
+<body>
 
-<!-- Glass distortion filter -->
-<svg style="position:absolute; width:0; height:0;">
-  <defs>
-    <filter id="navGlassFilter" colorInterpolationFilters="sRGB" x="0%" y="0%" width="100%" height="100%">
-      <feImage x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map"
-        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1100 68'%3E%3Cdefs%3E%3ClinearGradient id='r' x1='100%25' y1='0%25' x2='0%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='%230000'/%3E%3Cstop offset='100%25' stop-color='red'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230000'/%3E%3Cstop offset='100%25' stop-color='blue'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1100' height='68' fill='black'/%3E%3Crect width='1100' height='68' rx='22' fill='url(%23r)'/%3E%3Crect width='1100' height='68' rx='22' fill='url(%23b)' style='mix-blend-mode:difference'/%3E%3Crect x='2' y='2' width='1096' height='64' rx='22' fill='hsl(0 0%25 50%25 / 0.9)' style='filter:blur(11px)'/%3E%3C/svg%3E" />
-      <feDisplacementMap in="SourceGraphic" in2="map" scale="-120" xChannelSelector="R" yChannelSelector="G" result="dispRed"/>
-      <feColorMatrix in="dispRed" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red"/>
-      <feDisplacementMap in="SourceGraphic" in2="map" scale="-115" xChannelSelector="R" yChannelSelector="G" result="dispGreen"/>
-      <feColorMatrix in="dispGreen" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green"/>
-      <feDisplacementMap in="SourceGraphic" in2="map" scale="-110" xChannelSelector="R" yChannelSelector="G" result="dispBlue"/>
-      <feColorMatrix in="dispBlue" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue"/>
-      <feBlend in="red" in2="green" mode="screen" result="rg"/>
-      <feBlend in="rg" in2="blue" mode="screen" result="output"/>
-      <feGaussianBlur in="output" stdDeviation="0.7"/>
-    </filter>
-  </defs>
-</svg>
+<canvas id="aura"></canvas>
 
-<nav class="navbar">
+<div class="page">
+    <div class="inner">
+        <h1>Sorry, we moved our project to a <span class="glow-word">whole new place.</span></h1>
+        <p>Please click the button, it will take you to the new website. Thanks for understanding!</p>
 
-    <a href="index.html" class="logo">
-        <span class="logo-icon"><img src="gymfuelicon.png" alt="GymFuel logo"></span>
-        GymFuel
-    </a>
-
-    <div class="nav-links" id="navLinks">
-        <a href="lobby.html">Menu</a>
-        <a href="plates.html">🍽️ my plates</a>
-        <a href="ingrediants.html">🥗 Ingredients</a>
-        <a href="calculator.html">🧮 Calculator</a>
-        <a href="chat.html"> Chat</a>
-        <a href="music.html">music playlist</a>
-
-        <div class="nav-dropdown">
-            <button class="nav-dropdown-btn"><a href="main.html">✦ Plans</a></button>
-            <div class="nav-dropdown-content">
-                <a href="main.html#superenergy">⚡ Energy</a>
-                <a href="main.html#bulking">💪 Bulking</a>
-                <a href="main.html#cutting">🔥 Cutting</a>
-                <a href="main.html#snacks">🍿 Snacks</a>
+        <!-- 👇 PUT YOUR NEW WEBSITE LINK IN href -->
+        <a href="https://YOUR-NEW-LINK-HERE" class="uiverse">
+            <div class="wrapper">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-3"></div>
+                <div class="circle circle-4"></div>
+                <div class="circle circle-5"></div>
+                <div class="circle circle-6"></div>
+                <div class="circle circle-7"></div>
+                <div class="circle circle-8"></div>
+                <div class="circle circle-9"></div>
+                <div class="circle circle-10"></div>
+                <div class="circle circle-11"></div>
+                <div class="circle circle-12"></div>
+                <span>Go to new website →</span>
             </div>
-        </div>
-
-        
-        <a href="login.html" class="login-btn">Log In</a>
-
+        </a>
     </div>
-
-    <button class="menu-btn" id="menuBtn">☰</button>
-
-</nav>
+</div>
 
 <script>
-  
-(function() {
-    const menuBtn = document.getElementById('menuBtn');
-    const navLinks = document.getElementById('navLinks');
+const canvas = document.getElementById("aura");
+const ctx = canvas.getContext("2d");
+let w, h;
 
-    menuBtn.addEventListener('click', function() {
-        navLinks.classList.toggle('active');
-    });
-
-    // On mobile, tapping "Plans" opens/closes the dropdown
-    // (hover doesn't work on touch screens)
-    const dropdownBtn = document.querySelector('.nav-dropdown-btn');
-    const dropdown = document.querySelector('.nav-dropdown');
-
-    dropdownBtn.addEventListener('click', function() {
-        if (window.innerWidth <= 850) {
-            dropdown.classList.toggle('open');
-        }
-    });
-})();
-
-  const username = localStorage.getItem('username');
-
-   if (username) {
-    const loginBtn = document.querySelector('.login-btn');
-    loginBtn.textContent = username;
-    loginBtn.href = "profile.html";
-    loginBtn.classList.remove('login-btn');
-    loginBtn.classList.add('nav-dropdown-btn');
+function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
 }
-const favicon = document.createElement('link');
-favicon.rel = 'icon';
-favicon.type = 'image/png';
-favicon.href = 'gymfuelicon.png';
-document.head.appendChild(favicon);
+resize();
+window.addEventListener("resize", resize);
+
+const colors = ["0,212,255", "168,85,247", "255,61,187", "120,200,255"];
+const particles = [];
+
+for (let i = 0; i < 160; i++) {
+    particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 2 + 0.6,
+        speed: Math.random() * 0.5 + 0.05,
+        drift: (Math.random() - 0.5) * 0.3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: Math.random() * 0.5 + 0.15
+    });
+}
+
+function animate() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = `rgba(${p.color}, ${p.alpha})`;
+        ctx.fill();
+        p.y -= p.speed;
+        p.x += p.drift;
+        if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+    });
+    requestAnimationFrame(animate);
+}
+animate();
 </script>
+</body>
+</html>

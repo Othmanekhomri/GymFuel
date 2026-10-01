@@ -1,706 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GymFuel</title>
-    <link rel="stylesheet" href="stylemain.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GymFuel — We Moved</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <style>
-    /* =========================================================
-       ELECTRIC BORDER — ported from the React canvas component
-       (same noise-displaced canvas stroke + glow layers), vanilla JS
-    ========================================================= */
-    .electric-border {
-        position: relative;
-        isolation: isolate;
-    }
-
-    .eb-canvas-container {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        pointer-events: none;
-        z-index: 2;
-    }
-
-    .eb-canvas { display: block; }
-
-    .eb-layers {
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    .eb-glow-1,
-    .eb-glow-2,
-    .eb-background-glow {
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        pointer-events: none;
-        box-sizing: border-box;
-    }
-
-    .eb-glow-1 {
-        border: 2px solid rgba(125, 249, 255, .6);
-        filter: blur(1px);
-    }
-
-    .eb-glow-2 {
-        border: 2px solid var(--electric-light-color, #7df9ff);
-        filter: blur(4px);
-    }
-
-    .eb-background-glow {
-        z-index: -1;
-        transform: scale(1.08);
-        filter: blur(28px);
-        opacity: .3;
-        background: linear-gradient(-30deg, var(--electric-light-color, #7df9ff), transparent, #7df9ff);
-    }
-
-    .electric-border {
-    position: relative;
-    isolation: isolate;
-    overflow: visible !important;
+:root {
+    --brand-cyan: #00d4ff;
+    --brand-purple: #a855f7;
+    --brand-magenta: #ff3dbb;
 }
-    </style>
-</head>
 
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background:
+        radial-gradient(circle at 50% 30%, rgba(168,85,247,.30), transparent 60%),
+        #000;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#aura {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+.page {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.inner { max-width: 900px; }
+
+h1 {
+    font-size: clamp(32px, 7vw, 76px);
+    line-height: 1.05;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+}
+
+.glow-word {
+    background: linear-gradient(90deg, var(--brand-cyan), var(--brand-purple), var(--brand-magenta));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+p {
+    font-size: clamp(15px, 2.2vw, 20px);
+    line-height: 1.7;
+    color: rgba(255,255,255,.68);
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+/* Button (same design as GymFuel) */
+.uiverse {
+    --duration: 7s;
+    --easing: linear;
+    --c-color-1: rgba(0, 212, 255, 0.7);
+    --c-color-2: #a855f7;
+    --c-color-3: #ff3dbb;
+    --c-color-4: rgba(0, 212, 255, 0.7);
+    --c-shadow: rgba(168, 85, 247, 0.5);
+    --c-shadow-inset-top: rgba(0, 212, 255, 0.9);
+    --c-shadow-inset-bottom: rgba(255, 255, 255, 0.8);
+    --c-radial-inner: #a855f7;
+    --c-radial-outer: #00d4ff;
+    --c-color: #fff;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    outline: none;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    display: table;
+    border-radius: 24px;
+    padding: 0;
+    margin: 34px auto 0;
+    text-align: center;
+    font-weight: 900;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.5;
+    text-decoration: none;
+    color: var(--c-color);
+    background: radial-gradient(circle, var(--c-radial-inner), var(--c-radial-outer) 80%);
+    box-shadow: 0 0 14px var(--c-shadow);
+}
+
+.uiverse:before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    border-radius: 24px;
+    box-shadow:
+        inset 0 3px 12px var(--c-shadow-inset-top),
+        inset 0 -3px 4px var(--c-shadow-inset-bottom);
+}
+
+.uiverse .wrapper {
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    overflow: hidden;
+    border-radius: 24px;
+    min-width: 170px;
+    padding: 16px 32px;
+}
+
+.uiverse .wrapper span {
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+}
+
+.uiverse:hover { --duration: 1400ms; }
+
+.uiverse .wrapper .circle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    filter: blur(var(--blur, 8px));
+    background: var(--background, transparent);
+    transform: translate(var(--x, 0), var(--y, 0)) translateZ(0);
+    animation: var(--animation, none) var(--duration) var(--easing) infinite;
+}
+
+.uiverse .wrapper .circle.circle-1,
+.uiverse .wrapper .circle.circle-9,
+.uiverse .wrapper .circle.circle-10 { --background: var(--c-color-4); }
+
+.uiverse .wrapper .circle.circle-3,
+.uiverse .wrapper .circle.circle-4 { --background: var(--c-color-2); --blur: 14px; }
+
+.uiverse .wrapper .circle.circle-5,
+.uiverse .wrapper .circle.circle-6 { --background: var(--c-color-3); --blur: 16px; }
+
+.uiverse .wrapper .circle.circle-2,
+.uiverse .wrapper .circle.circle-7,
+.uiverse .wrapper .circle.circle-8,
+.uiverse .wrapper .circle.circle-11,
+.uiverse .wrapper .circle.circle-12 { --background: var(--c-color-1); --blur: 12px; }
+
+.uiverse .wrapper .circle.circle-1 { --x: 0; --y: -40px; --animation: circle-1; }
+.uiverse .wrapper .circle.circle-2 { --x: 92px; --y: 8px; --animation: circle-2; }
+.uiverse .wrapper .circle.circle-3 { --x: -12px; --y: -12px; --animation: circle-3; }
+.uiverse .wrapper .circle.circle-4 { --x: 80px; --y: -12px; --animation: circle-4; }
+.uiverse .wrapper .circle.circle-5 { --x: 12px; --y: -4px; --animation: circle-5; }
+.uiverse .wrapper .circle.circle-6 { --x: 56px; --y: 16px; --animation: circle-6; }
+.uiverse .wrapper .circle.circle-7 { --x: 8px; --y: 28px; --animation: circle-7; }
+.uiverse .wrapper .circle.circle-8 { --x: 28px; --y: -4px; --animation: circle-8; }
+.uiverse .wrapper .circle.circle-9 { --x: 20px; --y: -12px; --animation: circle-9; }
+.uiverse .wrapper .circle.circle-10 { --x: 64px; --y: 16px; --animation: circle-10; }
+.uiverse .wrapper .circle.circle-11 { --x: 4px; --y: 4px; --animation: circle-11; }
+.uiverse .wrapper .circle.circle-12 { --blur: 14px; --x: 52px; --y: 4px; --animation: circle-12; }
+
+@keyframes circle-1 { 33% { transform: translate(0px, 16px) translateZ(0); } 66% { transform: translate(12px, 64px) translateZ(0); } }
+@keyframes circle-2 { 33% { transform: translate(80px, -10px) translateZ(0); } 66% { transform: translate(72px, -48px) translateZ(0); } }
+@keyframes circle-3 { 33% { transform: translate(20px, 12px) translateZ(0); } 66% { transform: translate(12px, 4px) translateZ(0); } }
+@keyframes circle-4 { 33% { transform: translate(76px, -12px) translateZ(0); } 66% { transform: translate(112px, -8px) translateZ(0); } }
+@keyframes circle-5 { 33% { transform: translate(84px, 28px) translateZ(0); } 66% { transform: translate(40px, -32px) translateZ(0); } }
+@keyframes circle-6 { 33% { transform: translate(28px, -16px) translateZ(0); } 66% { transform: translate(76px, -56px) translateZ(0); } }
+@keyframes circle-7 { 33% { transform: translate(8px, 28px) translateZ(0); } 66% { transform: translate(20px, -60px) translateZ(0); } }
+@keyframes circle-8 { 33% { transform: translate(32px, -4px) translateZ(0); } 66% { transform: translate(56px, -20px) translateZ(0); } }
+@keyframes circle-9 { 33% { transform: translate(20px, -12px) translateZ(0); } 66% { transform: translate(80px, -8px) translateZ(0); } }
+@keyframes circle-10 { 33% { transform: translate(68px, 20px) translateZ(0); } 66% { transform: translate(100px, 28px) translateZ(0); } }
+@keyframes circle-11 { 33% { transform: translate(4px, 4px) translateZ(0); } 66% { transform: translate(68px, 20px) translateZ(0); } }
+@keyframes circle-12 { 33% { transform: translate(56px, 0px) translateZ(0); } 66% { transform: translate(60px, -32px) translateZ(0); } }
+</style>
+</head>
 <body>
 
-<div id="navbarPlaceholder"></div>
+<canvas id="aura"></canvas>
 
-<script>
-fetch('/navbar.html')
-    .then(res => res.text())
-    .then(html => {
-        document.getElementById('navbarPlaceholder').innerHTML = html;
-    });
-</script>
+<div class="page">
+    <div class="inner">
+        <h1>Sorry, we moved our project to a <span class="glow-word">whole new place.</span></h1>
+        <p>Please click the button, it will take you to the new website. Thanks for understanding!</p>
 
-<div id="top"></div>
-
-<!-- =========================================================
-     INTRO
-========================================================= -->
-
-<section class="intro-section" id="home">
-    <div class="intro-content">
-
-        <div class="intro-kicker">GYMFUEL / DEMO</div>
-
-        <h1>Eat with purpose.</h1>
-
-        <p class="intro-main-text">
-            A simple way to explore food for energy, growth and getting lean.
-        </p>
-
-        <p class="intro-description">
-            GymFuel turns everyday meals and ingredients into clear,
-            practical nutrition choices. This is only the demo —
-            the full experience is still being built.
-        </p>
-
-        <div class="quote-block">
-            <p>"The secret of getting ahead is getting started."</p>
-            <span>— Mark Twain</span>
-        </div>
-
-        <div class="intro-divider"></div>
-
-        <div class="intro-sections">
-            <a class="intro-card" href="#superenergy">
-                <span class="card-number">01</span>
-                <h3>Energy</h3>
-                <p>Foods and meals built around fuel and performance.</p>
-            </a>
-
-            <a class="intro-card" href="#bulking">
-                <span class="card-number">02</span>
-                <h3>Bulking</h3>
-                <p>Higher-calorie meals designed for bigger intake.</p>
-            </a>
-
-            <a class="intro-card" href="#cutting">
-                <span class="card-number">03</span>
-                <h3>Cutting</h3>
-                <p>Lean, filling meals with calories kept controlled.</p>
-            </a>
-
-            <a class="intro-card" href="#snacks">
-                <span class="card-number">04</span>
-                <h3>Snacks</h3>
-                <p>A dedicated snack system is coming in the full version.</p>
-            </a>
-        </div>
-
-        <a href="#superenergy" class="intro-button">EXPLORE THE DEMO</a>
-
+        <!-- 👇 PUT YOUR NEW WEBSITE LINK IN href -->
+        <a href="https://YOUR-NEW-LINK-HERE" class="uiverse">
+            <div class="wrapper">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-3"></div>
+                <div class="circle circle-4"></div>
+                <div class="circle circle-5"></div>
+                <div class="circle circle-6"></div>
+                <div class="circle circle-7"></div>
+                <div class="circle circle-8"></div>
+                <div class="circle circle-9"></div>
+                <div class="circle circle-10"></div>
+                <div class="circle circle-11"></div>
+                <div class="circle circle-12"></div>
+                <span>Go to new website →</span>
+            </div>
+        </a>
     </div>
-</section>
-
-<!-- =========================================================
-     FLOATING SECTION NAV
-========================================================= -->
-
-<div class="floating-section-nav" id="floatingSectionNav">
-    <a href="#" class="float-nav-btn" id="floatNavButton">
-        <span id="floatNavArrow">↓</span>
-        <span id="floatNavText">Ingredients</span>
-    </a>
 </div>
 
-<!-- =========================================================
-     ENERGY
-========================================================= -->
-
-<section class="section" id="superenergy">
-
-    <div class="section-header">
-        <div class="section-label">01 / ENERGY</div>
-        <h1>SUPER ENERGY</h1>
-        <p>
-            Food selected around usable fuel, carbohydrates and balanced
-            meals that fit an active day or workout.
-        </p>
-    </div>
-
-    <div class="choice-grid">
-        <a href="#superenergy-menus" class="choice-card">
-            <span class="choice-number">01</span>
-            <div>
-                <h2>Premade menus</h2>
-                <p>Three example meals with ingredients and nutrition.</p>
-            </div>
-        </a>
-
-        <a href="#superenergy-ingredients" class="choice-card">
-            <span class="choice-number">02</span>
-            <div>
-                <h2>Ingredients</h2>
-                <p>Five simple foods with nutrition per 100g.</p>
-            </div>
-        </a>
-    </div>
-
-    <div class="content-title" id="superenergy-menus">
-        <span>ENERGY / MENUS</span>
-        <h2>Meals made to fuel the day.</h2>
-        <p>Balanced examples with carbohydrates, protein and useful calories.</p>
-    </div>
-
-    <div class="meals-container">
-
-        <article class="meal-card electric-border">
-            <div class="meal-image energy-meal-1"></div>
-            <div class="meal-content">
-                <div class="meal-topline"><span>ENERGY</span><strong>42g protein</strong></div>
-                <h3>Chicken Rice Power Bowl</h3>
-                <p class="meal-description">A straightforward combination of lean chicken, rice and vegetables for a solid high-energy meal.</p>
-
-                <div class="ingredients">
-                    <div class="ingredient-row"><span class="ingredient-name">Chicken breast</span><span>180g</span><span>297 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Cooked rice</span><span>200g</span><span>260 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Broccoli</span><span>100g</span><span>35 kcal</span></div>
-                </div>
-
-                <div class="meal-total">
-                    <div><span>Total</span><strong>592 kcal</strong></div>
-                    <div><span>Protein</span><strong>42g</strong></div>
-                </div>
-            </div>
-        </article>
-
-        <article class="meal-card electric-border">
-            <div class="meal-image energy-meal-2"></div>
-            <div class="meal-content">
-                <div class="meal-topline"><span>ENERGY</span><strong>18g protein</strong></div>
-                <h3>Banana Oat Bowl</h3>
-                <p class="meal-description">Oats, banana, yogurt and honey for a carbohydrate-focused meal that works well around training.</p>
-
-                <div class="ingredients">
-                    <div class="ingredient-row"><span class="ingredient-name">Oats</span><span>80g</span><span>311 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Banana</span><span>120g</span><span>107 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Greek yogurt</span><span>150g</span><span>110 kcal</span></div>
-                </div>
-
-                <div class="meal-total">
-                    <div><span>Total</span><strong>528 kcal</strong></div>
-                    <div><span>Protein</span><strong>18g</strong></div>
-                </div>
-            </div>
-        </article>
-
-        <article class="meal-card electric-border">
-            <div class="meal-image energy-meal-3"></div>
-            <div class="meal-content">
-                <div class="meal-topline"><span>ENERGY</span><strong>36g protein</strong></div>
-                <h3>Turkey Pasta Fuel</h3>
-                <p class="meal-description">Lean turkey with pasta and tomato sauce for a practical pre-workout or active-day meal.</p>
-
-                <div class="ingredients">
-                    <div class="ingredient-row"><span class="ingredient-name">Turkey breast</span><span>160g</span><span>216 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Cooked pasta</span><span>250g</span><span>390 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Tomato sauce</span><span>100g</span><span>60 kcal</span></div>
-                </div>
-
-                <div class="meal-total">
-                    <div><span>Total</span><strong>666 kcal</strong></div>
-                    <div><span>Protein</span><strong>36g</strong></div>
-                </div>
-            </div>
-        </article>
-
-    </div>
-
-    <div class="content-title" id="superenergy-ingredients">
-        <span>ENERGY / INGREDIENTS</span>
-        <h2>Five foods worth knowing.</h2>
-        <p>Simple nutrition references per 100g.</p>
-    </div>
-
-    <div class="ingredient-grid">
-        <div class="ingredient-card electric-border"><div class="ingredient-card-image ingredient-energy-chicken"></div><div class="ingredient-card-content"><h3>Chicken</h3><div class="nutrition"><div><strong>165</strong>kcal</div><div><strong>31g</strong>protein</div><div><strong>3.6g</strong>fat</div><div><strong>0g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card electric-border"><div class="ingredient-card-image ingredient-rice"></div><div class="ingredient-card-content"><h3>Rice</h3><div class="nutrition"><div><strong>130</strong>kcal</div><div><strong>2.7g</strong>protein</div><div><strong>0.3g</strong>fat</div><div><strong>0.1g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card electric-border"><div class="ingredient-card-image ingredient-banana"></div><div class="ingredient-card-content"><h3>Banana</h3><div class="nutrition"><div><strong>89</strong>kcal</div><div><strong>1g</strong>protein</div><div><strong>0.3g</strong>fat</div><div><strong>12g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card electric-border"><div class="ingredient-card-image ingredient-oats"></div><div class="ingredient-card-content"><h3>Oats</h3><div class="nutrition"><div><strong>389</strong>kcal</div><div><strong>17g</strong>protein</div><div><strong>7g</strong>fat</div><div><strong>0.9g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card electric-border"><div class="ingredient-card-image ingredient-potato"></div><div class="ingredient-card-content"><h3>Potato</h3><div class="nutrition"><div><strong>87</strong>kcal</div><div><strong>2g</strong>protein</div><div><strong>0.1g</strong>fat</div><div><strong>0.8g</strong>sugar</div></div></div></div>
-    </div>
-
-</section>
-
-<!-- =========================================================
-     BULKING
-========================================================= -->
-
-<section class="section" id="bulking">
-
-    <div class="section-header">
-        <div class="section-label">02 / BULKING</div>
-        <h1>BULKING</h1>
-        <p>Higher-calorie meals built from familiar foods, with enough protein to make the calories count.</p>
-    </div>
-
-    <div class="choice-grid">
-        <a href="#bulking-menus" class="choice-card">
-            <span class="choice-number">01</span>
-            <div><h2>Premade menus</h2><p>Big meals with their ingredients and totals already laid out.</p></div>
-        </a>
-        <a href="#bulking-ingredients" class="choice-card">
-            <span class="choice-number">02</span>
-            <div><h2>Ingredients</h2><p>Five calorie-dense building blocks for bigger meals.</p></div>
-        </a>
-    </div>
-
-    <div class="content-title" id="bulking-menus">
-        <span>BULKING / MENUS</span>
-        <h2>More food. More room to build.</h2>
-        <p>Example meals designed around higher calorie intake.</p>
-    </div>
-
-    <div class="meals-container">
-
-        <article class="meal-card">
-            <div class="meal-image bulk-meal-1"></div>
-            <div class="meal-content">
-                <div class="meal-topline"><span>BULKING</span><strong>55g protein</strong></div>
-                <h3>Chicken Rice Mass Bowl</h3>
-                <p class="meal-description">Chicken, rice, avocado and olive oil make this an easy way to push calories without making the meal complicated.</p>
-                <div class="ingredients">
-                    <div class="ingredient-row"><span class="ingredient-name">Chicken breast</span><span>220g</span><span>363 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Cooked rice</span><span>300g</span><span>390 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Olive oil</span><span>15g</span><span>135 kcal</span></div>
-                </div>
-                <div class="meal-total"><div><span>Total</span><strong>888 kcal</strong></div><div><span>Protein</span><strong>55g</strong></div></div>
-            </div>
-        </article>
-
-        <article class="meal-card">
-            <div class="meal-image bulk-meal-2"></div>
-            <div class="meal-content">
-                <div class="meal-topline"><span>BULKING</span><strong>48g protein</strong></div>
-                <h3>Beef Pasta Plate</h3>
-                <p class="meal-description">Lean beef, pasta and cheese make a dense meal that is easy to scale up with larger portions.</p>
-                <div class="ingredients">
-                    <div class="ingredient-row"><span class="ingredient-name">Lean beef</span><span>200g</span><span>400 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Cooked pasta</span><span>250g</span><span>390 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Cheese</span><span>30g</span><span>120 kcal</span></div>
-                </div>
-                <div class="meal-total"><div><span>Total</span><strong>910 kcal</strong></div><div><span>Protein</span><strong>48g</strong></div></div>
-            </div>
-        </article>
-
-        <article class="meal-card">
-            <div class="meal-image bulk-meal-3"></div>
-            <div class="meal-content">
-                <div class="meal-topline"><span>BULKING</span><strong>35g protein</strong></div>
-                <h3>Loaded Breakfast</h3>
-                <p class="meal-description">Eggs, oats, banana and peanut butter give a familiar breakfast a serious calorie upgrade.</p>
-                <div class="ingredients">
-                    <div class="ingredient-row"><span class="ingredient-name">Eggs</span><span>4 eggs</span><span>288 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Oats</span><span>100g</span><span>389 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Peanut butter</span><span>40g</span><span>235 kcal</span></div>
-                </div>
-                <div class="meal-total"><div><span>Total</span><strong>912 kcal</strong></div><div><span>Protein</span><strong>35g</strong></div></div>
-            </div>
-        </article>
-
-    </div>
-
-    <div class="content-title" id="bulking-ingredients">
-        <span>BULKING / INGREDIENTS</span>
-        <h2>Five easy calorie builders.</h2>
-        <p>Foods that can make a meal substantially more energy-dense.</p>
-    </div>
-
-    <div class="ingredient-grid">
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-beef"></div><div class="ingredient-card-content"><h3>Beef</h3><div class="nutrition"><div><strong>250</strong>kcal</div><div><strong>26g</strong>protein</div><div><strong>17g</strong>fat</div><div><strong>0g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-pasta"></div><div class="ingredient-card-content"><h3>Pasta</h3><div class="nutrition"><div><strong>371</strong>kcal</div><div><strong>13g</strong>protein</div><div><strong>1.5g</strong>fat</div><div><strong>2.7g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-peanut"></div><div class="ingredient-card-content"><h3>Peanut butter</h3><div class="nutrition"><div><strong>588</strong>kcal</div><div><strong>25g</strong>protein</div><div><strong>50g</strong>fat</div><div><strong>9g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-avocado"></div><div class="ingredient-card-content"><h3>Avocado</h3><div class="nutrition"><div><strong>160</strong>kcal</div><div><strong>2g</strong>protein</div><div><strong>15g</strong>fat</div><div><strong>0.7g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-olive"></div><div class="ingredient-card-content"><h3>Olive oil</h3><div class="nutrition"><div><strong>884</strong>kcal</div><div><strong>0g</strong>protein</div><div><strong>100g</strong>fat</div><div><strong>0g</strong>sugar</div></div></div></div>
-    </div>
-
-</section>
-
-<!-- =========================================================
-     CUTTING
-========================================================= -->
-
-<section class="section" id="cutting">
-
-    <div class="section-header">
-        <div class="section-label">03 / CUTTING</div>
-        <h1>CUTTING</h1>
-        <p>Lean meals built around protein, vegetables and controlled portions without making food feel boring.</p>
-    </div>
-
-    <div class="choice-grid">
-        <a href="#cutting-menus" class="choice-card">
-            <span class="choice-number">01</span>
-            <div><h2>Premade menus</h2><p>Simple lower-calorie examples with the numbers already shown.</p></div>
-        </a>
-        <a href="#cutting-ingredients" class="choice-card">
-            <span class="choice-number">02</span>
-            <div><h2>Ingredients</h2><p>Five lean staples for building lighter meals.</p></div>
-        </a>
-    </div>
-
-    <div class="content-title" id="cutting-menus">
-        <span>CUTTING / MENUS</span>
-        <h2>Keep it lean. Keep it satisfying.</h2>
-        <p>High-protein examples with controlled calories.</p>
-    </div>
-
-    <div class="meals-container">
-
-        <article class="meal-card">
-            <div class="meal-image cut-meal-1"></div>
-            <div class="meal-content">
-                <div class="meal-topline"><span>CUTTING</span><strong>45g protein</strong></div>
-                <h3>Lean Chicken Salad</h3>
-                <p class="meal-description">A large fresh salad centered on lean chicken, vegetables and a light yogurt dressing.</p>
-                <div class="ingredients">
-                    <div class="ingredient-row"><span class="ingredient-name">Chicken breast</span><span>180g</span><span>297 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Mixed vegetables</span><span>200g</span><span>70 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Tomato</span><span>100g</span><span>18 kcal</span></div>
-                </div>
-                <div class="meal-total"><div><span>Total</span><strong>385 kcal</strong></div><div><span>Protein</span><strong>45g</strong></div></div>
-            </div>
-        </article>
-
-        <article class="meal-card">
-            <div class="meal-image cut-meal-2"></div>
-            <div class="meal-content">
-                <div class="meal-topline"><span>CUTTING</span><strong>38g protein</strong></div>
-                <h3>Turkey Veggie Plate</h3>
-                <p class="meal-description">Lean turkey with a generous serving of vegetables and a light yogurt-based sauce.</p>
-                <div class="ingredients">
-                    <div class="ingredient-row"><span class="ingredient-name">Turkey breast</span><span>180g</span><span>243 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Mixed vegetables</span><span>250g</span><span>90 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Greek yogurt</span><span>50g</span><span>37 kcal</span></div>
-                </div>
-                <div class="meal-total"><div><span>Total</span><strong>370 kcal</strong></div><div><span>Protein</span><strong>38g</strong></div></div>
-            </div>
-        </article>
-
-        <article class="meal-card">
-            <div class="meal-image cut-meal-3"></div>
-            <div class="meal-content">
-                <div class="meal-topline"><span>CUTTING</span><strong>40g protein</strong></div>
-                <h3>Protein Omelette</h3>
-                <p class="meal-description">Whole eggs, egg whites and vegetables for a filling protein-heavy meal.</p>
-                <div class="ingredients">
-                    <div class="ingredient-row"><span class="ingredient-name">Eggs</span><span>3 eggs</span><span>216 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Egg whites</span><span>150g</span><span>78 kcal</span></div>
-                    <div class="ingredient-row"><span class="ingredient-name">Vegetables</span><span>150g</span><span>50 kcal</span></div>
-                </div>
-                <div class="meal-total"><div><span>Total</span><strong>344 kcal</strong></div><div><span>Protein</span><strong>40g</strong></div></div>
-            </div>
-        </article>
-
-    </div>
-
-    <div class="content-title" id="cutting-ingredients">
-        <span>CUTTING / INGREDIENTS</span>
-        <h2>Five lean staples.</h2>
-        <p>Simple foods that work well in lighter meals.</p>
-    </div>
-
-    <div class="ingredient-grid">
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-turkey"></div><div class="ingredient-card-content"><h3>Turkey breast</h3><div class="nutrition"><div><strong>135</strong>kcal</div><div><strong>30g</strong>protein</div><div><strong>1.8g</strong>fat</div><div><strong>0g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-tuna"></div><div class="ingredient-card-content"><h3>Tuna</h3><div class="nutrition"><div><strong>132</strong>kcal</div><div><strong>29g</strong>protein</div><div><strong>1g</strong>fat</div><div><strong>0g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-broccoli"></div><div class="ingredient-card-content"><h3>Broccoli</h3><div class="nutrition"><div><strong>35</strong>kcal</div><div><strong>2.4g</strong>protein</div><div><strong>0.4g</strong>fat</div><div><strong>1.4g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-tomato"></div><div class="ingredient-card-content"><h3>Tomato</h3><div class="nutrition"><div><strong>18</strong>kcal</div><div><strong>1g</strong>protein</div><div><strong>0.2g</strong>fat</div><div><strong>2.6g</strong>sugar</div></div></div></div>
-        <div class="ingredient-card"><div class="ingredient-card-image ingredient-eggwhite"></div><div class="ingredient-card-content"><h3>Egg whites</h3><div class="nutrition"><div><strong>52</strong>kcal</div><div><strong>10.9g</strong>protein</div><div><strong>0.2g</strong>fat</div><div><strong>0.7g</strong>sugar</div></div></div></div>
-    </div>
-
-</section>
-
-<!-- =========================================================
-     SNACKS / LEARN — DELIBERATELY EMPTY FOR THE DEMO
-========================================================= --> 
-
-<section class="simple-section" id="snacks">
-    <div>
-        <span class="coming-kicker">04 / COMING SOON</span>
-        <h2>Snacks</h2>
-        <p>Snack tools, quick options and more are coming in the full version.</p>
-        <span class="coming-tag">COMING IN THE FULL VERSION</span>
-    </div>
-</section>
-
-<section class="simple-section" id="learn-more">
-    <div>
-        <span class="coming-kicker">05 / COMING SOON</span>
-        <h2>Learn More</h2>
-        <p>Nutrition guides, useful explanations and fitness information are coming next.</p>
-        <span class="coming-tag">COMING IN THE FULL VERSION</span>
-    </div>
-</section>
-
-<footer>
-    <span>GYMFUEL</span>
-    <p>Fuel your goals.</p>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase-client.js"></script>
-<script src="jsmain.js"></script>
-
 <script>
-fetch('navbar.html')
-    .then(res => res.text())
-    .then(html => {
-        const temp = document.createElement('div');
-        temp.innerHTML = html;
+const canvas = document.getElementById("aura");
+const ctx = canvas.getContext("2d");
+let w, h;
 
-        const scripts = temp.querySelectorAll('script');
-        scripts.forEach(s => s.remove());
+function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
 
-        document.getElementById('navbarPlaceholder').replaceWith(...temp.childNodes);
+const colors = ["0,212,255", "168,85,247", "255,61,187", "120,200,255"];
+const particles = [];
 
-        scripts.forEach(oldScript => {
-            const newScript = document.createElement('script');
-            newScript.textContent = oldScript.textContent;
-            document.body.appendChild(newScript);
-        });
+for (let i = 0; i < 160; i++) {
+    particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 2 + 0.6,
+        speed: Math.random() * 0.5 + 0.05,
+        drift: (Math.random() - 0.5) * 0.3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: Math.random() * 0.5 + 0.15
     });
-</script>
+}
 
-<!-- =========================================================
-     ELECTRIC BORDER — vanilla JS canvas port of the React component
-========================================================= -->
-<script>
-(function () {
-    function random(x) { return (Math.sin(x * 12.9898) * 43758.5453) % 1; }
-
-    function noise2D(x, y) {
-        const i = Math.floor(x), j = Math.floor(y);
-        const fx = x - i, fy = y - j;
-        const a = random(i + j * 57), b = random(i + 1 + j * 57);
-        const c = random(i + (j + 1) * 57), d = random(i + 1 + (j + 1) * 57);
-        const ux = fx * fx * (3 - 2 * fx), uy = fy * fy * (3 - 2 * fy);
-        return a * (1 - ux) * (1 - uy) + b * ux * (1 - uy) + c * (1 - ux) * uy + d * ux * uy;
-    }
-
-    function octavedNoise(x, octaves, lacunarity, gain, baseAmplitude, baseFrequency, time, seed, baseFlatness) {
-        let y = 0, amplitude = baseAmplitude, frequency = baseFrequency;
-        for (let i = 0; i < octaves; i++) {
-            let oa = amplitude;
-            if (i === 0) oa *= baseFlatness;
-            y += oa * noise2D(frequency * x + seed * 100, time * frequency * 0.3);
-            frequency *= lacunarity;
-            amplitude *= gain;
-        }
-        return y;
-    }
-
-    function getCornerPoint(cx, cy, radius, startAngle, arcLength, progress) {
-        const angle = startAngle + progress * arcLength;
-        return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
-    }
-
-    function getRoundedRectPoint(t, left, top, width, height, radius) {
-        const straightWidth = width - 2 * radius;
-        const straightHeight = height - 2 * radius;
-        const cornerArc = (Math.PI * radius) / 2;
-        const totalPerimeter = 2 * straightWidth + 2 * straightHeight + 4 * cornerArc;
-        const distance = t * totalPerimeter;
-        let accumulated = 0;
-
-        if (distance <= accumulated + straightWidth) {
-            const p = (distance - accumulated) / straightWidth;
-            return { x: left + radius + p * straightWidth, y: top };
-        }
-        accumulated += straightWidth;
-
-        if (distance <= accumulated + cornerArc) {
-            const p = (distance - accumulated) / cornerArc;
-            return getCornerPoint(left + width - radius, top + radius, radius, -Math.PI / 2, Math.PI / 2, p);
-        }
-        accumulated += cornerArc;
-
-        if (distance <= accumulated + straightHeight) {
-            const p = (distance - accumulated) / straightHeight;
-            return { x: left + width, y: top + radius + p * straightHeight };
-        }
-        accumulated += straightHeight;
-
-        if (distance <= accumulated + cornerArc) {
-            const p = (distance - accumulated) / cornerArc;
-            return getCornerPoint(left + width - radius, top + height - radius, radius, 0, Math.PI / 2, p);
-        }
-        accumulated += cornerArc;
-
-        if (distance <= accumulated + straightWidth) {
-            const p = (distance - accumulated) / straightWidth;
-            return { x: left + width - radius - p * straightWidth, y: top + height };
-        }
-        accumulated += straightWidth;
-
-        if (distance <= accumulated + cornerArc) {
-            const p = (distance - accumulated) / cornerArc;
-            return getCornerPoint(left + radius, top + height - radius, radius, Math.PI / 2, Math.PI / 2, p);
-        }
-        accumulated += cornerArc;
-
-        if (distance <= accumulated + straightHeight) {
-            const p = (distance - accumulated) / straightHeight;
-            return { x: left, y: top + height - radius - p * straightHeight };
-        }
-        accumulated += straightHeight;
-
-        const p = (distance - accumulated) / cornerArc;
-        return getCornerPoint(left + radius, top + radius, radius, Math.PI, Math.PI / 2, p);
-    }
-
-    function initElectricBorder(el, opts) {
-        opts = opts || {};
-        const color = opts.color || '#7df9ff';
-        const speed = opts.speed || 1;
-        const chaos = opts.chaos !== undefined ? opts.chaos : 0.12;
-        const borderRadius = opts.borderRadius !== undefined ? opts.borderRadius : 16;
-
-        el.style.setProperty('--electric-light-color', color);
-
-        const layers = document.createElement('div');
-        layers.className = 'eb-layers';
-        layers.innerHTML = '<div class="eb-glow-1"></div><div class="eb-glow-2"></div><div class="eb-background-glow"></div>';
-
-        const canvasContainer = document.createElement('div');
-        canvasContainer.className = 'eb-canvas-container';
-        const canvas = document.createElement('canvas');
-        canvas.className = 'eb-canvas';
-        canvasContainer.appendChild(canvas);
-
-        el.appendChild(layers);
-        el.appendChild(canvasContainer);
-
-        const ctx = canvas.getContext('2d');
-
-        const octaves = 8, lacunarity = 1.6, gain = 0.7;
-        const amplitude = chaos, frequency = 10, baseFlatness = 0;
-        const displacement = 22, borderOffset = 24;
-
-        let width, height, lastDpr = 1;
-        let timeRef = 0, lastFrameTime = 0, raf;
-
-        function updateSize() {
-            const rect = el.getBoundingClientRect();
-            width = rect.width + borderOffset * 2;
-            height = rect.height + borderOffset * 2;
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            canvas.width = width * dpr;
-            canvas.height = height * dpr;
-            canvas.style.width = width + 'px';
-            canvas.style.height = height + 'px';
-            lastDpr = dpr;
-        }
-
-        updateSize();
-
-        function draw(currentTime) {
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            if (dpr !== lastDpr) updateSize();
-
-            const deltaTime = (currentTime - lastFrameTime) / 1000;
-            timeRef += deltaTime * speed;
-            lastFrameTime = currentTime;
-
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.scale(lastDpr, lastDpr);
-
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 2.5;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-
-            const scale = displacement;
-            const left = borderOffset, top = borderOffset;
-            const borderWidth = width - 2 * borderOffset;
-            const borderHeight = height - 2 * borderOffset;
-            const maxRadius = Math.min(borderWidth, borderHeight) / 2;
-            const radius = Math.min(borderRadius, maxRadius);
-
-            const approximatePerimeter = 2 * (borderWidth + borderHeight) + 2 * Math.PI * radius;
-            const sampleCount = Math.max(24, Math.floor(approximatePerimeter / 4));
-
-            ctx.beginPath();
-            for (let i = 0; i <= sampleCount; i++) {
-                const progress = i / sampleCount;
-                const point = getRoundedRectPoint(progress, left, top, borderWidth, borderHeight, radius);
-                const xNoise = octavedNoise(progress * 8, octaves, lacunarity, gain, amplitude, frequency, timeRef, 0, baseFlatness);
-                const yNoise = octavedNoise(progress * 8, octaves, lacunarity, gain, amplitude, frequency, timeRef, 1, baseFlatness);
-                const dx = point.x + xNoise * scale;
-                const dy = point.y + yNoise * scale;
-                if (i === 0) ctx.moveTo(dx, dy); else ctx.lineTo(dx, dy);
-            }
-            ctx.closePath();
-            ctx.stroke();
-
-            raf = requestAnimationFrame(draw);
-        }
-
-        raf = requestAnimationFrame(draw);
-
-        const ro = new ResizeObserver(updateSize);
-        ro.observe(el);
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.electric-border').forEach(function (el) {
-            initElectricBorder(el, { color: '#7df9ff', speed: 1, chaos: 0.12, borderRadius: 16 });
-        });
+function animate() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = `rgba(${p.color}, ${p.alpha})`;
+        ctx.fill();
+        p.y -= p.speed;
+        p.x += p.drift;
+        if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
     });
-})();
+    requestAnimationFrame(animate);
+}
+animate();
 </script>
-
 </body>
 </html>

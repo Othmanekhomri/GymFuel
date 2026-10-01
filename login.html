@@ -1,861 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>GymFuel - Create Account</title>
-
-    <style>
-
-        /* =========================
-           RESET
-        ========================== */
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            min-height: 100vh;
-
-            font-family: Arial, Helvetica, sans-serif;
-
-            color: white;
-
-            background:
-                linear-gradient(
-                    rgba(8, 8, 12, .62),
-                    rgba(8, 8, 12, .82)
-                ),
-                url("https://images.unsplash.com/photo-1723639904881-d7213fc8a526?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
-                center center / cover fixed no-repeat;
-
-            overflow-x: hidden;
-        }
-
-
-        /* =========================
-           BACKGROUND EFFECTS
-        ========================== */
-
-        body::before {
-            content: "";
-
-            position: fixed;
-            inset: 0;
-
-            background:
-                radial-gradient(
-                    circle at 20% 20%,
-                    rgba(255,255,255,.08),
-                    transparent 35%
-                ),
-                radial-gradient(
-                    circle at 80% 80%,
-                    rgba(255,255,255,.05),
-                    transparent 35%
-                );
-
-            pointer-events: none;
-        }
-
-
-        /* =========================
-           NAVBAR
-        ========================== */
-
-        .navbar {
-            position: fixed;
-
-            top: 14px;
-            left: 50%;
-
-            transform: translateX(-50%);
-
-            width: min(1100px, calc(100% - 28px));
-            height: 68px;
-
-            padding: 8px 10px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            background: rgba(14, 14, 18, .78);
-
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-
-            border: 1px solid rgba(255,255,255,.12);
-
-            border-radius: 22px;
-
-            box-shadow:
-                0 18px 50px rgba(0,0,0,.35),
-                inset 0 1px 0 rgba(255,255,255,.08);
-
-            z-index: 10;
-        }
-
-
-        .logo {
-            display: flex;
-            align-items: center;
-
-            gap: 9px;
-
-            color: white;
-
-            font-size: 21px;
-            font-weight: 900;
-
-            padding-left: 12px;
-        }
-
-
-        .logo-icon {
-            width: 35px;
-            height: 35px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 11px;
-
-            background: linear-gradient(135deg, #fff, #bbb);
-
-            color: #111;
-
-            font-size: 18px;
-        }
-
-
-        /* =========================
-           PAGE
-        ========================== */
-
-        .page {
-            min-height: 100vh;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            padding: 120px 20px 50px;
-
-            position: relative;
-        }
-
-
-        /* =========================
-           REGISTER CONTAINER
-        ========================== */
-
-        .register-container {
-            width: 100%;
-            max-width: 480px;
-
-            animation: enter .8s ease both;
-        }
-
-
-        @keyframes enter {
-
-            from {
-                opacity: 0;
-                transform: translateY(25px) scale(.98);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-
-        }
-
-
-        /* =========================
-           TOP TITLE
-        ========================== */
-
-        .intro {
-            text-align: center;
-
-            margin-bottom: 25px;
-        }
-
-
-        .badge {
-            display: inline-block;
-
-            padding: 8px 17px;
-
-            margin-bottom: 18px;
-
-            border-radius: 30px;
-
-            background: rgba(255,255,255,.09);
-
-            border: 1px solid rgba(255,255,255,.18);
-
-            font-size: 10px;
-
-            font-weight: 800;
-
-            letter-spacing: 2px;
-        }
-
-
-        .intro h1 {
-            font-size: clamp(42px, 9vw, 64px);
-
-            line-height: .95;
-
-            letter-spacing: -3px;
-
-            margin-bottom: 15px;
-        }
-
-
-        .intro p {
-            max-width: 390px;
-
-            margin: auto;
-
-            color: rgba(255,255,255,.68);
-
-            font-size: 14px;
-
-            line-height: 1.6;
-        }
-
-
-        /* =========================
-           GLASS CARD
-        ========================== */
-
-        .card {
-
-            position: relative;
-
-            padding: 30px;
-
-            background: rgba(18,18,22,.72);
-
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-
-            border: 1px solid rgba(255,255,255,.14);
-
-            border-radius: 24px;
-
-            box-shadow:
-                0 30px 80px rgba(0,0,0,.45),
-                inset 0 1px 0 rgba(255,255,255,.09);
-
-            overflow: hidden;
-        }
-
-
-        .card::before {
-
-            content: "";
-
-            position: absolute;
-
-            top: 0;
-            left: 15%;
-
-            width: 70%;
-            height: 1px;
-
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255,255,255,.6),
-                transparent
-            );
-
-            opacity: .5;
-        }
-
-
-        /* =========================
-           PRIVACY MESSAGE
-        ========================== */
-
-        .privacy {
-
-            padding: 16px 17px;
-
-            margin-bottom: 25px;
-
-            border-radius: 16px;
-
-            background: rgba(255,255,255,.06);
-
-            border: 1px solid rgba(255,255,255,.10);
-
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,.04);
-        }
-
-
-        .privacy-title {
-
-            display: flex;
-            align-items: center;
-
-            gap: 9px;
-
-            margin-bottom: 7px;
-
-            font-size: 12px;
-
-            font-weight: 800;
-        }
-
-
-        .privacy-icon {
-
-            width: 25px;
-            height: 25px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            background: rgba(255,255,255,.14);
-
-            border: 1px solid rgba(255,255,255,.18);
-
-            font-size: 11px;
-        }
-
-
-        .privacy p {
-
-            color: rgba(255,255,255,.62);
-
-            font-size: 11px;
-
-            line-height: 1.55;
-        }
-
-
-        /* =========================
-           FORM
-        ========================== */
-
-        .field {
-            margin-bottom: 17px;
-        }
-
-
-        .field label {
-
-            display: block;
-
-            margin-bottom: 8px;
-
-            color: rgba(255,255,255,.7);
-
-            font-size: 10px;
-
-            font-weight: 800;
-
-            letter-spacing: 1.5px;
-
-            text-transform: uppercase;
-        }
-
-
-        .input {
-
-            width: 100%;
-
-            height: 56px;
-
-            padding: 0 17px;
-
-            border-radius: 14px;
-
-            border: 1px solid rgba(255,255,255,.12);
-
-            background: rgba(255,255,255,.055);
-
-            backdrop-filter: blur(10px);
-
-            color: white;
-
-            outline: none;
-
-            font-size: 14px;
-
-            transition:
-                .25s ease;
-        }
-
-
-        .input::placeholder {
-            color: rgba(255,255,255,.35);
-        }
-
-
-        .input:hover {
-            background: rgba(255,255,255,.075);
-
-            border-color: rgba(255,255,255,.2);
-        }
-
-
-        .input:focus {
-
-            background: rgba(255,255,255,.09);
-
-            border-color: rgba(255,255,255,.45);
-
-            box-shadow:
-                0 0 0 3px rgba(255,255,255,.05);
-        }
-
-
-        /* =========================
-           CREATE BUTTON
-        ========================== */
-
-        .create-btn {
-
-            position: relative;
-
-            width: 100%;
-            height: 57px;
-
-            margin-top: 5px;
-
-            border: 1px solid rgba(255,255,255,.8);
-
-            border-radius: 15px;
-
-            background: white;
-
-            color: #111;
-
-            font-size: 12px;
-
-            font-weight: 900;
-
-            letter-spacing: 1.5px;
-
-            cursor: pointer;
-
-            overflow: hidden;
-
-            transition: .3s ease;
-        }
-
-
-        .create-btn::before {
-
-            content: "";
-
-            position: absolute;
-
-            top: 0;
-            left: -120%;
-
-            width: 70%;
-            height: 100%;
-
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(0,0,0,.08),
-                transparent
-            );
-
-            transform: skewX(-25deg);
-
-            transition: .6s ease;
-        }
-
-
-        .create-btn:hover::before {
-            left: 140%;
-        }
-
-
-        .create-btn:hover {
-
-            transform: translateY(-2px);
-
-            box-shadow:
-                0 15px 35px rgba(0,0,0,.35);
-        }
-
-
-        .create-btn:active {
-            transform: translateY(0);
-        }
-
-
-        /* =========================
-           LOGIN
-        ========================== */
-
-        .login {
-
-            text-align: center;
-
-            margin-top: 23px;
-
-            color: rgba(255,255,255,.48);
-
-            font-size: 12px;
-        }
-
-
-        .login a {
-
-            color: white;
-
-            font-weight: 800;
-
-            text-decoration: none;
-
-            margin-left: 4px;
-
-            border-bottom: 1px solid rgba(255,255,255,.35);
-
-            transition: .2s;
-        }
-
-
-        .login a:hover {
-            border-color: white;
-        }
-
-
-        /* =========================
-           FOOTER TEXT
-        ========================== */
-
-        .bottom-text {
-
-            text-align: center;
-
-            margin-top: 25px;
-
-            color: rgba(255,255,255,.32);
-
-            font-size: 9px;
-
-            font-weight: 800;
-
-            letter-spacing: 4px;
-        }
-
-
-        /* =========================
-           MOBILE
-        ========================== */
-
-        @media (max-width: 600px) {
-
-            .navbar {
-                top: 9px;
-
-                width: calc(100% - 18px);
-            }
-
-
-            .page {
-
-                padding:
-                    105px 14px
-                    35px;
-            }
-
-
-            .intro {
-                margin-bottom: 20px;
-            }
-
-
-            .intro h1 {
-
-                font-size: 43px;
-
-                letter-spacing: -2px;
-            }
-
-
-            .intro p {
-                font-size: 13px;
-            }
-
-
-            .card {
-
-                padding: 21px 18px;
-
-                border-radius: 20px;
-            }
-
-
-            .privacy {
-                padding: 14px;
-            }
-
-
-            .input {
-                height: 54px;
-            }
-
-
-            .create-btn {
-                height: 55px;
-            }
-
-        }
-
-
-        /* =========================
-           SMALL PHONES
-        ========================== */
-
-        @media (max-width: 380px) {
-
-            .page {
-                padding-top: 95px;
-            }
-
-
-            .intro h1 {
-                font-size: 38px;
-            }
-
-
-            .card {
-                padding: 18px 15px;
-            }
-
-        }
-
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GymFuel — We Moved</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --brand-cyan: #00d4ff;
+    --brand-purple: #a855f7;
+    --brand-magenta: #ff3dbb;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background:
+        radial-gradient(circle at 50% 30%, rgba(168,85,247,.30), transparent 60%),
+        #000;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#aura {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+.page {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.inner { max-width: 900px; }
+
+h1 {
+    font-size: clamp(32px, 7vw, 76px);
+    line-height: 1.05;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+}
+
+.glow-word {
+    background: linear-gradient(90deg, var(--brand-cyan), var(--brand-purple), var(--brand-magenta));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+p {
+    font-size: clamp(15px, 2.2vw, 20px);
+    line-height: 1.7;
+    color: rgba(255,255,255,.68);
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+/* Button (same design as GymFuel) */
+.uiverse {
+    --duration: 7s;
+    --easing: linear;
+    --c-color-1: rgba(0, 212, 255, 0.7);
+    --c-color-2: #a855f7;
+    --c-color-3: #ff3dbb;
+    --c-color-4: rgba(0, 212, 255, 0.7);
+    --c-shadow: rgba(168, 85, 247, 0.5);
+    --c-shadow-inset-top: rgba(0, 212, 255, 0.9);
+    --c-shadow-inset-bottom: rgba(255, 255, 255, 0.8);
+    --c-radial-inner: #a855f7;
+    --c-radial-outer: #00d4ff;
+    --c-color: #fff;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    outline: none;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    display: table;
+    border-radius: 24px;
+    padding: 0;
+    margin: 34px auto 0;
+    text-align: center;
+    font-weight: 900;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.5;
+    text-decoration: none;
+    color: var(--c-color);
+    background: radial-gradient(circle, var(--c-radial-inner), var(--c-radial-outer) 80%);
+    box-shadow: 0 0 14px var(--c-shadow);
+}
+
+.uiverse:before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    border-radius: 24px;
+    box-shadow:
+        inset 0 3px 12px var(--c-shadow-inset-top),
+        inset 0 -3px 4px var(--c-shadow-inset-bottom);
+}
+
+.uiverse .wrapper {
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    overflow: hidden;
+    border-radius: 24px;
+    min-width: 170px;
+    padding: 16px 32px;
+}
+
+.uiverse .wrapper span {
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+}
+
+.uiverse:hover { --duration: 1400ms; }
+
+.uiverse .wrapper .circle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    filter: blur(var(--blur, 8px));
+    background: var(--background, transparent);
+    transform: translate(var(--x, 0), var(--y, 0)) translateZ(0);
+    animation: var(--animation, none) var(--duration) var(--easing) infinite;
+}
+
+.uiverse .wrapper .circle.circle-1,
+.uiverse .wrapper .circle.circle-9,
+.uiverse .wrapper .circle.circle-10 { --background: var(--c-color-4); }
+
+.uiverse .wrapper .circle.circle-3,
+.uiverse .wrapper .circle.circle-4 { --background: var(--c-color-2); --blur: 14px; }
+
+.uiverse .wrapper .circle.circle-5,
+.uiverse .wrapper .circle.circle-6 { --background: var(--c-color-3); --blur: 16px; }
+
+.uiverse .wrapper .circle.circle-2,
+.uiverse .wrapper .circle.circle-7,
+.uiverse .wrapper .circle.circle-8,
+.uiverse .wrapper .circle.circle-11,
+.uiverse .wrapper .circle.circle-12 { --background: var(--c-color-1); --blur: 12px; }
+
+.uiverse .wrapper .circle.circle-1 { --x: 0; --y: -40px; --animation: circle-1; }
+.uiverse .wrapper .circle.circle-2 { --x: 92px; --y: 8px; --animation: circle-2; }
+.uiverse .wrapper .circle.circle-3 { --x: -12px; --y: -12px; --animation: circle-3; }
+.uiverse .wrapper .circle.circle-4 { --x: 80px; --y: -12px; --animation: circle-4; }
+.uiverse .wrapper .circle.circle-5 { --x: 12px; --y: -4px; --animation: circle-5; }
+.uiverse .wrapper .circle.circle-6 { --x: 56px; --y: 16px; --animation: circle-6; }
+.uiverse .wrapper .circle.circle-7 { --x: 8px; --y: 28px; --animation: circle-7; }
+.uiverse .wrapper .circle.circle-8 { --x: 28px; --y: -4px; --animation: circle-8; }
+.uiverse .wrapper .circle.circle-9 { --x: 20px; --y: -12px; --animation: circle-9; }
+.uiverse .wrapper .circle.circle-10 { --x: 64px; --y: 16px; --animation: circle-10; }
+.uiverse .wrapper .circle.circle-11 { --x: 4px; --y: 4px; --animation: circle-11; }
+.uiverse .wrapper .circle.circle-12 { --blur: 14px; --x: 52px; --y: 4px; --animation: circle-12; }
+
+@keyframes circle-1 { 33% { transform: translate(0px, 16px) translateZ(0); } 66% { transform: translate(12px, 64px) translateZ(0); } }
+@keyframes circle-2 { 33% { transform: translate(80px, -10px) translateZ(0); } 66% { transform: translate(72px, -48px) translateZ(0); } }
+@keyframes circle-3 { 33% { transform: translate(20px, 12px) translateZ(0); } 66% { transform: translate(12px, 4px) translateZ(0); } }
+@keyframes circle-4 { 33% { transform: translate(76px, -12px) translateZ(0); } 66% { transform: translate(112px, -8px) translateZ(0); } }
+@keyframes circle-5 { 33% { transform: translate(84px, 28px) translateZ(0); } 66% { transform: translate(40px, -32px) translateZ(0); } }
+@keyframes circle-6 { 33% { transform: translate(28px, -16px) translateZ(0); } 66% { transform: translate(76px, -56px) translateZ(0); } }
+@keyframes circle-7 { 33% { transform: translate(8px, 28px) translateZ(0); } 66% { transform: translate(20px, -60px) translateZ(0); } }
+@keyframes circle-8 { 33% { transform: translate(32px, -4px) translateZ(0); } 66% { transform: translate(56px, -20px) translateZ(0); } }
+@keyframes circle-9 { 33% { transform: translate(20px, -12px) translateZ(0); } 66% { transform: translate(80px, -8px) translateZ(0); } }
+@keyframes circle-10 { 33% { transform: translate(68px, 20px) translateZ(0); } 66% { transform: translate(100px, 28px) translateZ(0); } }
+@keyframes circle-11 { 33% { transform: translate(4px, 4px) translateZ(0); } 66% { transform: translate(68px, 20px) translateZ(0); } }
+@keyframes circle-12 { 33% { transform: translate(56px, 0px) translateZ(0); } 66% { transform: translate(60px, -32px) translateZ(0); } }
+</style>
 </head>
-
-
 <body>
 
-<div id="navbarPlaceholder"></div>
+<canvas id="aura"></canvas>
 
-    <!-- =========================
-         REGISTER PAGE
-    ========================== -->
+<div class="page">
+    <div class="inner">
+        <h1>Sorry, we moved our project to a <span class="glow-word">whole new place.</span></h1>
+        <p>Please click the button, it will take you to the new website. Thanks for understanding!</p>
 
-    <main class="page">
-
-        <div class="register-container">
-
-
-            <!-- INTRO -->
-
-            <div class="intro">
-
-                <span class="badge">
-                    GYMFUEL MEMBERS
-                </span>
-
-                <h1>
-                    login
-                </h1>
-
-                <p>
-                    Your fitness journey starts here.
-                </p>
-
+        <!-- 👇 PUT YOUR NEW WEBSITE LINK IN href -->
+        <a href="https://YOUR-NEW-LINK-HERE" class="uiverse">
+            <div class="wrapper">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-3"></div>
+                <div class="circle circle-4"></div>
+                <div class="circle circle-5"></div>
+                <div class="circle circle-6"></div>
+                <div class="circle circle-7"></div>
+                <div class="circle circle-8"></div>
+                <div class="circle circle-9"></div>
+                <div class="circle circle-10"></div>
+                <div class="circle circle-11"></div>
+                <div class="circle circle-12"></div>
+                <span>Go to new website →</span>
             </div>
+        </a>
+    </div>
+</div>
 
-
-
-            <!-- CARD -->
-
-            <section class="card">
-
-
-                <!-- PRIVACY -->
-
-                <div class="privacy">
-
-                    <div class="privacy-title">
-
-                        <span class="privacy-icon">
-                            ✓
-                        </span>
-
-                       
-
-                    </div>
-
-                    <p>
-                       Emails are like toothbrushes,don't share'em!<br>
-                       GymFuel will never ask for your email
-                    </p>
-
-                </div>
-
-
-
-                <!-- FORM -->
-
-                <form id="registerForm">
-
-
-                    <!-- NAME -->
-
-                    <div class="field">
-
-                        <label for="name">
-                            Name
-                        </label>
-
-                        <input
-                            class="input"
-                            type="text"
-                            id="name"
-                            name="name"
-                            placeholder="username "
-                            autocomplete="username"
-                            required
-                        >
-
-                    </div>
-
-
-
-                    <!-- PASSWORD -->
-
-                    <div class="field">
-
-                        <label for="password">
-                            Password
-                        </label>
-
-                        <input
-                            class="input"
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="password"
-                            autocomplete="new-password"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- BUTTON -->
-
-                    <button class="create-btn"type="submit">
-                        log in
-                    </button>
-
-
-                </form>
-
-
-
-                <!-- LOGIN -->
-
-                <div class="login">
-
-                    dot have a account
-
-                    <a href="createacc.html">
-                        sign in 
-                    </a>
-
-                </div>
-
-
-            </section>
-
-
-
-            <div class="bottom-text">
-                TRAIN · EAT · GROW
-            </div>
-
-
-        </div>
-
-    </main>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase-client.js"></script>
-
- <script>
-
-const form = document.getElementById("registerForm");
-
-form.addEventListener("submit", async function (e) {
-
-  e.preventDefault();
-
-    const name = document.getElementById("name").value.trim();
-    const password = document.getElementById("password").value;
-
-    const { data, error } = await supabaseClient
-  .from('bruh')
-  .select('*')
-  .eq('name', name)
-  .eq('password', password);
-
-if (error) {
-  console.error('Something went wrong:', error.message);
-  return;
-}
-
-if (data.length === 0) {
-  console.log('Wrong email or password');
-} else {
-  localStorage.setItem('username', name);
-  window.location.href = "main.html";
-}
-
-});
-
-</script>
 <script>
-fetch('navbar.html')
-  .then(res => res.text())
-  .then(html => {
-    const temp = document.createElement('div');
-    temp.innerHTML = html;
+const canvas = document.getElementById("aura");
+const ctx = canvas.getContext("2d");
+let w, h;
 
-    const scripts = temp.querySelectorAll('script');
-    scripts.forEach(s => s.remove());
-    document.getElementById('navbarPlaceholder').replaceWith(...temp.childNodes);
+function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
 
-    scripts.forEach(oldScript => {
-      const newScript = document.createElement('script');
-      newScript.textContent = oldScript.textContent;
-      document.body.appendChild(newScript);
+const colors = ["0,212,255", "168,85,247", "255,61,187", "120,200,255"];
+const particles = [];
+
+for (let i = 0; i < 160; i++) {
+    particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 2 + 0.6,
+        speed: Math.random() * 0.5 + 0.05,
+        drift: (Math.random() - 0.5) * 0.3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: Math.random() * 0.5 + 0.15
     });
-  });
-</script>
+}
 
+function animate() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = `rgba(${p.color}, ${p.alpha})`;
+        ctx.fill();
+        p.y -= p.speed;
+        p.x += p.drift;
+        if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+</script>
 </body>
 </html>
