@@ -102,7 +102,13 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            gap: 10px;
             margin-bottom: 18px;
+        }
+
+        .plate-title-area {
+            min-width: 0;
+            flex: 1;
         }
 
         .plate-card-header h2 {
@@ -110,14 +116,94 @@
             font-weight: 700;
             letter-spacing: -0.2px;
             color: rgba(255,255,255,.9);
+            overflow-wrap: anywhere;
         }
 
-        .plate-card-header span {
+        .plate-card-header .plate-sub {
             display: block;
             margin-top: 3px;
             font-size: 10.5px;
             color: rgba(255,255,255,.4);
             font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        /* RENAME BUTTON + BOX */
+
+        .rename-btn {
+            height: 28px;
+            padding: 0 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,.08);
+            color: rgba(255,255,255,.65);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .rename-btn:hover {
+            background: rgba(140,75,255,.3);
+            color: #fff;
+        }
+
+        .rename-box {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .rename-input {
+            width: 100%;
+            min-width: 0;
+            padding: 6px 9px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,.3);
+            background: rgba(0,0,0,.3);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .rename-input:focus {
+            border-color: #8c4bff;
+        }
+
+        .rename-save,
+        .rename-cancel {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .rename-save {
+            background: #8c4bff;
+            color: #fff;
+        }
+
+        .rename-save:hover {
+            background: #9d63ff;
+        }
+
+        .rename-cancel {
+            background: rgba(255,255,255,.1);
+            color: rgba(255,255,255,.7);
+        }
+
+        .rename-cancel:hover {
+            background: rgba(255,255,255,.2);
         }
 
         .delete-plate-btn {
@@ -138,10 +224,13 @@
             color: #ff6b6b;
         }
 
+        /* INGREDIENT ROWS */
+
         .ingredient-row {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
+            gap: 8px;
             padding: 9px 0;
             border-bottom: 1px solid rgba(255,255,255,.09);
         }
@@ -156,11 +245,26 @@
             color: rgba(255,255,255,.88);
         }
 
+        .ingredient-grams {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 2px 7px;
+            border-radius: 20px;
+            background: rgba(140,75,255,.22);
+            border: 1px solid rgba(140,75,255,.4);
+            color: #cdb3ff;
+            font-size: 9.5px;
+            font-weight: 800;
+            letter-spacing: .3px;
+            vertical-align: middle;
+        }
+
         .ingredient-macros {
             display: flex;
             gap: 9px;
             font-size: 10px;
             color: rgba(255,255,255,.5);
+            flex-shrink: 0;
         }
 
         .ingredient-macros strong {
@@ -200,7 +304,8 @@
                 grid-template-columns: 1fr;
             }
         }
-/* From Uiverse.io by milegelu */ 
+
+/* From Uiverse.io by milegelu */
 .container {
   width: 100%;
   height: 100%;
@@ -229,7 +334,7 @@
 </head>
 
 <body>
-<!-- From Uiverse.io by milegelu --> 
+<!-- From Uiverse.io by milegelu -->
 <div class="container">
 
     <div id="navbarPlaceholder"></div>
@@ -250,6 +355,17 @@
 
     <script>
 
+        /* makes names safe to put inside HTML */
+        function esc(str) {
+            return String(str ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+
         async function loadPlates() {
 
             const username = localStorage.getItem('username');
@@ -264,7 +380,7 @@
             const { data: plates, error: platesError } =
                 await supabaseClient
                     .from('plates')
-                    .select('id')
+                    .select('id, name')
                     .eq('user_name', username)
                     .order('id', { ascending: true });
 
@@ -294,7 +410,7 @@
                 const { data: items, error: itemsError } =
                     await supabaseClient
                         .from('plate_items')
-                        .select('name, kcal, protein, fat')
+                        .select('name, grams, kcal, protein, fat')
                         .eq('plate_id', plate.id);
 
                 if (itemsError) {
@@ -310,6 +426,7 @@
                 container.appendChild(
                     renderPlateCard(
                         plate.id,
+                        plate.name,
                         plateNumber,
                         items
                     )
@@ -320,10 +437,12 @@
         }
 
 
-        function renderPlateCard(plateId, plateNumber, items) {
+        function renderPlateCard(plateId, plateName, plateNumber, items) {
 
             const card = document.createElement('section');
             card.className = 'plate-card';
+            card.dataset.plateId = plateId;
+            card.dataset.defaultName = 'Plate ' + plateNumber;
 
 
             /* =========================
@@ -349,9 +468,7 @@
 
                 Plate 1 → color 1
                 Plate 2 → color 2
-                Plate 3 → color 3
                 ...
-                Plate 10 → color 10
                 Plate 11 → color 1 again
             */
 
@@ -388,26 +505,28 @@
                 totalProtein += Number(item.protein) || 0;
                 totalFat += Number(item.fat) || 0;
 
+                const grams = item.grams ?? 100;
 
                 return `
                     <div class="ingredient-row">
 
                         <div class="ingredient-name">
-                            ${item.name}
+                            ${esc(item.name)}
+                            <span class="ingredient-grams">${esc(grams)}g</span>
                         </div>
 
                         <div class="ingredient-macros">
 
                             <span>
-                                <strong>${item.kcal}</strong> kcal
+                                <strong>${esc(item.kcal)}</strong> kcal
                             </span>
 
                             <span>
-                                <strong>${item.protein}g</strong> pro
+                                <strong>${esc(item.protein)}g</strong> pro
                             </span>
 
                             <span>
-                                <strong>${item.fat ?? 0}g</strong> fat
+                                <strong>${esc(item.fat ?? 0)}g</strong> fat
                             </span>
 
                         </div>
@@ -422,17 +541,19 @@
                CARD HTML
                ========================= */
 
+            const shownName = plateName && plateName.trim()
+                ? plateName
+                : card.dataset.defaultName;
+
             card.innerHTML = `
 
                 <div class="plate-card-header">
 
-                    <div>
+                    <div class="plate-title-area">
 
-                        <h2>
-                            Plate ${plateNumber}
-                        </h2>
+                        <h2 class="plate-name">${esc(shownName)}</h2>
 
-                        <span>
+                        <span class="plate-sub">
                             ${items.length}
                             ingredient${items.length !== 1 ? 's' : ''}
                         </span>
@@ -440,12 +561,24 @@
                     </div>
 
 
-                    <button
-                        class="delete-plate-btn"
-                        data-plate-id="${plateId}"
-                    >
-                        ✕
-                    </button>
+                    <div class="header-actions">
+
+                        <button
+                            class="rename-btn"
+                            type="button"
+                        >
+                            Change name
+                        </button>
+
+                        <button
+                            class="delete-plate-btn"
+                            type="button"
+                            data-plate-id="${plateId}"
+                        >
+                            ✕
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -502,12 +635,96 @@
 
 
         /* =========================
-           DELETE PLATE
+           RENAME PLATE
+        ========================= */
+
+        function startRename(card) {
+
+            const titleArea = card.querySelector('.plate-title-area');
+            const nameEl = titleArea.querySelector('.plate-name');
+            const renameBtn = card.querySelector('.rename-btn');
+
+            if (!nameEl) return; // already editing
+
+            const currentName = nameEl.textContent.trim();
+
+            const box = document.createElement('div');
+            box.className = 'rename-box';
+            box.innerHTML = `
+                <input class="rename-input" type="text" maxlength="30" placeholder="Plate name">
+                <button class="rename-save" type="button" title="Save">✓</button>
+                <button class="rename-cancel" type="button" title="Cancel">✕</button>
+            `;
+
+            const input = box.querySelector('.rename-input');
+            input.value = currentName;
+
+            nameEl.replaceWith(box);
+            renameBtn.style.display = 'none';
+
+            input.focus();
+            input.select();
+
+
+            function restore(finalName) {
+                const h2 = document.createElement('h2');
+                h2.className = 'plate-name';
+                h2.textContent = finalName;
+                box.replaceWith(h2);
+                renameBtn.style.display = '';
+            }
+
+
+            async function save() {
+
+                const newName = input.value.trim();
+                const plateId = card.dataset.plateId;
+
+                // empty name = go back to "Plate N"
+                const { error } = await supabaseClient
+                    .from('plates')
+                    .update({ name: newName || null })
+                    .eq('id', plateId);
+
+                if (error) {
+                    console.error('Could not rename plate:', error.message);
+                    alert('Could not save the name. Check the console (F12).');
+                    return;
+                }
+
+                restore(newName || card.dataset.defaultName);
+            }
+
+
+            box.querySelector('.rename-save').addEventListener('click', save);
+            box.querySelector('.rename-cancel').addEventListener('click', () => restore(currentName));
+
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Enter') save();
+                if (e.key === 'Escape') restore(currentName);
+            });
+        }
+
+
+        /* =========================
+           CLICKS: DELETE + RENAME
         ========================= */
 
         document
             .getElementById('platesContainer')
             .addEventListener('click', async function(e) {
+
+                /* ----- rename ----- */
+
+                const renameBtn = e.target.closest('.rename-btn');
+
+                if (renameBtn) {
+                    startRename(renameBtn.closest('.plate-card'));
+                    return;
+                }
+
+
+                /* ----- delete ----- */
 
                 const btn =
                     e.target.closest('.delete-plate-btn');

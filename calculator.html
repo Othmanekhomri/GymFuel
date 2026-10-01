@@ -293,6 +293,8 @@ const resultNote = document.getElementById('resultNote'), saveCalBtn = document.
 const loggedInUser = localStorage.getItem('username');
 let goalCalories = 0;
 
+
+const calcSound = new Audio('sounds/calculator.mp3');
 form.addEventListener('submit', e => {
   e.preventDefault();
   const g = document.querySelector('input[name="gender"]:checked');
@@ -314,6 +316,8 @@ form.addEventListener('submit', e => {
     errorMsg.classList.add('show'); resultBox.classList.remove('show'); return;
   }
   errorMsg.classList.remove('show');
+  calcSound.currentTime = 0;
+calcSound.play().catch(() => {});
 
   /* Mifflin-St Jeor */
   const bmr = 10 * weight + 6.25 * height - 5 * age + (g.value === 'male' ? 5 : -161);

@@ -10,7 +10,7 @@ let foodData = [];
 
 function renderCard(item) {
     return `
-      <article class="food-card" data-kcal="${item.kcal}" data-protein="${item.protein}" data-fat="${item.fat}" data-bloat="${item.bloat}">
+      <article class="food-card" data-kcal="${item.kcal}" data-protein="${item.protein}" data-fat="${item.fat}" data-bloat="${item.bloat}" data-grams="100">
 
           <div class="food-image" style="background-image:url('${item.picture}')"></div>
 
@@ -218,22 +218,37 @@ async function loadFood() {
     initLiveSearch();
 }
 
+/* =========================
+   UPDATE NUTRITION (portion change)
+========================= */
+
 function updateNutrition(card, amount) {
 
     const kcal = Number(card.dataset.kcal);
     const protein = Number(card.dataset.protein);
     const fat = Number(card.dataset.fat);
 
-    const multiplier = amount / 100;
+    const m = amount / 100;
 
-    card.querySelector('.kcal-value').textContent =
-        Math.round(kcal * multiplier);
+    // remember the chosen grams on the card
+    card.dataset.grams = amount;
 
-    card.querySelector('.protein-value').textContent =
-        (protein * multiplier).toFixed(1) + 'g';
+    card.querySelector('.kcal-value').textContent = Math.round(kcal * m);
+    card.querySelector('.protein-value').textContent = (protein * m).toFixed(1) + 'g';
+    card.querySelector('.fat-value').textContent = (fat * m).toFixed(1) + 'g';
 
-    card.querySelector('.fat-value').textContent =
-        (fat * multiplier).toFixed(1) + 'g';
+    // if this food is already on the plate, update it there too
+    const name = card.querySelector('.food-title h3')?.textContent.trim();
+    const item = selectedItems.find(i => i.name === name);
+
+    if (item) {
+        item.grams = amount;
+        item.kcal = Math.round(kcal * m);
+        item.protein = +(protein * m).toFixed(1);
+        item.fat = +(fat * m).toFixed(1);
+        persist();
+        renderPanel();
+    }
 }
 
 loadFood();
@@ -249,6 +264,14 @@ function initLiveSearch() {
     const section = document.getElementById('searchResultsSection');
     const grid = document.getElementById('searchResultsGrid');
 
+    // Enter on phone: close keyboard and reset any sideways shift
+    input.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        input.blur();
+        setTimeout(() => window.scrollTo(0, window.scrollY), 150);
+    });
+
     input.addEventListener('input', function (e) {
 
         const term = e.target.value.trim().toLowerCase();
@@ -263,6 +286,7 @@ function initLiveSearch() {
             item.name.toLowerCase().includes(term)
         );
 
+        // no results = no scrolling
         if (matches.length === 0) {
             section.classList.remove('active');
             grid.innerHTML = '';
@@ -273,6 +297,10 @@ function initLiveSearch() {
         section.classList.add('active');
 
         highlightSelectedCards();
+
+        // scroll up to the results (offset keeps them below navbar + search bar)
+        const y = section.getBoundingClientRect().top + window.scrollY - 200;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
     });
 }
 
@@ -328,7 +356,7 @@ function renderPanel() {
     selectedItems.forEach(item => {
         const li = document.createElement('li');
         li.innerHTML = `
-            <span>${item.name}</span>
+            <span>${item.name} (${item.grams || 100}g)</span>
             <span class="plate-item-right">
                 ${item.kcal} kcal
                 <button class="plate-item-remove" type="button" data-name="${item.name}" title="Remove">×</button>
@@ -396,16 +424,20 @@ function initPlateSystem() {
         if (!card) return;
 
         const name = card.querySelector('.food-title h3')?.textContent.trim();
-        const kcal = Number(card.dataset.kcal);
-        const protein = Number(card.dataset.protein);
-        const fat = Number(card.dataset.fat);
+
+        // use the grams chosen on the card (default 100)
+        const grams = Number(card.dataset.grams) || 100;
+        const m = grams / 100;
+        const kcal = Math.round(Number(card.dataset.kcal) * m);
+        const protein = +(Number(card.dataset.protein) * m).toFixed(1);
+        const fat = +(Number(card.dataset.fat) * m).toFixed(1);
 
         const existingIndex = selectedItems.findIndex(i => i.name === name);
 
         if (existingIndex > -1) {
             selectedItems.splice(existingIndex, 1);
         } else {
-            selectedItems.push({ name, kcal, protein, fat });
+            selectedItems.push({ name, grams, kcal, protein, fat });
         }
 
         persist();
@@ -437,6 +469,7 @@ function initPlateSystem() {
         const itemsToInsert = selectedItems.map(item => ({
             plate_id: plate.id,
             name: item.name,
+            grams: item.grams || 100,
             kcal: item.kcal,
             protein: item.protein,
             fat: item.fat

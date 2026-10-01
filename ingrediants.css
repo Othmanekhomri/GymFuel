@@ -426,10 +426,10 @@ a {
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
 }
+.energy-badge { top: 108px; left: 10px; }   /* image is 150px tall */
+
 @media (max-width: 430px) {
-    .energy-badge {
-        top: 156px;
-    }
+    .energy-badge { top: 88px; }            /* image is 130px tall here */
 }
 
 /* =========================
@@ -1016,9 +1016,7 @@ footer {
     transform: translateY(-2px);
 }
 
-.food-card.selected {
-    border: 3px solid #1fd67e;
-}
+
 
 
 
@@ -1076,11 +1074,13 @@ footer {
 ========================= */
 
 .brutalist-container {
-    position: relative;
+    margin: 45px auto 30px;
+    position: sticky;
+    top: 125px;
+    z-index: 800;
     width: 60%;
     max-width: 900px;
     min-width: 280px;
-    margin: 55px auto 0;
     font-family: monospace;
 }
 
@@ -1371,4 +1371,96 @@ footer {
 
 .video-modal-close:hover {
     background: rgba(255,255,255,.35);
+}
+
+html, body { overflow-x: clip; max-width: 100%; }
+
+/* ===== SELECTED CARD: dark + spinning light blue / purple / pink ===== */
+.food-card.selected {
+    background: #0b0f24;
+    color: #fff;
+    border: none;
+    box-shadow: 0 0 24px rgba(168, 85, 247, .45);
+}
+
+.food-card.selected::before {
+    content: '';
+    position: absolute;
+    width: 220%;
+    height: 220%;
+    left: -60%;
+    top: -60%;
+    background: conic-gradient(from 0deg, transparent 0 55%, #8ecbff, #b388ff, #ff7ad9, transparent);
+    animation: selectedSpin 3s linear infinite;
+    z-index: 0;
+}
+
+.food-card.selected::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    background: #0b0f24;
+    border-radius: 14px;
+    z-index: 1;
+}
+
+.food-card.selected > .food-image,
+.food-card.selected > .food-content {
+    position: relative;
+    z-index: 2;
+}
+
+.food-card.selected > .food-image {
+    margin: 4px 4px 0;
+    border-radius: 14px 14px 0 0;
+}
+
+.food-card.selected .food-content h3,
+.food-card.selected .nutrition strong { color: #fff; }
+
+.food-card.selected .nutrition div {
+    background: rgba(255, 255, 255, .08);
+    color: rgba(255, 255, 255, .6);
+}
+
+.food-card.selected .portion-select,
+.food-card.selected .custom-portion-input {
+    color: #fff;
+    background: rgba(255, 255, 255, .14);
+    border-color: rgba(255, 255, 255, .35);
+}
+
+.food-card.selected .portion-select option { color: #111; }
+.food-card.selected .custom-portion-input::placeholder { color: rgba(255, 255, 255, .5); }
+
+@keyframes selectedSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* ===== MOBILE FIXES ===== */
+@media (max-width: 600px) {
+    .brutalist-container { top: 115px; }
+
+    /* section buttons: always 2 per line */
+    .category-shortcut { min-width: 0; width: calc(50% - 5px); }
+
+    /* dropdown goes under the name, full width */
+    .food-title { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .food-content .food-title h3 { margin: 0; font-size: 15px; }
+    .portion-wrapper,
+    .custom-portion-box { width: 100%; }
+    .portion-select { width: 100%; min-width: 0; max-width: none; margin-left: 0; }
+    .custom-portion-input { width: 100%; }
+    .custom-portion-delete { right: -4px; }
+}
+.brutalist-container::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    width: 100vw;
+    top: -45px;
+    bottom: -28px;
+    transform: translateX(-50%);
+    background: #111;
+    z-index: -1;
 }
